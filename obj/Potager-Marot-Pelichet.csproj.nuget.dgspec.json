@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet\\Potager-Marot-Pelichet.csproj": {}
+    "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet\\Potager-Marot-Pelichet.csproj": {
+    "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet\\Potager-Marot-Pelichet.csproj",
+        "projectUniqueName": "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet.csproj",
         "projectName": "Potager-Marot-Pelichet",
-        "projectPath": "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet\\Potager-Marot-Pelichet.csproj",
+        "projectPath": "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet.csproj",
         "packagesPath": "C:\\Users\\lexma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet\\obj\\",
+        "outputPath": "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\lexma\\AppData\\Roaming\\NuGet\\NuGet.Config"

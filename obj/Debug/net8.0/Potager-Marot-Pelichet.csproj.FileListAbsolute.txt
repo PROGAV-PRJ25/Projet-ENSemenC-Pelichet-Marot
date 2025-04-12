@@ -1,0 +1,15 @@
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\bin\Debug\net8.0\Potager-Marot-Pelichet.exe
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\bin\Debug\net8.0\Potager-Marot-Pelichet.deps.json
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\bin\Debug\net8.0\Potager-Marot-Pelichet.runtimeconfig.json
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\bin\Debug\net8.0\Potager-Marot-Pelichet.dll
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\bin\Debug\net8.0\Potager-Marot-Pelichet.pdb
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\Potager-Marot-Pelichet.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\Potager-Marot-Pelichet.AssemblyInfoInputs.cache
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\Potager-Marot-Pelichet.AssemblyInfo.cs
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\Potager-Marot-Pelichet.csproj.CoreCompileInputs.cache
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\Potager-Marot-Pelichet.sourcelink.json
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\Potager-Marot-Pelichet.dll
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\refint\Potager-Marot-Pelichet.dll
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\Potager-Marot-Pelichet.pdb
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\Potager-Marot-Pelichet.genruntimeconfig.cache
+C:\Users\lexma\OneDrive\Bureau\Etudes\ENSC\S6\Programmation\Projet\projet-ensemenc-SquiDrop\Potager-Marot-Pelichet\obj\Debug\net8.0\ref\Potager-Marot-Pelichet.dll
