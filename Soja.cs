@@ -19,4 +19,14 @@ public class Soja : Plante
     {
         Console.WriteLine($"{Nom} pousse en terrain {TerrainIdeal.Nom} !");
     }
+
+    public override void Arroser(int quantiteEau)
+    {
+        base.Arroser(quantiteEau); // Logique de base
+        
+        if (quantiteEau > 150) 
+        {
+            Console.WriteLine("⚠️ Trop d'eau pour le soja ! Risque de pourriture.");
+        }
+    }
 }
