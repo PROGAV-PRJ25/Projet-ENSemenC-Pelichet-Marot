@@ -4,9 +4,12 @@ public class Soja : Plante
         nom: "Soja",
         espace: 2,
         terrain: new TerrainArgileux(),
-        saison: new List<Saison> { new SaisonPluvieuse() }
+        saison: new List<Saison> { new SaisonPluvieuse() },
+        besoinEau:0.7f // Besoin moyen (70%)
     )
-    { }
+    {
+
+    }
     public override void VerifierSante()
     {
         Console.WriteLine($"{Nom} : Vérification des pucerons...");
