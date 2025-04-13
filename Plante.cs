@@ -4,40 +4,48 @@ public abstract class Plante
     public int EspacePris { get; protected set; }
     public Terrain TerrainIdeal { get; protected set; }
     public List<Saison> SaisonCompatible { get; protected set; }
-    public float BesoinEau { get; protected set; }
-    public DateTime DernierArrosage { get; protected set; }
 
-    protected Plante(string nomPlante, int espace, Terrain terrain, List<Saison> saison, float besoinEau)
+    // Jauge d'hydratation commune à toutes les plantes (0 = morte, 100 = parfaitement hydratée)
+    public float Hydratation { get; protected set; } = 100f;
+
+    // Vitesse de déshydratation (% perdu par jour)
+    public float VitesseDeshydratation { get; protected set; }
+
+    protected Plante(
+        string nomPlante,
+        int espace,
+        Terrain terrain,
+        List<Saison> saison,
+        float vitesseDeshydrataion
+    )
     {
         NomPlante = nomPlante;
         EspacePris = espace;
         TerrainIdeal = terrain;
         SaisonCompatible = saison;
-        BesoinEau = besoinEau;
-        DernierArrosage = DateTime.Now;
+        VitesseDeshydratation = vitesseDeshydrataion;
     }
-    public abstract void VerifierSante();
-    public abstract void Pousser();
+
+    public virtual void Update(float tempsEcouleEnJours)
+    {
+        float perte = tempsEcouleEnJours * VitesseDeshydratation;
+        Hydratation = Math.Max(0, Hydratation - perte); // Math.Max pour pas que l'hydratation descende en dessous de zéro (plante morte)
+    }
 
     public virtual void Arroser(int quantiteEau)
-    {
-        DernierArrosage = DateTime.Now;
-
-        if (quantiteEau < BesoinEau * 100) // Ex: BesoinEau=0.7 → 70 unités
-        {
-            Console.WriteLine($"[ATTENTION] {NomPlante} n'a pas reçu assez d'eau !");
-        }
-        else
-        {
-            Console.WriteLine($"{NomPlante} a été correctement arrosé.");
-        }
+    { // Absorption = quantité * coeff du terrain * ajustement plante
+        float gain = quantiteEau * TerrainIdeal.CoeffAbsorptionEau * 0.01f;
+        Hydratation = Math.Min(100, Hydratation + gain);
+        Console.WriteLine(
+            $"{NomPlante} a absorbé {gain:F1}% d'eau (sol {TerrainIdeal.NomTerrain})"
+        );
     }
+
     public virtual bool ASoif
     {
-        get
-
-        {
-            return (DateTime.Now - DernierArrosage).TotalHours > 48;  //Si on a pas arrosé depuis 48h
-        }
+        get { return Hydratation < 30f; } //return true SSI l'hydratation de la plante est inférieure à 30. seuil personnalisable dans la classe fille
     }
+
+    public abstract void VerifierSante();
+    public abstract void Pousser();
 }
