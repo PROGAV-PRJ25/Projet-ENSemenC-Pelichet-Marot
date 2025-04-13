@@ -1,15 +1,15 @@
 public abstract class Plante
 {
-    public string Nom { get; protected set; }
+    public string NomPlante { get; protected set; }
     public int EspacePris { get; protected set; }
     public Terrain TerrainIdeal { get; protected set; }
     public List<Saison> SaisonCompatible { get; protected set; }
     public float BesoinEau { get; protected set; }
     public DateTime DernierArrosage { get; protected set; }
 
-    protected Plante(string nom, int espace, Terrain terrain, List<Saison> saison, float besoinEau)
+    protected Plante(string nomPlante, int espace, Terrain terrain, List<Saison> saison, float besoinEau)
     {
-        Nom = nom;
+        NomPlante = nomPlante;
         EspacePris = espace;
         TerrainIdeal = terrain;
         SaisonCompatible = saison;
@@ -25,11 +25,19 @@ public abstract class Plante
 
         if (quantiteEau < BesoinEau * 100) // Ex: BesoinEau=0.7 → 70 unités
         {
-            Console.WriteLine($"[ATTENTION] {Nom} n'a pas reçu assez d'eau !");
+            Console.WriteLine($"[ATTENTION] {NomPlante} n'a pas reçu assez d'eau !");
         }
         else
         {
-            Console.WriteLine($"{Nom} a été correctement arrosé.");
+            Console.WriteLine($"{NomPlante} a été correctement arrosé.");
+        }
+    }
+    public virtual bool ASoif
+    {
+        get
+
+        {
+            return (DateTime.Now - DernierArrosage).TotalHours > 48;  //Si on a pas arrosé depuis 48h
         }
     }
 }

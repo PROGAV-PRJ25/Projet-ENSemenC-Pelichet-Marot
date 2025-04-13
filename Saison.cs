@@ -1,8 +1,8 @@
 public abstract class Saison
 {
-    public string Nom {get;}
-    protected Saison(string nom)
+    public string NomSaison {get;}
+    protected Saison(string nomSaison)
     {
-        Nom=nom;
+        NomSaison=nomSaison;
     }
 }

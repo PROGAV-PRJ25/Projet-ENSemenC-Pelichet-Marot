@@ -1,11 +1,11 @@
 public abstract class Terrain
 {
-    public string Nom {get;}
+    public string NomTerrain {get;}
     public float Fertilité {get;}
     public float RetentionEau {get;}
-    protected Terrain(string nom, float fertilite, float retentionEau)
+    protected Terrain(string nomTerrain, float fertilite, float retentionEau)
     {
-        Nom=nom;
+        NomTerrain=nomTerrain;
         Fertilité=fertilite;
         RetentionEau=retentionEau;
     }
