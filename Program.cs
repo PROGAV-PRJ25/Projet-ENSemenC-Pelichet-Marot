@@ -1,36 +1,47 @@
-﻿Console.WriteLine("=== TEST POTAGER ===");
+﻿var soja = new Soja();
+float[] temperatures = new float[]
+        {
+            25f, // OK
+            38f, // Trop chaud
+            5f,  // Trop froid
+            32f, // OK
+            40f, // Trop chaud
+            12f, // OK
+        };
 
-// 1. Création d'un plant de soja
-var soja = new Soja();
-Console.WriteLine($"Nouveau plant créé : {soja.NomPlante}");
-Console.WriteLine($"Hydratation initiale : {soja.Hydratation}%");
-Console.WriteLine();
+float joursSimules = 0;
+float pasDeTemps = 1f; 
 
-// 2. Test d'arrosage normal
-Console.WriteLine("-> Arrosage avec 80 unités d'eau :");
-soja.Arroser(80);
-Console.WriteLine($"Hydratation : {soja.Hydratation}%");
-soja.VerifierSante();
-soja.Pousser();
-Console.WriteLine();
+Console.WriteLine($"🌱 Début de la simulation pour {soja.NomPlante}\n");
 
-// 3. Simulation du temps qui passe (2 jours)
-Console.WriteLine("-> 2 jours sans arrosage :");
-soja.Update(2); // 2 jours * 25% de perte/jour = 50%
-Console.WriteLine($"Hydratation : {soja.Hydratation}%");
-soja.VerifierSante(); // Doit afficher l'avertissement
-Console.WriteLine();
+foreach (float temp in temperatures)
+{
+    joursSimules += pasDeTemps;
 
-// 4. Test de sécheresse mortelle
-Console.WriteLine("-> 4 jours supplémentaires sans eau :");
-soja.Update(4); // 4j * 25% = 100% de perte
-Console.WriteLine($"Hydratation : {soja.Hydratation}%");
-soja.VerifierSante(); // Doit afficher la mort
-soja.Pousser();
-Console.WriteLine();
+    Console.WriteLine($"\n📅 Jour {joursSimules} — Température : {temp}°C");
 
-// 5. Test de résurrection (optionnel)
-Console.WriteLine("-> Arrosage post-mortem :");
-soja.Arroser(200);
-Console.WriteLine($"Hydratation : {soja.Hydratation}%"); // Doit rester à 0%
-soja.VerifierSante();
+    soja.EffetTemperature(temp, pasDeTemps);
+    soja.Update(pasDeTemps);
+
+    Console.WriteLine($"💧 Hydratation actuelle : {soja.Hydratation:F1}%");
+
+    if (soja.ASoif)
+    {
+        Console.WriteLine($"🚿 {soja.NomPlante} a soif ! Tentative d'arrosage...");
+        soja.Arroser(50); // Quantité arbitraire
+    }
+
+    soja.VerifierSante();
+
+    if (soja.Hydratation <= 0)
+    {
+        Console.WriteLine("💀 Fin de la simulation : plante morte.");
+        break;
+    }
+
+    soja.Pousser();
+
+    Thread.Sleep(1000); // Juste pour l'effet de tempo, tu peux l'enlever si tu veux
+}
+
+Console.WriteLine("\n✅ Simulation terminée.");

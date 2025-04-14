@@ -12,6 +12,8 @@ public abstract class Plante
     public float VitesseDeshydratation { get; protected set; }
     public float TemperatureMinimale { get; protected set; }
     public float TemperatureMaximale { get; protected set; }
+    public float JoursHorsLimiteTemperature { get; protected set; } = 0;
+    public const int JoursMortTemperature = 10;
 
     protected Plante(
         string nomPlante,
@@ -53,10 +55,30 @@ public abstract class Plante
     }
     public virtual void EffetTemperature(float temperatureActuelle, float tempsEcouleEnJours)
     {
-        float temperatureIdeale = (TemperatureMinimale+TemperatureMaximale)/2;
-        float stressTemperature = Math.Abs(temperatureIdeale-temperatureActuelle)*0.5f;
-        Hydratation -= stressTemperature; // Dégâts liés au stress thermique
-        Console.WriteLine($"{NomPlante} subit un stress thermique !");
+        bool EstEnDanger = (temperatureActuelle < TemperatureMinimale || temperatureActuelle > TemperatureMaximale);
+        if (EstEnDanger)
+        {
+            // 1. Accumule les jours dangereux
+            JoursHorsLimiteTemperature += tempsEcouleEnJours;
+
+            // 2. Applique un stress immédiat
+            float temperatureIdeale = (TemperatureMinimale + TemperatureMaximale) / 2;
+            float stressTemperature = Math.Abs(temperatureIdeale - temperatureActuelle) * 0.5f * tempsEcouleEnJours;
+            Hydratation = Math.Max(0, Hydratation - stressTemperature);
+            Console.WriteLine($"{NomPlante} subit un stress thermique !");
+
+            // 3. Vérifie la mort thermique
+            if (JoursHorsLimiteTemperature >= JoursMortTemperature && Hydratation > 0)
+            {
+                Hydratation = 0;
+                Console.WriteLine($"[MORT] {NomPlante} a succombé à la température");
+            }
+            else // Réinitialisation du compteur si la plante n'est plus en danger thermique
+            {
+                JoursHorsLimiteTemperature = 0;
+
+            }
+        }
     }
 
     public abstract void VerifierSante();
