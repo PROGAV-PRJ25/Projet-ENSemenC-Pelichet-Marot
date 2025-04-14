@@ -7,7 +7,8 @@ public class Soja : Plante
             terrain: new TerrainArgileux(), // Sol idéal
             saison: new List<Saison> { new SaisonPluvieuse() },
             vitesseDeshydrataion: 25f // Perd 25% d'eau/jour
-        ) { }
+        )
+    { }
 
     public override void VerifierSante()
     {
