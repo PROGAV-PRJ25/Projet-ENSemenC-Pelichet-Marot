@@ -6,7 +6,10 @@ public class Cactus : Plante
             espace: 3,
             terrain: new TerrainSableux(),
             saison: new List<Saison> { new SaisonSeche() },
-            vitesseDeshydrataion: 5f
+            vitesseDeshydratation: 5f,
+            temperatureMinimale: 15f,
+            temperatureMaximale: 40f
+
         )
     { }
     public override void VerifierSante()

@@ -10,20 +10,26 @@ public abstract class Plante
 
     // Vitesse de déshydratation (% perdu par jour)
     public float VitesseDeshydratation { get; protected set; }
+    public float TemperatureMinimale { get; protected set; }
+    public float TemperatureMaximale { get; protected set; }
 
     protected Plante(
         string nomPlante,
         int espace,
         Terrain terrain,
         List<Saison> saison,
-        float vitesseDeshydrataion
+        float vitesseDeshydratation,
+        float temperatureMinimale,
+        float temperatureMaximale
     )
     {
         NomPlante = nomPlante;
         EspacePris = espace;
         TerrainIdeal = terrain;
         SaisonCompatible = saison;
-        VitesseDeshydratation = vitesseDeshydrataion;
+        VitesseDeshydratation = vitesseDeshydratation;
+        TemperatureMinimale = temperatureMinimale;
+        TemperatureMaximale = temperatureMaximale;
     }
 
     public virtual void Update(float tempsEcouleEnJours)
@@ -44,6 +50,13 @@ public abstract class Plante
     public virtual bool ASoif
     {
         get { return Hydratation < 30f; } //return true SSI l'hydratation de la plante est inférieure à 30. seuil personnalisable dans la classe fille
+    }
+    public virtual void EffetTemperature(float temperatureActuelle, float tempsEcouleEnJours)
+    {
+        float temperatureIdeale = (TemperatureMinimale+TemperatureMaximale)/2;
+        float stressTemperature = Math.Abs(temperatureIdeale-temperatureActuelle)*0.5f;
+        Hydratation -= stressTemperature; // Dégâts liés au stress thermique
+        Console.WriteLine($"{NomPlante} subit un stress thermique !");
     }
 
     public abstract void VerifierSante();
