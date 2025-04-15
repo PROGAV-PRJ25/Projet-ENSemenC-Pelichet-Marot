@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3rzGtiuTbVA=",
+  "dgSpecHash": "tfaE2OhIBlQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Thibert\\Documents\\Mes documents\\ENSC\\S2\\Informatique\\ProgrammationOO\\ProjetPotager\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\Thibert\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.12\\microsoft.netcore.app.ref.8.0.12.nupkg.sha512",
-    "C:\\Users\\Thibert\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.12\\microsoft.windowsdesktop.app.ref.8.0.12.nupkg.sha512",
-    "C:\\Users\\Thibert\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.12\\microsoft.aspnetcore.app.ref.8.0.12.nupkg.sha512",
-    "C:\\Users\\Thibert\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.12\\microsoft.netcore.app.host.win-x64.8.0.12.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\lexma\\OneDrive\\Bureau\\Etudes\\ENSC\\S6\\Programmation\\Projet\\projet-ensemenc-SquiDrop\\Potager-Marot-Pelichet.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

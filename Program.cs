@@ -1,47 +1,29 @@
-﻿var soja = new Soja();
-float[] temperatures = new float[]
-        {
-            25f, // OK
-            38f, // Trop chaud
-            5f,  // Trop froid
-            32f, // OK
-            40f, // Trop chaud
-            12f, // OK
-        };
-
-float joursSimules = 0;
-float pasDeTemps = 1f; 
-
-Console.WriteLine($"🌱 Début de la simulation pour {soja.NomPlante}\n");
-
-foreach (float temp in temperatures)
+﻿Console.WriteLine("💧 TEST HYDRATATION (Vitesse=2f) 🌱\n");
+var soja = new Soja();
+Console.WriteLine($"DÉSHYDRATATION DE BASE: {soja.VitesseDeshydratation}%/jour");
+Console.WriteLine($"PLAGE IDÉALE: {soja.TemperatureMinimale}°C à {soja.TemperatureMaximale}°C\n");
+// Initialisation à 100%
+soja.Arroser(100);
+// Simulation sur 20 jours
+for (int jour = 1; jour <= 20; jour++)
 {
-    joursSimules += pasDeTemps;
+    float temperature = jour <= 10 ? 25f : 40f; // 10j normaux + 10j canicule
 
-    Console.WriteLine($"\n📅 Jour {joursSimules} — Température : {temp}°C");
+    Console.WriteLine($"\n--- JOUR {jour} ({temperature}°C) ---");
+    soja.Update(temperature, 1f);
 
-    soja.EffetTemperature(temp, pasDeTemps);
-    soja.Update(pasDeTemps);
-
-    Console.WriteLine($"💧 Hydratation actuelle : {soja.Hydratation:F1}%");
-
-    if (soja.ASoif)
-    {
-        Console.WriteLine($"🚿 {soja.NomPlante} a soif ! Tentative d'arrosage...");
-        soja.Arroser(50); // Quantité arbitraire
-    }
-
-    soja.VerifierSante();
+    Console.WriteLine($"Hydratation: {soja.Hydratation:F1}%");
+    Console.WriteLine($"Stress: {(soja.EstEnStressThermique ? "🔴 OUI" : "🟢 NON")}");
+    Console.WriteLine($"Jours hors limite: {soja.JoursHorsLimiteTemperature}/10");
 
     if (soja.Hydratation <= 0)
     {
-        Console.WriteLine("💀 Fin de la simulation : plante morte.");
+        Console.WriteLine("💀 MORT PAR DÉSHYDRATATION");
         break;
     }
-
-    soja.Pousser();
-
-    Thread.Sleep(1000); // Juste pour l'effet de tempo, tu peux l'enlever si tu veux
+    if (soja.JoursHorsLimiteTemperature >= 10)
+    {
+        Console.WriteLine("🔥 MORT PAR TEMPÉRATURE");
+        break;
+    }
 }
-
-Console.WriteLine("\n✅ Simulation terminée.");

@@ -4,16 +4,14 @@ public abstract class Plante
     public int EspacePris { get; protected set; }
     public Terrain TerrainIdeal { get; protected set; }
     public List<Saison> SaisonCompatible { get; protected set; }
-
-    // Jauge d'hydratation commune à toutes les plantes (0 = morte, 100 = parfaitement hydratée)
     public float Hydratation { get; protected set; } = 100f;
-
-    // Vitesse de déshydratation (% perdu par jour)
     public float VitesseDeshydratation { get; protected set; }
     public float TemperatureMinimale { get; protected set; }
     public float TemperatureMaximale { get; protected set; }
     public float JoursHorsLimiteTemperature { get; protected set; } = 0;
     public const int JoursMortTemperature = 10;
+
+    public bool EstEnStressThermique { get; protected set; } = false;
 
     protected Plante(
         string nomPlante,
@@ -34,52 +32,75 @@ public abstract class Plante
         TemperatureMaximale = temperatureMaximale;
     }
 
-    public virtual void Update(float tempsEcouleEnJours)
+    public virtual void Arroser(int quantiteEau)
+    {
+        float gain = quantiteEau * TerrainIdeal.CoeffAbsorptionEau;
+        Hydratation = Math.Min(100, Hydratation + gain);
+    }
+
+    public virtual bool ASoif => Hydratation < 30f;
+
+    public virtual void Update(float temperatureActuelle, float tempsEcouleEnJours)
+    {
+        if (Hydratation <= 0)
+        {
+            Console.WriteLine($"[MORT] {NomPlante} est déjà morte");
+            return;
+        }
+        UpdateHydratation(tempsEcouleEnJours);
+        UpdateStressTemperature(temperatureActuelle, tempsEcouleEnJours);
+        AppliquerEffetsStress(tempsEcouleEnJours);
+        VerifierMort();
+    }
+
+    protected virtual void UpdateHydratation(float tempsEcouleEnJours)
     {
         float perte = tempsEcouleEnJours * VitesseDeshydratation;
-        Hydratation = Math.Max(0, Hydratation - perte); // Math.Max pour pas que l'hydratation descende en dessous de zéro (plante morte)
+        Hydratation = Math.Max(0, Hydratation - perte);
     }
 
-    public virtual void Arroser(int quantiteEau)
-    { // Absorption = quantité * coeff du terrain * ajustement plante
-        float gain = quantiteEau * TerrainIdeal.CoeffAbsorptionEau * 0.01f;
-        Hydratation = Math.Min(100, Hydratation + gain);
-        Console.WriteLine(
-            $"{NomPlante} a absorbé {gain:F1}% d'eau (sol {TerrainIdeal.NomTerrain})"
-        );
-    }
+    protected virtual void UpdateStressTemperature(float temperatureActuelle, float tempsEcouleEnJours)
+    {
+        bool estEnDanger = temperatureActuelle < TemperatureMinimale || temperatureActuelle > TemperatureMaximale;
 
-    public virtual bool ASoif
-    {
-        get { return Hydratation < 30f; } //return true SSI l'hydratation de la plante est inférieure à 30. seuil personnalisable dans la classe fille
-    }
-    public virtual void EffetTemperature(float temperatureActuelle, float tempsEcouleEnJours)
-    {
-        bool EstEnDanger = (temperatureActuelle < TemperatureMinimale || temperatureActuelle > TemperatureMaximale);
-        if (EstEnDanger)
+        EstEnStressThermique = estEnDanger;
+
+        if (estEnDanger)
         {
-            // 1. Accumule les jours dangereux
-            JoursHorsLimiteTemperature += tempsEcouleEnJours;
-
-            // 2. Applique un stress immédiat
-            float temperatureIdeale = (TemperatureMinimale + TemperatureMaximale) / 2;
-            float stressTemperature = Math.Abs(temperatureIdeale - temperatureActuelle) * 0.5f * tempsEcouleEnJours;
-            Hydratation = Math.Max(0, Hydratation - stressTemperature);
-            Console.WriteLine($"{NomPlante} subit un stress thermique !");
-
-            // 3. Vérifie la mort thermique
-            if (JoursHorsLimiteTemperature >= JoursMortTemperature && Hydratation > 0)
-            {
-                Hydratation = 0;
-                Console.WriteLine($"[MORT] {NomPlante} a succombé à la température");
-            }
-            else // Réinitialisation du compteur si la plante n'est plus en danger thermique
-            {
-                JoursHorsLimiteTemperature = 0;
-
-            }
+            JoursHorsLimiteTemperature += (int)Math.Ceiling(tempsEcouleEnJours); // Arrondi à jours entiers
+        }
+        else
+        {
+            JoursHorsLimiteTemperature = 0;
         }
     }
+
+
+    protected virtual void AppliquerEffetsStress(float tempsEcouleEnJours)
+    {
+
+        if (EstEnStressThermique)
+        {
+            // Effets fixes quand en stress
+            Hydratation = Math.Max(0, Hydratation - 20f * tempsEcouleEnJours); // Désydratation accélérée
+        }
+    }
+
+    protected virtual void VerifierMort()
+    {
+        if (JoursHorsLimiteTemperature >= JoursMortTemperature && Hydratation > 0)
+        {
+            Hydratation = 0;
+            Console.WriteLine($"[MORT] {NomPlante} tuée par la température");
+            return;
+        }
+
+        if (Hydratation <= 0)
+        {
+            Console.WriteLine($"[MORT] {NomPlante} morte de déshydratation");
+        }
+    }
+
 
     public abstract void VerifierSante();
     public abstract void Pousser();

@@ -6,7 +6,7 @@ public class Soja : Plante
             espace: 2,
             terrain: new TerrainArgileux(), // Sol idéal
             saison: new List<Saison> { new SaisonPluvieuse() },
-            vitesseDeshydratation: 25f, // Perd 25% d'eau/jour
+            vitesseDeshydratation: 2f, // Perd 2% d'eau/jour
             temperatureMinimale:10f,
             temperatureMaximale:35f
         )
