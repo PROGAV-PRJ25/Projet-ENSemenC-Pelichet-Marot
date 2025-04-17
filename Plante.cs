@@ -40,17 +40,34 @@ public abstract class Plante
 
     public virtual bool ASoif => Hydratation < 30f;
 
-    public virtual void Update(float temperatureActuelle, float tempsEcouleEnJours)
+    public virtual void Update(Meteo meteo, float tempsEcouleEnJours)
     {
         if (Hydratation <= 0)
         {
             Console.WriteLine($"[MORT] {NomPlante} est déjà morte");
             return;
         }
+
+        AppliquerPluie(meteo, tempsEcouleEnJours);
         UpdateHydratation(tempsEcouleEnJours);
-        UpdateStressTemperature(temperatureActuelle, tempsEcouleEnJours);
+        UpdateStressTemperature(meteo.Temperature, tempsEcouleEnJours);
         AppliquerEffetsStress(tempsEcouleEnJours);
         VerifierMort();
+    }
+
+    protected virtual void AppliquerPluie(Meteo meteo, float tempsEcouleEnJours)
+    {
+        if (meteo.QuantitePluie > 0)
+        {
+            float absorption = meteo.QuantitePluie * TerrainIdeal.CoeffAbsorptionEau * 0.3f;
+            float gain = absorption * tempsEcouleEnJours;
+            Hydratation = Math.Min(100, Hydratation + gain);
+
+            Console.WriteLine($"{NomPlante} absorbe {meteo.QuantitePluie:P0} de pluie " +
+                            $"(Terrain: {TerrainIdeal.GetType().Name}, " +
+                            $"Coeff: {TerrainIdeal.CoeffAbsorptionEau:P0}) → " +
+                            $"+{gain:F1}% hydratation");
+        }
     }
 
     protected virtual void UpdateHydratation(float tempsEcouleEnJours)
