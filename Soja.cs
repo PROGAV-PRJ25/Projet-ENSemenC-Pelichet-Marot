@@ -5,7 +5,7 @@ public class Soja : Plante
             nomPlante: "Soja",
             acronyme: "So",
             espace: 2,
-            terrain: new TerrainArgileux(), // Sol idéal
+            terrain: new TerrainClassiqueTerreux(), // Sol idéal
             saison: new List<Saison> { new SaisonPluvieuse() },
             vitesseDeshydratation: 2f, // Perd 2% d'eau/jour
             temperatureMinimale: 10f,

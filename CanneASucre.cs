@@ -5,7 +5,7 @@ public class CanneASucre : Plante
             nomPlante: "Canne à Sucre",
             acronyme: "Cs",
             espace: 3,
-            terrain: new TerrainArgileux(),
+            terrain: new TerrainClassiqueTerreux(),
             saison: new List<Saison> { new SaisonPluvieuse() },
             vitesseDeshydratation: 2.5f, // Très gourmande en eau
             temperatureMinimale: 20f,

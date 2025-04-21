@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Threading;
+
 public class GestionnairePotager
 {
     private int cursorX = 0;
@@ -11,7 +14,6 @@ public class GestionnairePotager
 
         while (!quitter)
         {
-            // Gestion du clignotement (toutes les 500ms)
             if ((DateTime.Now - lastBlinkTime).TotalMilliseconds > 500)
             {
                 showPlants = !showPlants;
@@ -29,19 +31,15 @@ public class GestionnairePotager
                     bool estCurseur = (x == cursorX && y == cursorY);
                     var terrain = plateau[y, x];
 
-                    // Couleur de fond pour le curseur
                     Console.BackgroundColor = estCurseur ? ConsoleColor.DarkCyan : ConsoleColor.Black;
-
-                    // Couleur des crochets (selon terrain)
                     Console.ForegroundColor = terrain.Couleur;
                     Console.Write("[");
 
-                    // Affichage plante (avec clignotement si santé critique)
                     if (terrain.Plante != null && (showPlants || !terrain.Plante.SanteCritique))
                     {
                         Console.ForegroundColor = terrain.Plante.SanteCritique
                             ? ConsoleColor.Red
-                            : ConsoleColor.Green;
+                            : ConsoleColor.DarkBlue;
                         Console.Write(terrain.Plante.Acronyme);
                     }
                     else
@@ -73,14 +71,14 @@ public class GestionnairePotager
 
     private void AfficherInfosCase(Terrain terrain)
     {
-        Console.WriteLine("\n=== CASE SELECTIONNÉE ===");
+        Console.WriteLine("\n=== CASE SÉLECTIONNÉE ===");
         Console.WriteLine($"Position: ({cursorX}, {cursorY})");
-        Console.WriteLine($"Type: {(terrain is TerrainSableux ? "Sableux" : "Argileux")}");
+        Console.WriteLine($"Type: {terrain.NomTerrain}");
 
         if (terrain.Plante != null)
         {
             Console.WriteLine($"\nPlante: {terrain.Plante.NomPlante}");
-            Console.WriteLine($"Santé: {(terrain.Plante.SanteCritique ? "CRITIQUE " : "Bonne")}");
+            Console.WriteLine($"Santé: {(terrain.Plante.SanteCritique ? "CRITIQUE" : "Bonne")}");
             Console.WriteLine("\nActions disponibles:");
             Console.WriteLine("A - Arroser | D - Désherber | R - Récolter");
         }
@@ -118,21 +116,22 @@ public class GestionnairePotager
                     Console.WriteLine("\nRécolte effectuée !");
                     break;
             }
-            Thread.Sleep(800); // Pause pour lire le message
+            Thread.Sleep(800);
         }
     }
 
     private Plante ChoixNouvellePlante()
     {
         Console.Clear();
-        Console.WriteLine("Choisissez une plante:");
+        Console.WriteLine("Choisissez une plante :");
         Console.WriteLine("1 - Soja (So)");
         Console.WriteLine("2 - Maïs (Ma)");
         Console.WriteLine("3 - Coton (Co)");
+        Console.WriteLine("4 - Canne à sucre (Ca)");
+        Console.WriteLine("5 - Café (Cf)");
+        Console.WriteLine("6 - Cactus (Cx)");
 
-
-
-        Console.Write("\nVotre choix: ");
+        Console.Write("\nVotre choix : ");
 
         return Console.ReadKey(true).Key switch
         {
