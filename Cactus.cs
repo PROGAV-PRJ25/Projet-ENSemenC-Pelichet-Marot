@@ -3,21 +3,39 @@ public class Cactus : Plante
     public Cactus()
         : base(
             nomPlante: "Cactus",
-            espace: 3,
+            acronyme: "Ca",
+            espace: 1,
             terrain: new TerrainSableux(),
             saison: new List<Saison> { new SaisonSeche() },
-            vitesseDeshydratation: 5f,
-            temperatureMinimale: 15f,
-            temperatureMaximale: 40f
-
+            vitesseDeshydratation: 0.5f, // Très faible, il garde bien l’eau
+            temperatureMinimale: 10f,
+            temperatureMaximale: 45f
         )
-    { }
-    public override void VerifierSante()
     {
-        throw new NotImplementedException();
+        EstVivace = true;
     }
+
+
+    public override void VerifierMort()
+    {
+        // À implémenter
+    }
+
+
     public override void Pousser()
     {
-        throw new NotImplementedException();
+        // À implémenter
+    }
+
+
+    public override void Desherber()
+    {
+        // À implémenter
+    }
+
+
+    public override void Arroser(int quantiteEau)
+    {
+        // À implémenter
     }
 }

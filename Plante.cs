@@ -1,6 +1,7 @@
 public abstract class Plante
 {
-    public string NomPlante { get; protected set; }
+    public string NomPlante { get; protected set; } = "Plante générique";
+    public string Acronyme { get; protected set; } = "Pl";
     public int EspacePris { get; protected set; }
     public Terrain TerrainIdeal { get; protected set; }
     public List<Saison> SaisonCompatible { get; protected set; }
@@ -12,9 +13,12 @@ public abstract class Plante
     public const int JoursMortTemperature = 10;
 
     public bool EstEnStressThermique { get; protected set; } = false;
+    public bool SanteCritique { get; protected set; }
+    public bool EstVivace { get; protected set;} = false;
 
     protected Plante(
         string nomPlante,
+        string acronyme,
         int espace,
         Terrain terrain,
         List<Saison> saison,
@@ -24,6 +28,7 @@ public abstract class Plante
     )
     {
         NomPlante = nomPlante;
+        Acronyme = acronyme;
         EspacePris = espace;
         TerrainIdeal = terrain;
         SaisonCompatible = saison;
@@ -103,7 +108,7 @@ public abstract class Plante
         }
     }
 
-    protected virtual void VerifierMort()
+    public virtual void VerifierMort()
     {
         if (JoursHorsLimiteTemperature >= JoursMortTemperature && Hydratation > 0)
         {
@@ -119,6 +124,7 @@ public abstract class Plante
     }
 
 
-    public abstract void VerifierSante();
+    
     public abstract void Pousser();
+    public abstract void Desherber();
 }
