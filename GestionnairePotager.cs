@@ -22,6 +22,12 @@ public class GestionnairePotager
 
             Console.Clear();
             Console.WriteLine("=== POTAGER VU DU CIEL ===");
+
+            AfficherLegendeTerrain("Argileux", ConsoleColor.DarkGray);
+            AfficherLegendeTerrain("Sableux", ConsoleColor.DarkYellow);
+            AfficherLegendeTerrain("Classique", ConsoleColor.DarkGreen);
+            Console.ResetColor();
+            
             Console.WriteLine("Flèches: Se déplacer | Espace: Interagir | Q: Quitter\n");
 
             for (int y = 0; y < plateau.GetLength(0); y++)
@@ -143,5 +149,12 @@ public class GestionnairePotager
             ConsoleKey.D6 or ConsoleKey.NumPad6 => new Cactus(),
             _ => null
         };
+    }
+    private void AfficherLegendeTerrain(string nom, ConsoleColor couleur)
+    {
+        Console.ForegroundColor = couleur;
+        Console.Write("■ ");
+        Console.ResetColor();
+        Console.WriteLine(nom);
     }
 }
