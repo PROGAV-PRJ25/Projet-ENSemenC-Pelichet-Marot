@@ -15,6 +15,7 @@ public abstract class Plante
     public bool EstEnStressThermique { get; protected set; } = false;
     public bool SanteCritique { get; protected set; }
     public bool EstVivace { get; protected set;} = false;
+    public bool EstMorte { get; protected set; } = false;
 
     protected Plante(
         string nomPlante,
@@ -110,15 +111,21 @@ public abstract class Plante
 
     public virtual void VerifierMort()
     {
+        if (EstMorte)
+        {
+            return;
+        }
+
         if (JoursHorsLimiteTemperature >= JoursMortTemperature && Hydratation > 0)
         {
-            Hydratation = 0;
+            EstMorte=true;
             Console.WriteLine($"[MORT] {NomPlante} tuée par la température");
             return;
         }
 
         if (Hydratation <= 0)
         {
+            EstMorte = true;
             Console.WriteLine($"[MORT] {NomPlante} morte de déshydratation");
         }
     }

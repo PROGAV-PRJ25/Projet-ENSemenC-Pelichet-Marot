@@ -1,44 +1,20 @@
-﻿Console.WriteLine("💧 TEST HYDRATATION (Vitesse=2f) 🌱\n");
-var soja = new Soja();
-Console.WriteLine($"DÉSHYDRATATION DE BASE: {soja.VitesseDeshydratation}%/jour");
-Console.WriteLine($"PLAGE IDÉALE: {soja.TemperatureMinimale}°C à {soja.TemperatureMaximale}°C\n");
+﻿using System;
 
-
-// Initialisation à 100%
-soja.Arroser(100);
-
-
-// Simulation sur 20 jours
-for (int jour = 1; jour <= 20; jour++)
+class Program
 {
-    float temperature = jour <= 10 ? 25f : 40f; // 10j normaux + 10j canicule
-   
-    // Création d'une météo factice pour le test (sans pluie)
-    var meteoTest = new Meteo(
-        pluie: 0f,
-        luminosite: 0.8f,
-        temperature: temperature,
-        intemperie: false
-    );
-
-
-    Console.WriteLine($"\n--- JOUR {jour} ({temperature}°C) ---");
-    soja.Update(meteoTest, tempsEcouleEnJours: 1f);
-   
-    Console.WriteLine($"Hydratation: {soja.Hydratation:F1}%");
-    Console.WriteLine($"Stress: {(soja.EstEnStressThermique ? "🔴 OUI" : "🟢 NON")}");
-    Console.WriteLine($"Jours hors limite: {soja.JoursHorsLimiteTemperature}/10");
-   
-    if (soja.Hydratation <= 0)
+    static void Main(string[] args)
     {
-        Console.WriteLine("💀 MORT PAR DÉSHYDRATATION");
-        break;
-    }
-   
-    if (soja.JoursHorsLimiteTemperature >= 10)
-    {
-        Console.WriteLine("🔥 MORT PAR TEMPÉRATURE");
-        break;
+        // 1. Définit les dimensions du plateau
+        int largeurPlateau = 10;
+        int hauteurPlateau = 10;
+
+        // 2. Crée une instance du gestionnaire de potager (notre "chef d'orchestre")
+        GestionPotager gestionnaire = new GestionPotager();
+
+        // 3. Démarre la simulation en passant les dimensions du plateau
+        gestionnaire.DemarrerSimulation(largeurPlateau, hauteurPlateau);
+
+        // Le jeu se déroule à l'intérieur de la méthode DemarrerSimulation().
+        // Quand le joueur choisit de quitter, la méthode se termine et le programme aussi.
     }
 }
-
