@@ -1,142 +1,229 @@
 using System;
+using System.Collections.Generic;
 
 public class GestionPlateau
 {
-    // Le plateau de terrains
     private Terrain[,] plateau;
-
-    // La vue pour afficher le plateau
     private VuePotager view;
+    private bool interactionEnCours = false; // Nouvelle variable d'état
 
-    // Constructeur : on a besoin du plateau et de la vue pour fonctionner
     public GestionPlateau(Terrain[,] plateauInitial, VuePotager viewInitial)
     {
         plateau = plateauInitial;
         view = viewInitial;
     }
 
-    // Méthode principale : gère les entrées du joueur et les actions
     public void GererEntreesUtilisateur()
     {
         bool quitter = false;
 
-        // Boucle principale du jeu
         while (!quitter)
         {
-            // Affiche le plateau
             view.AfficherPlateau();
-
-            // Lit l'entrée du joueur
             ConsoleKeyInfo touche = Console.ReadKey(true);
 
-            // Traite l'entrée du joueur
             switch (touche.Key)
             {
                 case ConsoleKey.UpArrow:
-                    DeplacerCurseur(0, -1); // Déplace le curseur vers le haut
+                    DeplacerCurseur(0, -1);
                     break;
                 case ConsoleKey.DownArrow:
-                    DeplacerCurseur(0, 1);  // Déplace le curseur vers le bas
+                    DeplacerCurseur(0, 1);
                     break;
                 case ConsoleKey.LeftArrow:
-                    DeplacerCurseur(-1, 0); // Déplace le curseur vers la gauche
+                    DeplacerCurseur(-1, 0);
                     break;
                 case ConsoleKey.RightArrow:
-                    DeplacerCurseur(1, 0);  // Déplace le curseur vers la droite
+                    DeplacerCurseur(1, 0);
                     break;
                 case ConsoleKey.Spacebar:
-                    InteragirAvecCase();    // Interagit avec la case sélectionnée
+                    interactionEnCours = true; // Démarre l'interaction
+                    GererInteraction();
+                    interactionEnCours = false; // Termine l'interaction
                     break;
                 case ConsoleKey.Q:
-                    quitter = true;         // Quitte le jeu
+                    quitter = true;
                     break;
             }
         }
     }
 
-    // Méthode pour déplacer le curseur
+    private void GererInteraction()
+    {
+        Terrain terrain = plateau[view.CurseurY, view.CurseurX];
+        view.AfficherActionsCase(terrain); // Affiche les actions spécifiques
+
+        bool actionChoisie = false;
+        while (!actionChoisie)
+        {
+            ConsoleKeyInfo actionTouche = Console.ReadKey(true);
+            switch (actionTouche.Key)
+            {
+                case ConsoleKey.A:
+                    if (terrain.Plante != null)
+                    {
+                        terrain.Plante.Arroser(10);
+                        Console.WriteLine("\nArrosage effectué !");
+                    }
+                    actionChoisie = true;
+                    break;
+                case ConsoleKey.D:
+                    if (terrain.Plante != null)
+                    {
+                        terrain.Plante.Desherber();
+                        Console.WriteLine("\nDésherbage effectué !");
+                    }
+                    actionChoisie = true;
+                    break;
+                case ConsoleKey.R:
+                    if (terrain.Plante != null)
+                    {
+                        terrain.Plante = null;
+                        Console.WriteLine("\nRécolte effectuée !");
+                    }
+                    actionChoisie = true;
+                    break;
+                case ConsoleKey.P:
+                    if (terrain.Plante == null)
+                    {
+                        terrain.Plante = ChoisirNouvellePlante();
+                    }
+                    actionChoisie = true;
+                    break;
+                case ConsoleKey.Spacebar: // Retour à la vue du potager
+                    actionChoisie = true;
+                    break;
+            }
+            if (actionChoisie) System.Threading.Thread.Sleep(500);
+        }
+    }
+
+    public void GererEntreesUtilisateurModeClassique()
+    {
+        bool actionEffectuee = false;
+        while (!actionEffectuee)
+        {
+            view.AfficherPlateau(); // Affiche la vue principale
+            Console.WriteLine("\nAppuyez sur Espace pour interagir avec la case sélectionnée.");
+            ConsoleKeyInfo touche = Console.ReadKey(true);
+
+            switch (touche.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    DeplacerCurseur(0, -1);
+                    break;
+                case ConsoleKey.DownArrow:
+                    DeplacerCurseur(0, 1);
+                    break;
+                case ConsoleKey.LeftArrow:
+                    DeplacerCurseur(-1, 0);
+                    break;
+                case ConsoleKey.RightArrow:
+                    DeplacerCurseur(1, 0);
+                    break;
+                case ConsoleKey.Spacebar:
+                    interactionEnCours = true;
+                    GererInteractionModeClassique(); // Nouvelle méthode pour les interactions en mode classique
+                    interactionEnCours = false;
+                    break;
+                case ConsoleKey.E:
+                    actionEffectuee = true; // Passer au jour suivant
+                    break;
+            }
+        }
+    }
+
+    private void GererInteractionModeClassique()
+    {
+        Terrain terrain = plateau[view.CurseurY, view.CurseurX];
+        view.AfficherActionsCase(terrain);
+
+        bool actionChoisie = false;
+        while (!actionChoisie)
+        {
+            ConsoleKeyInfo actionTouche = Console.ReadKey(true);
+            switch (actionTouche.Key)
+            {
+                case ConsoleKey.A:
+                    if (terrain.Plante != null)
+                    {
+                        terrain.Plante.Arroser(10);
+                        Console.WriteLine("\nArrosage effectué !");
+                    }
+                    actionChoisie = true;
+                    break;
+                case ConsoleKey.D:
+                    if (terrain.Plante != null)
+                    {
+                        Console.WriteLine($"\n{terrain.Plante.NomPlante} a été désherbé.");
+                        terrain.Plante.Desherber(); // Appel de la méthode Desherber de la plante (si tu veux y mettre une logique spécifique)
+                        terrain.Plante = null; // Suppression de la plante de la case !
+                    }
+                    actionChoisie = true;
+                    break;
+                case ConsoleKey.R:
+                    if (terrain.Plante != null)
+                    {
+                        terrain.Plante = null;
+                        Console.WriteLine("\nRécolte effectuée !");
+                    }
+                    actionChoisie = true;
+                    break;
+                case ConsoleKey.P:
+                    if (terrain.Plante == null)
+                    {
+                        terrain.Plante = ChoisirNouvellePlante();
+                    }
+                    actionChoisie = true;
+                    break;
+                case ConsoleKey.Spacebar:
+                    actionChoisie = true; // Retour à la vue du potager
+                    break;
+            }
+            if (actionChoisie) System.Threading.Thread.Sleep(500);
+        }
+    }
+
+
     private void DeplacerCurseur(int deltaX, int deltaY)
     {
-        // Calcule la nouvelle position du curseur
         int nouvelleX = view.CurseurX + deltaX;
         int nouvelleY = view.CurseurY + deltaY;
 
-        // Vérifie si la nouvelle position est valide (à l'intérieur du plateau)
         if (nouvelleX >= 0 && nouvelleX < plateau.GetLength(1) &&
             nouvelleY >= 0 && nouvelleY < plateau.GetLength(0))
         {
-            view.CurseurX = nouvelleX; // Met à jour la position du curseur dans la vue
+            view.CurseurX = nouvelleX;
             view.CurseurY = nouvelleY;
         }
     }
 
-    // Méthode pour gérer l'interaction avec la case sélectionnée
     private void InteragirAvecCase()
     {
-        Terrain terrain = plateau[view.CurseurY, view.CurseurX]; // Obtient le terrain sélectionné
-
-        Console.Write("\nChoisir une action: ");
-        ConsoleKeyInfo touche = Console.ReadKey(true);
-
-        // Si la case n'a pas de plante, on propose de planter
-        if (terrain.Plante == null)
-        {
-            if (touche.Key == ConsoleKey.P)
-            {
-                terrain.Plante = ChoisirNouvellePlante(); // Le joueur choisit une plante à planter
-            }
-        }
-        else // Sinon, on propose les actions sur la plante
-        {
-            switch (touche.Key)
-            {
-                case ConsoleKey.A:
-                    terrain.Plante.Arroser(10);
-                    Console.WriteLine("\nArrosage effectué !");
-                    break;
-                case ConsoleKey.D:
-                    terrain.Plante.Desherber();
-                    Console.WriteLine("\nDésherbage effectué !");
-                    break;
-                case ConsoleKey.R:
-                    terrain.Plante = null;
-                    Console.WriteLine("\nRécolte effectuée !");
-                    break;
-            }
-            System.Threading.Thread.Sleep(800); // Petite pause pour que le joueur voie le message
-        }
+        // Cette méthode n'est plus directement appelée en mode classique
     }
 
-    // Méthode pour que le joueur choisisse une plante à planter
     private Plante ChoisirNouvellePlante()
     {
         Console.Clear();
         Console.WriteLine("Choisissez une plante :");
         Console.WriteLine("1 - Soja (So)");
         Console.WriteLine("2 - Maïs (Ma)");
-        Console.WriteLine("3 - Coton (Co)");
-        Console.WriteLine("4 - Canne à sucre (Ca)");
-        Console.WriteLine("5 - Café (Cf)");
-        Console.WriteLine("6 - Cactus (Cx)");
         Console.WriteLine("0 - Annuler");
 
         Console.Write("\nVotre choix : ");
         string choix = Console.ReadLine();
 
-        // Crée la plante choisie ou retourne null si le choix est invalide
         switch (choix)
         {
             case "1": return new Soja();
             case "2": return new Mais();
-            case "3": return new Coton();
-            case "4": return new CanneASucre();
-            case "5": return new Cafe();
-            case "6": return new Cactus();
             case "0": return null;
             default:
                 Console.WriteLine("Choix invalide. Veuillez réessayer.");
                 System.Threading.Thread.Sleep(1000);
-                return ChoisirNouvellePlante(); // Récursion pour réessayer
+                return ChoisirNouvellePlante();
         }
     }
+
 }

@@ -1,36 +1,69 @@
 public class Meteo
 {
-    public float QuantitePluie { get; } // Entre 0 et 1
-    public float Luminosite { get; }    // Entre 0 et 1
-    public float Temperature { get; }   // Température du jour
+    public float QuantitePluie { get; }
+    public float Luminosite { get; }
+    public float Temperature { get; }
     public bool Intemperie { get; }
+    public Saison SaisonActuelle { get; }
     public string Description { get; }
 
-    public Meteo(float pluie, float luminosite, float temperature, bool intemperie)
+    private Meteo(float pluie, float luminosite, float temperature, bool intemperie, Saison saison)
     {
         QuantitePluie = Math.Clamp(pluie, 0, 1);
         Luminosite = Math.Clamp(luminosite, 0.1f, 1);
         Temperature = temperature;
         Intemperie = intemperie;
+        SaisonActuelle = saison;
+        Description = GenererDescription(); // Initialise la description ici
+        
+    }
 
-        Description = GenererDescription();
+
+    public static Meteo GenererPourSaison(Saison saison)
+    {
+        var rand = new Random();
+
+        float pluie = CalculerPluie(saison, rand);
+        float luminosite = CalculerLuminosite(saison, rand);
+        float temperature = CalculerTemperature(saison, rand);
+        bool intemperie = DeterminerIntemperie(saison, rand);
+
+        return new Meteo(pluie, luminosite, temperature, intemperie, saison);
+    }
+
+    private static float CalculerPluie(Saison saison, Random rand)
+    {
+        return rand.NextSingle() < saison.ProbabilitePluie
+            ? saison.LuminositeMoyenne * 0.8f + rand.NextSingle() * 0.4f
+            : 0f;
+    }
+
+    private static float CalculerLuminosite(Saison saison, Random rand)
+    {
+        return saison.LuminositeMoyenne * (0.9f + rand.NextSingle() * 0.2f);
+    }
+
+    private static float CalculerTemperature(Saison saison, Random rand)
+    {
+        return saison.TemperatureMoyenne + (rand.NextSingle() * 2 - 1) * saison.VariationTemperature;
+    }
+
+    private static bool DeterminerIntemperie(Saison saison, Random rand)
+    {
+        return rand.NextSingle() < saison.ProbabiliteIntemperie;
     }
 
     private string GenererDescription()
     {
-        string desc = "";
-        
-        // Description température
-        if (Temperature < 10) desc = "❄️ Glacial";
-        else if (Temperature > 35) desc = "🔥 Caniculaire";
-        else desc = "🌡️ Normal";
+        string desc = $"Météo : saison {SaisonActuelle.NomSaison}, ";
+        desc += $"Température : {Temperature:F1}°C, ";
+        desc += $"Pluie : {QuantitePluie:P0}, ";
+        desc += $"Luminosité : {Luminosite:P0}";
 
-        // Ajout précipitations
-        if (QuantitePluie > 0.5f) desc += " + Pluie torrentielle 🌧️";
-        else if (QuantitePluie > 0) desc += " + Bruine ☔";
-
-        // Ajout intempéries
-        if (Intemperie) desc += " + Orage ⚡";
+        if (Intemperie)
+        {
+            desc += ", Orage ⚡";
+        }
 
         return desc;
     }

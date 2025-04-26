@@ -1,25 +1,53 @@
 public class GestionPotager
 {
-    // La vue pour afficher le potager
     private VuePotager view;
-
-    // Le contrôleur pour gérer les actions du joueur
-    private GestionPlateau controller;
-
-    // Le plateau de terrains
+    private GestionPlateau plateauController;
     private Terrain[,] plateau;
+    public Saison saisonActuelle;
+    private int jourActuel = 1;
 
-    // Méthode pour démarrer la simulation de potager
     public void DemarrerSimulation(int largeurPlateau, int hauteurPlateau)
     {
-        // 1. Générer le plateau de terrains
         plateau = GenerateurPlateau.GenererPlateau(largeurPlateau, hauteurPlateau);
-
-        // 2. Créer la vue et le contrôleur, et leur donner le plateau
         view = new VuePotager(plateau);
-        controller = new GestionPlateau(plateau, view);
+        plateauController = new GestionPlateau(plateau, view);
 
-        // 3. Lancer la boucle principale du jeu en appelant le contrôleur
-        controller.GererEntreesUtilisateur();
+        saisonActuelle = new SaisonPluvieuse();
+
+        LancerModeClassique();
+    }
+
+    private void LancerModeClassique()
+    {
+        bool continuer = true;
+        while (continuer)
+        {
+            Meteo meteoDuJour = Meteo.GenererPourSaison(saisonActuelle);
+            view.SetMeteo(meteoDuJour); // Passer la météo à la vue
+
+            Console.WriteLine($"\n----- Jour {jourActuel} -----");
+            // On ne répète pas la description ici, elle sera dans l'affichage du plateau
+
+            foreach (var terrain in plateau)
+            {
+                if (terrain.Plante != null)
+                {
+                    terrain.Plante.Update(meteoDuJour, 1f);
+                }
+            }
+
+            view.AfficherPlateau();
+            plateauController.GererEntreesUtilisateurModeClassique();
+
+            Console.WriteLine("\nAppuyez sur Entrée pour passer au jour suivant...");
+            Console.ReadKey();
+            jourActuel++;
+
+            if (jourActuel > 30)
+            {
+                continuer = false;
+                Console.WriteLine("\nFin de la simulation classique.");
+            }
+        }
     }
 }
