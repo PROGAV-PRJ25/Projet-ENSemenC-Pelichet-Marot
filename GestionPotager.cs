@@ -10,7 +10,7 @@ public class GestionPotager
     {
         plateau = GenerateurPlateau.GenererPlateau(largeurPlateau, hauteurPlateau);
         view = new VuePotager(plateau);
-        plateauController = new GestionPlateau(plateau, view);
+        plateauController = new GestionPlateau(plateau, view, this);
 
         saisonActuelle = new SaisonPluvieuse();
 

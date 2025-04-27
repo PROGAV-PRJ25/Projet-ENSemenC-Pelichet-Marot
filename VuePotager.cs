@@ -96,20 +96,18 @@ public class VuePotager
     // Nouvelle méthode pour afficher les actions spécifiques après l'interaction
     public void AfficherActionsCase(Terrain terrain)
     {
-        Console.WriteLine("\n=== ACTIONS DISPONIBLES ===");
-        Console.WriteLine($"Position: ({curseurX}, {curseurY})");
-        Console.WriteLine($"Type: {terrain.NomTerrain}");
+        Console.WriteLine("\n=== ACTION PARCELLE ===");
+        Console.WriteLine($"Terrain {terrain.NomTerrain}");
 
         if (terrain.Plante != null)
         {
-            Console.WriteLine($"\nPlante: {terrain.Plante.NomPlante}");
-            Console.WriteLine("A - Arroser | D - Désherber | R - Récolter");
+            Console.WriteLine($"Plante: {terrain.Plante.NomPlante}");
+            Console.WriteLine("A - Arroser | R - Récolter | D - Désherber ");
         }
         else
         {
-            Console.WriteLine("\nAucune plante");
             Console.WriteLine("P - Planter");
         }
-        Console.WriteLine("Espace - Retour au potager");
+        Console.WriteLine("\nEspace - Changer de parcelle");
     }
 }

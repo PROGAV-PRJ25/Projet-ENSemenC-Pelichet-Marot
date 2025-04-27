@@ -5,12 +5,14 @@ public class GestionPlateau
 {
     private Terrain[,] plateau;
     private VuePotager view;
-    private bool interactionEnCours = false; // Nouvelle variable d'état
+     private GestionPotager gestionPotager;
+    private bool interactionEnCours = false; 
 
-    public GestionPlateau(Terrain[,] plateauInitial, VuePotager viewInitial)
+    public GestionPlateau(Terrain[,] plateauInitial, VuePotager viewInitial, GestionPotager gestionPotager)
     {
         plateau = plateauInitial;
         view = viewInitial;
+        this.gestionPotager = gestionPotager;
     }
 
     public void GererEntreesUtilisateur()
@@ -62,7 +64,7 @@ public class GestionPlateau
                 case ConsoleKey.A:
                     if (terrain.Plante != null)
                     {
-                        terrain.Plante.Arroser(10);
+                        terrain.Plante.Arroser(200);
                         Console.WriteLine("\nArrosage effectué !");
                     }
                     actionChoisie = true;
@@ -100,11 +102,13 @@ public class GestionPlateau
 
     public void GererEntreesUtilisateurModeClassique()
     {
+        
         bool actionEffectuee = false;
-        while (!actionEffectuee)
+        bool quitter = false;
+        while (!actionEffectuee && !quitter)
         {
             view.AfficherPlateau(); // Affiche la vue principale
-            Console.WriteLine("\nAppuyez sur Espace pour interagir avec la case sélectionnée.");
+            Console.WriteLine("\nAppuyez sur Espace pour interagir avec la parcelle sélectionnée.");
             ConsoleKeyInfo touche = Console.ReadKey(true);
 
             switch (touche.Key)
@@ -129,6 +133,9 @@ public class GestionPlateau
                 case ConsoleKey.E:
                     actionEffectuee = true; // Passer au jour suivant
                     break;
+                case ConsoleKey.Q:
+                    quitter = true;
+                    break; 
             }
         }
     }
@@ -147,7 +154,7 @@ public class GestionPlateau
                 case ConsoleKey.A:
                     if (terrain.Plante != null)
                     {
-                        terrain.Plante.Arroser(10);
+                        terrain.Plante.Arroser(200);
                         Console.WriteLine("\nArrosage effectué !");
                     }
                     actionChoisie = true;
@@ -209,7 +216,11 @@ public class GestionPlateau
         Console.WriteLine("Choisissez une plante :");
         Console.WriteLine("1 - Soja (So)");
         Console.WriteLine("2 - Maïs (Ma)");
-        Console.WriteLine("0 - Annuler");
+        Console.WriteLine("3 - Canne à sucre (Cs)");
+        Console.WriteLine("4 - Café (Cf)");
+        Console.WriteLine("5 - Cactus (Ca)");
+        Console.WriteLine("6 - Coton (Co)");
+        Console.WriteLine("0 - Rien");
 
         Console.Write("\nVotre choix : ");
         string choix = Console.ReadLine();
@@ -218,6 +229,10 @@ public class GestionPlateau
         {
             case "1": return new Soja();
             case "2": return new Mais();
+            case "3": return new CanneASucre();
+            case "4": return new Cafe();
+            case "5": return new Cactus();
+            case "6": return new Coton();
             case "0": return null;
             default:
                 Console.WriteLine("Choix invalide. Veuillez réessayer.");
