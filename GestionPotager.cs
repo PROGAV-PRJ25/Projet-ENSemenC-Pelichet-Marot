@@ -5,10 +5,11 @@ public class GestionPotager
     private Terrain[,] plateau;
     public Saison saisonActuelle;
     private int jourActuel = 1;
+    private bool simulationEnCours = true;
 
     public void DemarrerSimulation(int largeurPlateau, int hauteurPlateau)
     {
-        plateau = GenerateurPlateau.GenererPlateau(largeurPlateau, hauteurPlateau);
+        plateau = GenerateurBiome.GenererPlateau(largeurPlateau, hauteurPlateau);
         view = new VuePotager(plateau);
         plateauController = new GestionPlateau(plateau, view, this);
 
@@ -16,11 +17,15 @@ public class GestionPotager
 
         LancerModeClassique();
     }
+    public void ArreterSimulation()
+    {
+        simulationEnCours = false;
+    }
 
     private void LancerModeClassique()
     {
         bool continuer = true;
-        while (continuer)
+        while (continuer && simulationEnCours)
         {
             Meteo meteoDuJour = Meteo.GenererPourSaison(saisonActuelle);
             view.SetMeteo(meteoDuJour); // Passer la météo à la vue
@@ -38,6 +43,8 @@ public class GestionPotager
 
             view.AfficherPlateau();
             plateauController.GererEntreesUtilisateurModeClassique();
+
+            if (!simulationEnCours) break;
 
             Console.WriteLine("\nAppuyez sur Entrée pour passer au jour suivant...");
             Console.ReadKey();

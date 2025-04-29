@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public static class GenerateurPlateau
+public static class GenerateurBiome
 {
     public static Terrain[,] GenererPlateau(int largeur, int hauteur)
     {

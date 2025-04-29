@@ -5,7 +5,7 @@ public class GestionPlateau
 {
     private Terrain[,] plateau;
     private VuePotager view;
-     private GestionPotager gestionPotager;
+    private GestionPotager gestionPotager;
     private bool interactionEnCours = false; 
 
     public GestionPlateau(Terrain[,] plateauInitial, VuePotager viewInitial, GestionPotager gestionPotager)
@@ -13,91 +13,6 @@ public class GestionPlateau
         plateau = plateauInitial;
         view = viewInitial;
         this.gestionPotager = gestionPotager;
-    }
-
-    public void GererEntreesUtilisateur()
-    {
-        bool quitter = false;
-
-        while (!quitter)
-        {
-            view.AfficherPlateau();
-            ConsoleKeyInfo touche = Console.ReadKey(true);
-
-            switch (touche.Key)
-            {
-                case ConsoleKey.UpArrow:
-                    DeplacerCurseur(0, -1);
-                    break;
-                case ConsoleKey.DownArrow:
-                    DeplacerCurseur(0, 1);
-                    break;
-                case ConsoleKey.LeftArrow:
-                    DeplacerCurseur(-1, 0);
-                    break;
-                case ConsoleKey.RightArrow:
-                    DeplacerCurseur(1, 0);
-                    break;
-                case ConsoleKey.Spacebar:
-                    interactionEnCours = true; // Démarre l'interaction
-                    GererInteraction();
-                    interactionEnCours = false; // Termine l'interaction
-                    break;
-                case ConsoleKey.Q:
-                    quitter = true;
-                    break;
-            }
-        }
-    }
-
-    private void GererInteraction()
-    {
-        Terrain terrain = plateau[view.CurseurY, view.CurseurX];
-        view.AfficherActionsCase(terrain); // Affiche les actions spécifiques
-
-        bool actionChoisie = false;
-        while (!actionChoisie)
-        {
-            ConsoleKeyInfo actionTouche = Console.ReadKey(true);
-            switch (actionTouche.Key)
-            {
-                case ConsoleKey.A:
-                    if (terrain.Plante != null)
-                    {
-                        terrain.Plante.Arroser(200);
-                        Console.WriteLine("\nArrosage effectué !");
-                    }
-                    actionChoisie = true;
-                    break;
-                case ConsoleKey.D:
-                    if (terrain.Plante != null)
-                    {
-                        terrain.Plante.Desherber();
-                        Console.WriteLine("\nDésherbage effectué !");
-                    }
-                    actionChoisie = true;
-                    break;
-                case ConsoleKey.R:
-                    if (terrain.Plante != null)
-                    {
-                        terrain.Plante = null;
-                        Console.WriteLine("\nRécolte effectuée !");
-                    }
-                    actionChoisie = true;
-                    break;
-                case ConsoleKey.P:
-                    if (terrain.Plante == null)
-                    {
-                        terrain.Plante = ChoisirNouvellePlante();
-                    }
-                    actionChoisie = true;
-                    break;
-                case ConsoleKey.Spacebar: // Retour à la vue du potager
-                    actionChoisie = true;
-                    break;
-            }
-            if (actionChoisie) System.Threading.Thread.Sleep(500);
-        }
     }
 
     public void GererEntreesUtilisateurModeClassique()
@@ -135,6 +50,7 @@ public class GestionPlateau
                     break;
                 case ConsoleKey.Q:
                     quitter = true;
+                    gestionPotager.ArreterSimulation();
                     break; 
             }
         }
