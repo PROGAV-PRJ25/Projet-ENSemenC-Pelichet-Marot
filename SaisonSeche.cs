@@ -5,7 +5,7 @@ public class SaisonSeche : Saison
             nomSaison: "Sèche",
             probaPluie: 0.1f,
             luminositeMoyenne: 0.9f,
-            probaIntemperie: 0.3f,
+            probaIntemperie: 0.1f,
             temperatureMoyenne: 30f,
             variationTemperature: 8f
         ) {}

@@ -5,8 +5,8 @@ public class GestionPlateau
 {
     private Terrain[,] plateau;
     private VuePotager view;
-     private GestionPotager gestionPotager;
-    private bool interactionEnCours = false; 
+    private GestionPotager gestionPotager;
+    private bool interactionEnCours = false;
 
     public GestionPlateau(Terrain[,] plateauInitial, VuePotager viewInitial, GestionPotager gestionPotager)
     {
@@ -18,7 +18,6 @@ public class GestionPlateau
     public void GererEntreesUtilisateur()
     {
         bool quitter = false;
-
         while (!quitter)
         {
             view.AfficherPlateau();
@@ -38,7 +37,7 @@ public class GestionPlateau
                 case ConsoleKey.RightArrow:
                     DeplacerCurseur(1, 0);
                     break;
-                case ConsoleKey.Spacebar:
+                case ConsoleKey.A:
                     interactionEnCours = true; // Démarre l'interaction
                     GererInteraction();
                     interactionEnCours = false; // Termine l'interaction
@@ -102,13 +101,13 @@ public class GestionPlateau
 
     public void GererEntreesUtilisateurModeClassique()
     {
-        
+
         bool actionEffectuee = false;
         bool quitter = false;
         while (!actionEffectuee && !quitter)
         {
             view.AfficherPlateau(); // Affiche la vue principale
-            Console.WriteLine("\nAppuyez sur Espace pour interagir avec la parcelle sélectionnée.");
+            Console.WriteLine("\nI - Information | Espace - Action");
             ConsoleKeyInfo touche = Console.ReadKey(true);
 
             switch (touche.Key)
@@ -130,16 +129,34 @@ public class GestionPlateau
                     GererInteractionModeClassique(); // Nouvelle méthode pour les interactions en mode classique
                     interactionEnCours = false;
                     break;
+                case ConsoleKey.I:
+                    AfficherInfo();
+                    break;
                 case ConsoleKey.E:
                     actionEffectuee = true; // Passer au jour suivant
                     break;
                 case ConsoleKey.Q:
                     quitter = true;
-                    break; 
+                    break;
             }
         }
     }
+    private void AfficherInfo()
+    {
+        Terrain terrain = plateau[view.CurseurY, view.CurseurX];
+        view.AfficherPlanteOuTerrain(terrain);
 
+        bool actionChoisie = false;
+        while (!actionChoisie)
+        {
+            ConsoleKeyInfo actionTouche = Console.ReadKey(true);
+
+            if (actionTouche.Key == ConsoleKey.R)
+            {
+                actionChoisie = true;
+            }
+        }
+    }
     private void GererInteractionModeClassique()
     {
         Terrain terrain = plateau[view.CurseurY, view.CurseurX];
@@ -168,7 +185,7 @@ public class GestionPlateau
                     }
                     actionChoisie = true;
                     break;
-                case ConsoleKey.R:
+                case ConsoleKey.C:
                     if (terrain.Plante != null)
                     {
                         terrain.Plante = null;
@@ -183,7 +200,7 @@ public class GestionPlateau
                     }
                     actionChoisie = true;
                     break;
-                case ConsoleKey.Spacebar:
+                case ConsoleKey.R:
                     actionChoisie = true; // Retour à la vue du potager
                     break;
             }

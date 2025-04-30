@@ -14,7 +14,10 @@ public class CanneASucre : Plante
     {
         EstVivace = true;
     }
-
+    public override float CalculerVivacite(Meteo meteo)
+    {
+        return base.CalculerVivacite(meteo);
+    }
 
     public override void VerifierMort()
     {

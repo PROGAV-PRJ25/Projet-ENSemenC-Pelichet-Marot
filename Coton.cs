@@ -14,7 +14,10 @@ public class Coton : Plante
     {
         EstVivace = false;
     }
-
+    public override float CalculerVivacite(Meteo meteo)
+    {
+        return base.CalculerVivacite(meteo);
+    }
 
     public override void VerifierMort()
     {

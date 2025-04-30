@@ -14,7 +14,11 @@ public class Cafe : Plante
     {
         EstVivace = true; // Le café est une plante vivace
     }
-
+    
+    public override float CalculerVivacite(Meteo meteo)
+    {
+        return base.CalculerVivacite(meteo);
+    }
 
     public override void VerifierMort()
     {

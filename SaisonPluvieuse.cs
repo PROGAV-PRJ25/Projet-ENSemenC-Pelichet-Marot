@@ -5,7 +5,7 @@ public class SaisonPluvieuse : Saison
             nomSaison: "Pluvieuse",
             probaPluie: 0.7f,
             luminositeMoyenne: 0.6f,
-            probaIntemperie: 0.5f,
+            probaIntemperie: 0.3f,
             temperatureMoyenne: 20f,
             variationTemperature: 5f
         ) {}
