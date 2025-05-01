@@ -23,7 +23,7 @@ public class GestionPlateau
         while (!actionEffectuee && !quitter)
         {
             view.AfficherPlateau(); // Affiche la vue principale
-            Console.WriteLine("\nI - Information | Espace - Action");
+            Console.WriteLine("\nEspace - Action | I - Information | E - Jour suivant | Q - Quitter");
             ConsoleKeyInfo touche = Console.ReadKey(true);
 
             switch (touche.Key)
@@ -117,7 +117,7 @@ public class GestionPlateau
                     }
                     actionChoisie = true;
                     break;
-                case ConsoleKey.R:
+                case ConsoleKey.Spacebar:
                     actionChoisie = true; // Retour à la vue du potager
                     break;
             }

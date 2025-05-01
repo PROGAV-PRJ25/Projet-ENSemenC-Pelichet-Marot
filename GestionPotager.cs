@@ -1,3 +1,4 @@
+using System;
 public class GestionPotager
 {
     private VuePotager view;
@@ -27,12 +28,10 @@ public class GestionPotager
         bool continuer = true;
         while (continuer && simulationEnCours)
         {
-            Meteo meteoDuJour = Meteo.GenererPourSaison(saisonActuelle, JourActuel);
+            Meteo meteoDuJour = Meteo.GenererPourSaison(saisonActuelle, jourActuel);
             view.SetMeteo(meteoDuJour); // Passer la météo à la vue
 
             Console.WriteLine($"\n----- Jour {jourActuel} -----");
-            // On ne répète pas la description ici, elle sera dans l'affichage du plateau. 
-            //Je ne vois pas cette commande dans l'affichage. On supprime ?
 
             foreach (var terrain in plateau)
             {
@@ -47,22 +46,19 @@ public class GestionPotager
 
             if (!simulationEnCours) break;
 
-                Console.WriteLine("\nAppuyez à nouveau pour confirmer votre choix | R: Retour");
+            Console.WriteLine("\nAppuyez à nouveau pour confirmer votre choix | R: Retour");
 
-                ConsoleKeyInfo touche = Console.ReadKey(true);
-                switch (touche.Key)
-                {
-                    case ConsoleKey.E:
-                        jourActuel++;
-                        actionDuJour = false;
-                        break;
-                    case ConsoleKey.Q:
-                        continuer = false;
-                        actionDuJour = false;
-                        break;
-                    case ConsoleKey.R:
-                        break;
-                }
+            ConsoleKeyInfo touche = Console.ReadKey(true);
+            switch (touche.Key)
+            {
+                case ConsoleKey.E:
+                    jourActuel++;
+                    break;
+                case ConsoleKey.Q:
+                    continuer = false;
+                    break;
+                case ConsoleKey.R:
+                    break; // Ne rien faire pour le retour ici, la logique est gérée dans GestionPlateau
             }
 
             if (jourActuel > 30)
