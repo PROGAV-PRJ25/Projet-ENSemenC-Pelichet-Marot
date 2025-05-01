@@ -9,10 +9,14 @@ public class Soja : Plante
             saison: new List<Saison> { new SaisonPluvieuse() },
             vitesseDeshydratation: 2f, // Perd 2% d'eau/jour
             temperatureMinimale: 10f,
-            temperatureMaximale: 35f
-        )
+            temperatureMaximale: 35f)
     { }
 
+    public override float CalculerVivacite(Meteo meteo)
+    {
+        return base.CalculerVivacite(meteo);
+    }
+    
     public override void VerifierMort()
     {
         // à implémenter

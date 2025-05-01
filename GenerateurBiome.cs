@@ -15,6 +15,7 @@ public static class GenerateurBiome
         // Définir les types de terrains et le nombre de cases à attribuer à chacun
         List<(Func<Terrain> constructeur, int nombreCases)> biomes = new()
         {
+            (() => new TerrainAquatique(), rand.Next(tailleBiomeMin/5, tailleBiomeMax/5)),
             (() => new TerrainSableux(), rand.Next(tailleBiomeMin, tailleBiomeMax)),
             (() => new TerrainArgileux(), rand.Next(tailleBiomeMin, tailleBiomeMax)),
             (() => new TerrainClassiqueTerreux(), rand.Next(tailleBiomeMin, tailleBiomeMax)),

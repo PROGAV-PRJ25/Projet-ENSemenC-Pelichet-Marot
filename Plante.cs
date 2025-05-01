@@ -4,17 +4,18 @@ public abstract class Plante
     public string Acronyme { get; protected set; } = "Pl";
     public int EspacePris { get; protected set; }
     public Terrain TerrainIdeal { get; protected set; }
+    public Meteo Meteo { get; protected set; }
     public List<Saison> SaisonCompatible { get; protected set; }
     public float Hydratation { get; protected set; } = 100f;
     public float VitesseDeshydratation { get; protected set; }
     public float TemperatureMinimale { get; protected set; }
     public float TemperatureMaximale { get; protected set; }
+    public float DiffTemperature { get; protected set; }
     public float JoursHorsLimiteTemperature { get; protected set; } = 0;
     public const int JoursMortTemperature = 10;
-
     public bool EstEnStressThermique { get; protected set; } = false;
     public bool SanteCritique { get; protected set; }
-    public bool EstVivace { get; protected set;} = false;
+    public bool EstVivace { get; protected set; } = false;
     public bool EstMorte { get; protected set; } = false;
 
     protected Plante(
@@ -36,6 +37,23 @@ public abstract class Plante
         VitesseDeshydratation = vitesseDeshydratation;
         TemperatureMinimale = temperatureMinimale;
         TemperatureMaximale = temperatureMaximale;
+    }
+
+    public virtual float CalculerVivacite(Meteo meteo)
+    {
+        if (meteo.Temperature < TemperatureMinimale)
+        {
+            DiffTemperature = TemperatureMinimale - meteo.Temperature;
+        }
+        else if (meteo.Temperature > TemperatureMaximale)
+        {
+            DiffTemperature = meteo.Temperature - TemperatureMaximale;
+        }
+        else
+        {
+            DiffTemperature = 0;
+        }
+        return Hydratation - (0.1f * DiffTemperature); //à compléter
     }
 
     public virtual void Arroser(int quantiteEau)
@@ -118,7 +136,7 @@ public abstract class Plante
 
         if (JoursHorsLimiteTemperature >= JoursMortTemperature && Hydratation > 0)
         {
-            EstMorte=true;
+            EstMorte = true;
             Console.WriteLine($"[MORT] {NomPlante} tuée par la température");
             return;
         }
@@ -131,7 +149,7 @@ public abstract class Plante
     }
 
 
-    
+
     public abstract void Pousser();
     public abstract void Desherber();
 }

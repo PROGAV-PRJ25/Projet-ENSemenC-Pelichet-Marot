@@ -27,11 +27,12 @@ public class GestionPotager
         bool continuer = true;
         while (continuer && simulationEnCours)
         {
-            Meteo meteoDuJour = Meteo.GenererPourSaison(saisonActuelle);
+            Meteo meteoDuJour = Meteo.GenererPourSaison(saisonActuelle, JourActuel);
             view.SetMeteo(meteoDuJour); // Passer la météo à la vue
 
             Console.WriteLine($"\n----- Jour {jourActuel} -----");
-            // On ne répète pas la description ici, elle sera dans l'affichage du plateau
+            // On ne répète pas la description ici, elle sera dans l'affichage du plateau. 
+            //Je ne vois pas cette commande dans l'affichage. On supprime ?
 
             foreach (var terrain in plateau)
             {
@@ -46,9 +47,23 @@ public class GestionPotager
 
             if (!simulationEnCours) break;
 
-            Console.WriteLine("\nAppuyez sur Entrée pour passer au jour suivant...");
-            Console.ReadKey();
-            jourActuel++;
+                Console.WriteLine("\nAppuyez à nouveau pour confirmer votre choix | R: Retour");
+
+                ConsoleKeyInfo touche = Console.ReadKey(true);
+                switch (touche.Key)
+                {
+                    case ConsoleKey.E:
+                        jourActuel++;
+                        actionDuJour = false;
+                        break;
+                    case ConsoleKey.Q:
+                        continuer = false;
+                        actionDuJour = false;
+                        break;
+                    case ConsoleKey.R:
+                        break;
+                }
+            }
 
             if (jourActuel > 30)
             {
