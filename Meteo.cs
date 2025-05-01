@@ -66,8 +66,8 @@ public class Meteo
     private string GenererDescription(int jourActuel)
     {
         //Les F1 et P0 permettent de limiter le nombre de chiffres après la virgule.
-        string desc = $"Jour : {jourActuel}, ";
-        desc += $"Météo : saison {SaisonActuelle.NomSaison}, ";
+        string desc = $"Jour : {jourActuel}";
+        desc += $"\nMétéo : saison {SaisonActuelle.NomSaison}, ";
         desc += $"Température : {Temperature:F1}°C, ";
         desc += $"Pluie : {QuantitePluie:P0}, ";
         desc += $"Luminosité : {Luminosite:P0}";

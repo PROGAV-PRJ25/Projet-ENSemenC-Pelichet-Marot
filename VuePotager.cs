@@ -38,11 +38,11 @@ public class VuePotager
 
         if (meteoActuelle != null)
         {
-            Console.WriteLine($"  {meteoActuelle.Description}\n");
+            Console.WriteLine($"{meteoActuelle.Description}\n");
         }
         else
         {
-            Console.WriteLine("  Météo non disponible.\n");
+            Console.WriteLine("Météo non disponible.\n");
         }
 
         AfficherLegendeTerrain("Argileux", ConsoleColor.DarkGray);
@@ -50,7 +50,7 @@ public class VuePotager
         AfficherLegendeTerrain("Classique", ConsoleColor.DarkGreen);
         Console.ResetColor();
 
-        Console.WriteLine($"Flèches: Se déplacer (X:{curseurX}, Y:{curseurY}) | Espace: Interagir | Q: Quitter | E: Jour suivant\n");
+        Console.WriteLine($"Flèches: Se déplacer (X:{curseurX}, Y:{curseurY})");
 
         for (int y = 0; y < plateau.GetLength(0); y++)
         {
