@@ -4,38 +4,26 @@ public class Coton : Plante
         : base(
             nomPlante: "Coton",
             acronyme: "Co",
-            espace: 2,
-            terrain: new TerrainSableux(),
-            saison: new List<Saison> { new SaisonSeche() },
+            espacePris: 2,
+            terrainIdeal: new TerrainSableux(),
+            saisonCompatible: new List<Saison> { new SaisonSeche() },
             vitesseDeshydratation: 1.8f,
             temperatureMinimale: 20f,
             temperatureMaximale: 40f
         )
-    {
-        EstVivace = false;
-    }
-    public override float CalculerVivacite(Meteo meteo)
-    {
-        return base.CalculerVivacite(meteo);
-    }
+    { }
 
-    public override void VerifierMort()
+    public override void Arroser()
     {
         // À implémenter
     }
 
-
-    public override void Pousser()
+public override void Pousser()
     {
-        // À implémenter
+        //tu feras ça plus tard
     }
-
-
     public override void Desherber()
     {
-        // À implémenter
+        //tu feras ça plus tard
     }
-
-
-   
 }

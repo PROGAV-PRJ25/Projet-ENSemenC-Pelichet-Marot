@@ -1,154 +1,147 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 public abstract class Plante
 {
     public string NomPlante { get; protected set; } = "Plante générique";
     public string Acronyme { get; protected set; } = "Pl";
     public int EspacePris { get; protected set; }
     public Terrain TerrainIdeal { get; protected set; }
-    public Meteo Meteo { get; protected set; }
     public List<Saison> SaisonCompatible { get; protected set; }
-    public float Hydratation { get; protected set; } = 100f;
-    public float VitesseDeshydratation { get; protected set; }
+    public float HydratationIdeale { get; protected set; } = 80f; // Valeur par défaut
+    public float LuminositeIdeale { get; protected set; } = 70f; // Valeur par défaut (ajoutée)
     public float TemperatureMinimale { get; protected set; }
     public float TemperatureMaximale { get; protected set; }
-    public float DiffTemperature { get; protected set; }
-    public float JoursHorsLimiteTemperature { get; protected set; } = 0;
-    public const int JoursMortTemperature = 10;
-    public bool EstEnStressThermique { get; protected set; } = false;
-    public bool SanteCritique { get; protected set; }
-    public bool EstVivace { get; protected set; } = false;
+    public float VitesseDeshydratation { get; protected set; } // Ajout de la propriété
+    public float HydratationActuelle { get; protected set; } = 100f;
+    public float LuminositeActuelle { get; protected set; } = 50f;
+    public float TemperatureActuelle { get; set; } = 15f;
+    public Maladie MaladieActuelle { get; set; } = null;
     public bool EstMorte { get; protected set; } = false;
+    private int joursSansMaladie = 0;
+    private const int probMaladieInverse = 10;
 
     protected Plante(
         string nomPlante,
         string acronyme,
-        int espace,
-        Terrain terrain,
-        List<Saison> saison,
-        float vitesseDeshydratation,
+        int espacePris,
+        Terrain terrainIdeal,
+        List<Saison> saisonCompatible,
+        float vitesseDeshydratation, 
         float temperatureMinimale,
         float temperatureMaximale
     )
     {
         NomPlante = nomPlante;
         Acronyme = acronyme;
-        EspacePris = espace;
-        TerrainIdeal = terrain;
-        SaisonCompatible = saison;
+        EspacePris = espacePris;
+        TerrainIdeal = terrainIdeal;
+        SaisonCompatible = saisonCompatible;
         VitesseDeshydratation = vitesseDeshydratation;
         TemperatureMinimale = temperatureMinimale;
         TemperatureMaximale = temperatureMaximale;
     }
 
-    public virtual float CalculerVivacite(Meteo meteo)
+    public virtual void Arroser()
     {
-        if (meteo.Temperature < TemperatureMinimale)
+        HydratationActuelle = 100f; 
+    }
+
+    public virtual void RecevoirLumiere(float intensite)
+    {
+        LuminositeActuelle = Math.Min(100f, LuminositeActuelle + intensite);
+    }
+
+    public virtual void SetTemperature(float temperature)
+    {
+        TemperatureActuelle = temperature;
+    }
+
+    public virtual float EvaluerConditions(bool espaceRespecte)
+    {
+        int conditionsNonOptimales = 0;
+        int totalConditions = 5; // Hydratation, Luminosité, Température, Maladie, Espacement
+
+        if (Math.Abs(HydratationActuelle - HydratationIdeale) >= 20f)
         {
-            DiffTemperature = TemperatureMinimale - meteo.Temperature;
+            conditionsNonOptimales++;
         }
-        else if (meteo.Temperature > TemperatureMaximale)
+
+        if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f)
         {
-            DiffTemperature = meteo.Temperature - TemperatureMaximale;
+            conditionsNonOptimales++;
+        }
+
+        if (TemperatureActuelle < TemperatureMinimale || TemperatureActuelle > TemperatureMaximale)
+        {
+            conditionsNonOptimales++;
+        }
+
+        if (MaladieActuelle != null)
+        {
+            conditionsNonOptimales++;
+        }
+
+        if (!espaceRespecte)
+        {
+            conditionsNonOptimales++;
+        }
+
+        return (float)conditionsNonOptimales / totalConditions;
+    }
+
+    public virtual void Update(float tempsEcouleEnJours, float temperatureDuJour, bool espaceRespecte)
+    {
+        if (EstMorte) return;
+
+        TemperatureActuelle = temperatureDuJour;
+
+        if (MaladieActuelle == null)
+        {
+            if (joursSansMaladie >= probMaladieInverse - 1)
+            {
+                if (new Random().Next(probMaladieInverse) == 0)
+                {
+                    AttraperMaladie(new Maladie("Mildew", "Apparition de taches blanches sur les feuilles."));
+                    joursSansMaladie = 0;
+                }
+                else
+                {
+                    joursSansMaladie++;
+                }
+            }
+            else
+            {
+                joursSansMaladie++;
+            }
         }
         else
         {
-            DiffTemperature = 0;
-        }
-        return Hydratation - (0.1f * DiffTemperature); //à compléter
-    }
-
-    public virtual void Arroser(int quantiteEau)
-    {
-        float gain = quantiteEau * TerrainIdeal.CoeffAbsorptionEau;
-        Hydratation = Math.Min(100, Hydratation + gain);
-    }
-
-    public virtual bool ASoif => Hydratation < 30f;
-
-    public virtual void Update(Meteo meteo, float tempsEcouleEnJours)
-    {
-        if (Hydratation <= 0)
-        {
-            Console.WriteLine($"[MORT] {NomPlante} est déjà morte");
-            return;
+            MaladieActuelle.AppliquerEffets(this);
         }
 
-        AppliquerPluie(meteo, tempsEcouleEnJours);
-        UpdateHydratation(tempsEcouleEnJours);
-        UpdateStressTemperature(meteo.Temperature, tempsEcouleEnJours);
-        AppliquerEffetsStress(tempsEcouleEnJours);
-        VerifierMort();
-    }
+        float evaluationNonOptimale = EvaluerConditions(espaceRespecte);
 
-    protected virtual void AppliquerPluie(Meteo meteo, float tempsEcouleEnJours)
-    {
-        if (meteo.QuantitePluie > 0)
+        if (evaluationNonOptimale >= 0.6f) // Au moins 3 conditions non respectées
         {
-            float absorption = meteo.QuantitePluie * TerrainIdeal.CoeffAbsorptionEau * 0.3f;
-            float gain = absorption * tempsEcouleEnJours;
-            Hydratation = Math.Min(100, Hydratation + gain);
-
-            Console.WriteLine($"{NomPlante} absorbe {meteo.QuantitePluie:P0} de pluie " +
-                            $"(Terrain: {TerrainIdeal.GetType().Name}, " +
-                            $"Coeff: {TerrainIdeal.CoeffAbsorptionEau:P0}) → " +
-                            $"+{gain:F1}% hydratation");
-        }
-    }
-
-    protected virtual void UpdateHydratation(float tempsEcouleEnJours)
-    {
-        float perte = tempsEcouleEnJours * VitesseDeshydratation;
-        Hydratation = Math.Max(0, Hydratation - perte);
-    }
-
-    protected virtual void UpdateStressTemperature(float temperatureActuelle, float tempsEcouleEnJours)
-    {
-        bool estEnDanger = temperatureActuelle < TemperatureMinimale || temperatureActuelle > TemperatureMaximale;
-
-        EstEnStressThermique = estEnDanger;
-
-        if (estEnDanger)
-        {
-            JoursHorsLimiteTemperature += (int)Math.Ceiling(tempsEcouleEnJours); // Arrondi à jours entiers
+            EstMorte = true;
+            Console.WriteLine($"[MORT] {NomPlante} est morte car au moins 3 conditions n'étaient pas réunies.");
         }
         else
         {
-            JoursHorsLimiteTemperature = 0;
+            Console.WriteLine($"{NomPlante} a {(1 - evaluationNonOptimale) * 100:F0}% de ses conditions respectées." + (MaladieActuelle != null ? $" (Malade de {MaladieActuelle.NomMaladie})" : (espaceRespecte ? "" : " (Espacement non respecté)")));
         }
+
+        HydratationActuelle = Math.Max(0f, HydratationActuelle - (VitesseDeshydratation * tempsEcouleEnJours));
+        LuminositeActuelle = Math.Max(0f, LuminositeActuelle - 1f * tempsEcouleEnJours);
     }
 
-
-    protected virtual void AppliquerEffetsStress(float tempsEcouleEnJours)
+    public virtual void AttraperMaladie(Maladie maladie)
     {
-
-        if (EstEnStressThermique)
-        {
-            // Effets fixes quand en stress
-            Hydratation = Math.Max(0, Hydratation - 20f * tempsEcouleEnJours); // Désydratation accélérée
-        }
+        MaladieActuelle = maladie;
+        Console.WriteLine($"[MALADIE] {NomPlante} a attrapé : {maladie.NomMaladie}");
     }
-
-    public virtual void VerifierMort()
-    {
-        if (EstMorte)
-        {
-            return;
-        }
-
-        if (JoursHorsLimiteTemperature >= JoursMortTemperature && Hydratation > 0)
-        {
-            EstMorte = true;
-            Console.WriteLine($"[MORT] {NomPlante} tuée par la température");
-            return;
-        }
-
-        if (Hydratation <= 0)
-        {
-            EstMorte = true;
-            Console.WriteLine($"[MORT] {NomPlante} morte de déshydratation");
-        }
-    }
-
-
 
     public abstract void Pousser();
     public abstract void Desherber();

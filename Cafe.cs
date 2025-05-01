@@ -4,27 +4,15 @@ public class Cafe : Plante
         : base(
             nomPlante: "Café",
             acronyme: "Cf",
-            espace: 3, // Un peu plus d'espace pour le caféier
-            terrain: new TerrainArgileux(), // Terrain riche et bien drainé
-            saison: new List<Saison> { new SaisonPluvieuse(), new SaisonSeche() }, // Supporte les 2 saisons
+            espacePris: 3, // Un peu plus d'espace pour le caféier
+            terrainIdeal: new TerrainArgileux(), // Terrain riche et bien drainé
+            saisonCompatible: new List<Saison> { new SaisonPluvieuse(), new SaisonSeche() }, // Supporte les 2 saisons
             vitesseDeshydratation: 1.2f, // Moins sensible à la sécheresse, mais quand même sensible
             temperatureMinimale: 15f, // Température minimale
             temperatureMaximale: 30f // Température maximale
         )
-    {
-        EstVivace = true; // Le café est une plante vivace
-    }
+    { }
     
-    public override float CalculerVivacite(Meteo meteo)
-    {
-        return base.CalculerVivacite(meteo);
-    }
-
-    public override void VerifierMort()
-    {
-       // à implémenter
-    }
-
 
     public override void Pousser()
     {
@@ -38,5 +26,9 @@ public class Cafe : Plante
     {
         // Le caféier a des racines profondes, le désherbage est donc plus complexe.
        
+    }
+    public override void Arroser()
+    {
+        // À implémenter
     }
 }

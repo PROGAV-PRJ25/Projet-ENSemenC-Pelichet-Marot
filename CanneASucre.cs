@@ -4,25 +4,14 @@ public class CanneASucre : Plante
         : base(
             nomPlante: "Canne à Sucre",
             acronyme: "Cs",
-            espace: 3,
-            terrain: new TerrainClassiqueTerreux(),
-            saison: new List<Saison> { new SaisonPluvieuse() },
+            espacePris: 3,
+            terrainIdeal: new TerrainClassiqueTerreux(),
+            saisonCompatible: new List<Saison> { new SaisonPluvieuse() },
             vitesseDeshydratation: 2.5f, // Très gourmande en eau
             temperatureMinimale: 20f,
             temperatureMaximale: 38f
         )
-    {
-        EstVivace = true;
-    }
-    public override float CalculerVivacite(Meteo meteo)
-    {
-        return base.CalculerVivacite(meteo);
-    }
-
-    public override void VerifierMort()
-    {
-        // À implémenter
-    }
+    {}
 
 
     public override void Pousser()
@@ -37,7 +26,7 @@ public class CanneASucre : Plante
     }
 
 
-    public override void Arroser(int quantiteEau)
+    public override void Arroser()
     {
         // À implémenter
     }

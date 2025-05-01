@@ -4,31 +4,27 @@ public class Soja : Plante
         : base(
             nomPlante: "Soja",
             acronyme: "So",
-            espace: 2,
-            terrain: new TerrainClassiqueTerreux(), // Sol idéal
-            saison: new List<Saison> { new SaisonPluvieuse() },
+            espacePris: 2,
+            terrainIdeal: new TerrainClassiqueTerreux(), // Sol idéal
+            saisonCompatible: new List<Saison> { new SaisonPluvieuse() },
             vitesseDeshydratation: 2f, // Perd 2% d'eau/jour
             temperatureMinimale: 10f,
             temperatureMaximale: 35f)
-    { }
-
-    public override float CalculerVivacite(Meteo meteo)
-    {
-        return base.CalculerVivacite(meteo);
+    { 
+        HydratationIdeale = 75f; // Spécifique au Soja
+        LuminositeIdeale = 85f; // Spécifique au Soja
+        Console.WriteLine($"[DEBUG SOJA] EspacePris: {EspacePris}");
     }
-    
-    public override void VerifierMort()
+    public override void Arroser()
     {
-        // à implémenter
-
+        
     }
-
     public override void Pousser()
     {
-        // à implémenter
+        //tu feras ça plus tard
     }
     public override void Desherber()
     {
-        // à implémenter
+        //tu feras ça plus tard
     }
 }

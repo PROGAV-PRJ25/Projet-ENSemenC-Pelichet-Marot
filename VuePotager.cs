@@ -2,16 +2,18 @@ using System;
 
 public class VuePotager
 {
-    //Ici on utilise le polymorphisme. C'est à dire que l'on utilise le classe parente 'Terrain' de manière à ce 
+    //Ici on utilise le polymorphisme. C'est à dire que l'on utilise le classe parente 'Terrain' de manière à ce
     //que nos fonctions s'adapte directement à la classe fille correspondante. Ceci évite la multiplication du code.
     private Terrain[,] plateau;
     private int curseurX = 0;
     private int curseurY = 0;
     private Meteo meteoActuelle;
+    private GestionPlateau plateauController;
 
-    public VuePotager(Terrain[,] plateauInitial)
+    public VuePotager(Terrain[,] plateauInitial,  GestionPlateau gestionPlateau)
     {
         plateau = plateauInitial;
+        plateauController = gestionPlateau;
     }
 
     public int CurseurX
@@ -48,6 +50,7 @@ public class VuePotager
         AfficherLegendeTerrain("Argileux", ConsoleColor.DarkGray);
         AfficherLegendeTerrain("Sableux", ConsoleColor.DarkYellow);
         AfficherLegendeTerrain("Classique", ConsoleColor.DarkGreen);
+        AfficherLegendeTerrain("Aquatique", ConsoleColor.Cyan);
         Console.ResetColor();
 
         Console.WriteLine($"Flèches: Se déplacer (X:{curseurX}, Y:{curseurY})");
@@ -74,7 +77,9 @@ public class VuePotager
 
         if (terrain.Plante != null)
         {
-            Console.ForegroundColor = terrain.Plante.EstMorte ? ConsoleColor.Red : ConsoleColor.DarkBlue;
+            Console.ForegroundColor = terrain.Plante.EstMorte
+                ? ConsoleColor.Red
+                : ConsoleColor.DarkBlue;
             Console.Write(terrain.Plante.Acronyme.PadRight(2)); // Assure-toi que l'acronyme prend 2 caractères, espace à droite si besoin
         }
         else
@@ -94,7 +99,8 @@ public class VuePotager
         Console.ResetColor();
         Console.WriteLine(nomTerrain);
     }
-    public void AfficherPlanteOuTerrain(Terrain terrain)
+
+    public void AfficherPlanteOuTerrain(Terrain terrain, int xPlante, int yPlante)
     {
         Console.Clear();
         if (terrain.Plante == null)
@@ -110,32 +116,28 @@ public class VuePotager
         }
         else
         {
+            bool espaceRespecte = (plateauController != null) ? plateauController.CheckEspaceRespecte(xPlante, yPlante) : true; // Nécessite un accès à plateauController et aux coordonnées
+
+            Console.WriteLine($"[DEBUG AFFICHAGE] Vérification espacement pour plante en ({xPlante}, {yPlante}), Résultat: {(espaceRespecte ? "OK" : "KO")}");
+
             Console.WriteLine($"\n=== {terrain.Plante.NomPlante} ===");
             Console.WriteLine();
             Console.WriteLine($"Acronyme : {terrain.Plante.Acronyme}");
             Console.WriteLine($"Terrain Ideal : {terrain.Plante.TerrainIdeal}");
-            Console.WriteLine($"Saison de semi : {terrain.Plante.SaisonCompatible}");
-            Console.WriteLine($"Vitesse de désydratation : {terrain.Plante.VitesseDeshydratation}");
-            Console.WriteLine($"Température min : {terrain.Plante.TemperatureMinimale}");
-            Console.WriteLine($"Température max : {terrain.Plante.TemperatureMaximale}");
-            Console.WriteLine($"Nombre de jours max de survie en dehors des limites de T : {terrain.Plante.JoursHorsLimiteTemperature} | Reste : à déf");
+            Console.WriteLine($"Saison de semi : {terrain.Plante.SaisonCompatible.FirstOrDefault()?.NomSaison ?? "N/A"}");
+            Console.WriteLine($"Vitesse de désydratation : {terrain.Plante.VitesseDeshydratation}% par jour");
+            Console.WriteLine($"Température idéale : {terrain.Plante.TemperatureMinimale}°C - {terrain.Plante.TemperatureMaximale}°C (Actuelle: {terrain.Plante.TemperatureActuelle}°C)");
             Console.WriteLine();
-            Console.WriteLine($"Hydratation : {terrain.Plante.Hydratation:F1}");
-            if (terrain.Plante.EstEnStressThermique)
-            {
-                Console.WriteLine($"La plante est en stress thermique.");
-            }
-            else
-            {
-                Console.WriteLine($"La plante n'est pas stress thermique.");
-            }
-            Console.WriteLine($"Vivacité : {terrain.Plante.CalculerVivacite(meteoActuelle):Pi} %");
+            Console.WriteLine($"Hydratation : {(Math.Abs(terrain.Plante.HydratationActuelle - terrain.Plante.HydratationIdeale) < 20f ? "[✅]" : "[❌]")} {terrain.Plante.HydratationActuelle:F1}% (Idéal: {terrain.Plante.HydratationIdeale}%)");
+            Console.WriteLine($"Luminosité : {(Math.Abs(terrain.Plante.LuminositeActuelle - terrain.Plante.LuminositeIdeale) < 20f ? "[✅]" : "[❌]")} {terrain.Plante.LuminositeActuelle:F1}% (Idéal: {terrain.Plante.LuminositeIdeale}%)");
+            Console.WriteLine($"Température : {(terrain.Plante.TemperatureActuelle >= terrain.Plante.TemperatureMinimale && terrain.Plante.TemperatureActuelle <= terrain.Plante.TemperatureMaximale ? "[✅]" : "[❌]")}");
+            Console.WriteLine($"Espacement : {(espaceRespecte ? "[✅]" : "[❌]")} (Besoin: {terrain.Plante.EspacePris})");
+            Console.WriteLine($"Maladie : {(terrain.Plante.MaladieActuelle == null ? "[✅]" : $"[❌] {terrain.Plante.MaladieActuelle.NomMaladie}")}");
         }
         Console.WriteLine();
         Console.WriteLine("R - Retour");
     }
 
-    // Nouvelle méthode pour afficher les actions spécifiques après l'interaction
     public void AfficherActionsCase(Terrain terrain)
     {
         Console.WriteLine("\n=== ACTION PARCELLE ===");

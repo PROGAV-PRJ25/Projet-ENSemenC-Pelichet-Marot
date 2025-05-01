@@ -6,13 +6,16 @@ public class GestionPlateau
     private Terrain[,] plateau;
     private VuePotager view;
     private GestionPotager gestionPotager;
-    private bool interactionEnCours = false; 
+    private bool interactionEnCours = false;
+    private Dictionary<(int x, int y), Plante> positionsDesPlantes = new Dictionary<(int x, int y), Plante>();
+
 
     public GestionPlateau(Terrain[,] plateauInitial, VuePotager viewInitial, GestionPotager gestionPotager)
     {
         plateau = plateauInitial;
         view = viewInitial;
         this.gestionPotager = gestionPotager;
+        MettreAJourPositionsDesPlantes();
     }
 
     public void GererEntreesUtilisateurModeClassique()
@@ -54,14 +57,14 @@ public class GestionPlateau
                 case ConsoleKey.Q:
                     quitter = true;
                     gestionPotager.ArreterSimulation();
-                    break; 
+                    break;
             }
         }
     }
     private void AfficherInfo()
     {
         Terrain terrain = plateau[view.CurseurY, view.CurseurX];
-        view.AfficherPlanteOuTerrain(terrain);
+        view.AfficherPlanteOuTerrain(terrain, view.CurseurX, view.CurseurY  );
 
         bool actionChoisie = false;
         while (!actionChoisie)
@@ -88,7 +91,7 @@ public class GestionPlateau
                 case ConsoleKey.A:
                     if (terrain.Plante != null)
                     {
-                        terrain.Plante.Arroser(200);
+                        terrain.Plante.Arroser();
                         Console.WriteLine("\nArrosage effectué !");
                     }
                     actionChoisie = true;
@@ -139,11 +142,6 @@ public class GestionPlateau
         }
     }
 
-    private void InteragirAvecCase()
-    {
-        // Cette méthode n'est plus directement appelée en mode classique
-    }
-
     private Plante ChoisirNouvellePlante()
     {
         Console.Clear();
@@ -173,6 +171,96 @@ public class GestionPlateau
                 System.Threading.Thread.Sleep(1000);
                 return ChoisirNouvellePlante();
         }
+    }
+    public bool CheckEspaceRespecte(int x, int y)
+    {
+        Plante? plante = plateau[y, x].Plante;
+        if (plante == null || plante.EspacePris <= 1) return true;
+
+        int rayon;
+        if (plante.EspacePris == 1)
+        {
+            rayon = 0;
+        }
+        else if (plante.EspacePris == 2)
+        {
+            rayon = 1;
+        }
+        else if (plante.EspacePris >= 3)
+        {
+            rayon = 2;
+        }
+        else
+        {
+            return false;
+        }
+
+
+        Console.WriteLine($"[DEBUG ESPACEMENT] Vérification pour plante en ({x}, {y}), EspacePris: {plante.EspacePris}, Rayon: {rayon}");
+
+        for (int i = y - rayon; i <= y + rayon; i++)
+        {
+            for (int j = x - rayon; j <= x + rayon; j++)
+            {
+                if ((i == y && j == x) || i < 0 || i >= plateau.GetLength(0) || j < 0 || j >= plateau.GetLength(1))
+                    continue;
+                Console.WriteLine($"[DEBUG ESPACEMENT] Vérification voisine en ({j}, {i}), Plante présente: {plateau[i, j].Plante != null}");
+                if (plateau[i, j].Plante != null)
+                {
+                    Console.WriteLine($"[DEBUG ESPACEMENT] Plante voisine trouvée: {plateau[i, j].Plante.NomPlante} en ({j}, {i})");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void MettreAJourPotager(Meteo meteoActuelle)
+    {
+        for (int y = 0; y < plateau.GetLength(0); y++)
+        {
+            for (int x = 0; x < plateau.GetLength(1); x++)
+            {
+                Plante? planteActuelle = plateau[y, x].Plante;
+                if (planteActuelle != null)
+                {
+                    bool espaceOk = CheckEspaceRespecte(x, y);
+                    planteActuelle.Update(1f, meteoActuelle.Temperature, espaceOk);
+
+                    // Mettre à jour le dictionnaire si la plante existe et à la bonne position
+                    if (positionsDesPlantes.ContainsKey((x, y)) && positionsDesPlantes[(x, y)] != planteActuelle)
+                    {
+                        positionsDesPlantes[(x, y)] = planteActuelle;
+                    }
+                    else if (!positionsDesPlantes.ContainsKey((x, y)))
+                    {
+                        positionsDesPlantes.Add((x, y), planteActuelle);
+                    }
+                }
+                else if (positionsDesPlantes.ContainsKey((x, y))) // Si une plante était là mais n'est plus
+                {
+                    positionsDesPlantes.Remove((x, y));
+                }
+            }
+        }
+    }
+     private void MettreAJourPositionsDesPlantes()
+    {
+        positionsDesPlantes.Clear();
+        for (int y = 0; y < plateau.GetLength(0); y++)
+        {
+            for (int x = 0; x < plateau.GetLength(1); x++)
+            {
+                if (plateau[y, x].Plante != null)
+                {
+                    positionsDesPlantes.Add((x, y), plateau[y, x].Plante);
+                }
+            }
+        }
+    }
+    public void SetVuePotager(VuePotager vue)
+    {
+        view = vue;
     }
 
 }
