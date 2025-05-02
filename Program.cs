@@ -1,8 +1,2 @@
-﻿int largeurPlateau = 10;
-int hauteurPlateau = 10;
-
-GestionPotager gestionnaire = new GestionPotager();
-
-gestionnaire.DemarrerSimulation(largeurPlateau, hauteurPlateau);
-
-
+﻿var gestion = new GestionPotager(largeur: 10, hauteur: 10);
+gestion.LancerSimulation();

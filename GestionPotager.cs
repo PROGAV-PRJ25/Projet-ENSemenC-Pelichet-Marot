@@ -1,76 +1,59 @@
 using System;
 public class GestionPotager
 {
-    private VuePotager view;
-    private GestionPlateau plateauController;
-    private Terrain[,] plateau;
+    private readonly GestionPlateau _controller;
+    private readonly VuePotager     _vue;
+    private Saison                  _saisonActuelle;
+    private int                     _jourActuel;
+    private bool                    _simulationEnCours;
 
-    public Saison saisonActuelle;
-    private int jourActuel = 1;
-    private bool simulationEnCours = true;
-
-    public void DemarrerSimulation(int largeurPlateau, int hauteurPlateau)
+    public GestionPotager(int largeur, int hauteur)
     {
-        plateau = GenerateurBiome.GenererPlateau(largeurPlateau, hauteurPlateau);
-        view = new VuePotager(plateau, plateauController);
-        plateauController = new GestionPlateau(plateau, view, this);
+        // 1) Génération des terrains
+        var plateau = GenerateurBiome.GenererPlateau(largeur, hauteur);
 
-        saisonActuelle = new SaisonPluvieuse();
+        // 2) Création du controller et de la vue
+        _controller = new GestionPlateau(plateau);
+        _vue        = new VuePotager(plateau, _controller);
+        _controller.SetVue(_vue);
 
-        LancerModeClassique();
+        // 3) État initial
+        _saisonActuelle    = new SaisonPluvieuse();
+        _jourActuel        = 1;
+        _simulationEnCours = true;
     }
-    public void ArreterSimulation()
-    {
-        simulationEnCours = false;
-    }
 
-    private void LancerModeClassique()
+    public void LancerSimulation()
 {
-    bool continuer = true;
-    while (continuer && simulationEnCours)
+    while (_simulationEnCours && _jourActuel <= 30)
     {
-        Meteo meteoDuJour = Meteo.GenererPourSaison(saisonActuelle, jourActuel);
-        view.SetMeteo(meteoDuJour); // Passer la météo à la vue
+        // 1) Génération de la météo
+        var meteo = Meteo.GenererPourSaison(_saisonActuelle, _jourActuel);
 
-        Console.WriteLine($"\n----- Jour {jourActuel} -----");
+        // 2) On informe à la fois le controller et la vue
+        _controller.SetMeteo(meteo);
+        _vue.SetMeteo(meteo);    // ← c’est cette ligne qui manquait
 
-        for (int y = 0; y < plateau.GetLength(0); y++)
-        {
-            for (int x = 0; x < plateau.GetLength(1); x++)
-            {
-                if (plateau[y, x].Plante != null)
-                {
-                    bool espaceOk = plateauController.CheckEspaceRespecte(x, y); // Utiliser la méthode de GestionPlateau
-                    plateau[y, x].Plante.Update(1f, meteoDuJour.Temperature, espaceOk);
-                }
-            }
-        }
+        // 3) Mise à jour des plantes
+        _controller.MettreAJourPotager(meteo);
 
-        view.AfficherPlateau();
-        plateauController.GererEntreesUtilisateurModeClassique();
+        // 4) Affichage du potager
+        _vue.AfficherPlateau();
 
-        if (!simulationEnCours) break;
+        // 5) Gestion des entrées
+        _controller.GererInteractionUtilisateur(
+            out bool avancerJour,
+            out bool quitterSimulation
+        );
 
-        Console.WriteLine("\nAppuyez à nouveau pour confirmer votre choix | R: Retour");
-
-        ConsoleKeyInfo touche = Console.ReadKey(true);
-        switch (touche.Key)
-        {
-            case ConsoleKey.E:
-                jourActuel++;
-                break;
-            case ConsoleKey.Q:
-                continuer = false;
-                break;
-            case ConsoleKey.R:
-                break; 
-        }
-
-        if (jourActuel > 30)
-        {
-            continuer = false;
-            Console.WriteLine("\nFin de la simulation classique.");
-        }
+        if (quitterSimulation) break;
+        if (avancerJour)     _jourActuel++;
     }
+
+    Console.WriteLine(_simulationEnCours
+        ? "Fin de la simulation (30 jours atteints)."
+        : "Simulation arrêtée par l'utilisateur.");
 }
+
+    public void ArreterSimulation() => _simulationEnCours = false;
 }
