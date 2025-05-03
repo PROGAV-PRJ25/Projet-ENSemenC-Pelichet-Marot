@@ -11,24 +11,18 @@ public class CanneASucre : Plante
             temperatureMinimale: 20f,
             temperatureMaximale: 38f
         )
-    {}
+    {
+        HydratationCritique = 60f; // Spécifique à la Canne à Sucre
+    }
 
 
     public override void Pousser()
     {
         // À implémenter
     }
-
-
-    public override void Desherber()
-    {
-        // À implémenter
-    }
-
-
     public override void Arroser()
     {
-        // À implémenter
+        base.Arroser();
     }
 }
 

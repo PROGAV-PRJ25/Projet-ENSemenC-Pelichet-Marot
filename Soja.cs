@@ -11,19 +11,13 @@ public class Soja : Plante
             temperatureMinimale: 10f,
             temperatureMaximale: 35f)
     { 
-        HydratationIdeale = 75f; // Spécifique au Soja
-        LuminositeIdeale = 85f; // Spécifique au Soja
-        Console.WriteLine($"[DEBUG SOJA] EspacePris: {EspacePris}");
+        HydratationCritique = 45f; // Spécifique au Soja
     }
     public override void Arroser()
     {
-        
+        base.Arroser();
     }
     public override void Pousser()
-    {
-        //tu feras ça plus tard
-    }
-    public override void Desherber()
     {
         //tu feras ça plus tard
     }

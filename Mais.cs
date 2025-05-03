@@ -11,10 +11,12 @@ public class Mais : Plante
             temperatureMinimale: 15f,  // Plus sensible au froid
             temperatureMaximale: 40f   // Supporte mieux la chaleur
         )
-    {}
+    {
+         HydratationCritique = 40f; // Spécifique au Mais
+    }
     public override void Arroser()
     {
-        
+        base.Arroser();
     }
     public override void Pousser()
     {
@@ -23,11 +25,5 @@ public class Mais : Plante
       //  Console.WriteLine($"{NomPlante} pousse à {(croissance * 100):F0}% de vitesse.");
 
 
-    }
-
-
-    public override void Desherber()
-    {
-        // à implémenter
     }
 }

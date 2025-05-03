@@ -11,7 +11,9 @@ public class Cafe : Plante
             temperatureMinimale: 15f, // Température minimale
             temperatureMaximale: 30f // Température maximale
         )
-    { }
+    { 
+        HydratationCritique = 65f; // Spécifique au Café
+    }
     
 
     public override void Pousser()
@@ -20,15 +22,8 @@ public class Cafe : Plante
         // À implémenter quand on aura un système de saison actif.
         // Console.WriteLine($"{NomPlante} pousse lentement pendant la saison des pluies.");
     }
-
-
-    public override void Desherber()
-    {
-        // Le caféier a des racines profondes, le désherbage est donc plus complexe.
-       
-    }
     public override void Arroser()
     {
-        // À implémenter
+        base.Arroser();
     }
 }

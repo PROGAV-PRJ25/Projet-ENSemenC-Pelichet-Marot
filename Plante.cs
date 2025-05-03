@@ -9,7 +9,7 @@ public abstract class Plante
     public int EspacePris { get; protected set; }
     public Terrain TerrainIdeal { get; protected set; }
     public List<Saison> SaisonCompatible { get; protected set; }
-    public float HydratationIdeale { get; protected set; } = 80f; // Valeur par défaut
+    public float HydratationCritique { get; protected set; } = 30f; // Valeur par défaut
     public float LuminositeIdeale { get; protected set; } = 70f; // Valeur par défaut (ajoutée)
     public float TemperatureMinimale { get; protected set; }
     public float TemperatureMaximale { get; protected set; }
@@ -28,7 +28,7 @@ public abstract class Plante
         int espacePris,
         Terrain terrainIdeal,
         List<Saison> saisonCompatible,
-        float vitesseDeshydratation, 
+        float vitesseDeshydratation,
         float temperatureMinimale,
         float temperatureMaximale
     )
@@ -45,7 +45,7 @@ public abstract class Plante
 
     public virtual void Arroser()
     {
-        HydratationActuelle = 100f; 
+        HydratationActuelle = 100f;
     }
 
     public virtual void RecevoirLumiere(float intensite)
@@ -63,7 +63,7 @@ public abstract class Plante
         int conditionsNonOptimales = 0;
         int totalConditions = 5; // Hydratation, Luminosité, Température, Maladie, Espacement
 
-        if (Math.Abs(HydratationActuelle - HydratationIdeale) >= 20f)
+        if (HydratationActuelle < HydratationCritique)
         {
             conditionsNonOptimales++;
         }
@@ -91,7 +91,7 @@ public abstract class Plante
         return (float)conditionsNonOptimales / totalConditions;
     }
 
-    public virtual void Update(float tempsEcouleEnJours, float temperatureDuJour, bool espaceRespecte)
+    public virtual void Update(float tempsEcouleEnJours, float temperatureDuJour, bool espaceRespecte, float coeffAbsorptionEau)
     {
         if (EstMorte) return;
 
@@ -132,8 +132,10 @@ public abstract class Plante
         {
             Console.WriteLine($"{NomPlante} a {(1 - evaluationNonOptimale) * 100:F0}% de ses conditions respectées." + (MaladieActuelle != null ? $" (Malade de {MaladieActuelle.NomMaladie})" : (espaceRespecte ? "" : " (Espacement non respecté)")));
         }
+        float retention = coeffAbsorptionEau;
+        float perte = VitesseDeshydratation * tempsEcouleEnJours * (1f - retention);
 
-        HydratationActuelle = Math.Max(0f, HydratationActuelle - (VitesseDeshydratation * tempsEcouleEnJours));
+        HydratationActuelle = Math.Max(0f, HydratationActuelle - perte);
         LuminositeActuelle = Math.Max(0f, LuminositeActuelle - 1f * tempsEcouleEnJours);
     }
 
@@ -144,5 +146,4 @@ public abstract class Plante
     }
 
     public abstract void Pousser();
-    public abstract void Desherber();
 }

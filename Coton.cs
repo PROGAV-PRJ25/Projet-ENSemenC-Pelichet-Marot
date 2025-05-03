@@ -11,18 +11,16 @@ public class Coton : Plante
             temperatureMinimale: 20f,
             temperatureMaximale: 40f
         )
-    { }
+    {
+        HydratationCritique = 35f; // Spécifique au Coton
+    }
 
     public override void Arroser()
     {
-        // À implémenter
+        base.Arroser();
     }
 
-public override void Pousser()
-    {
-        //tu feras ça plus tard
-    }
-    public override void Desherber()
+    public override void Pousser()
     {
         //tu feras ça plus tard
     }

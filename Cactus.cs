@@ -11,7 +11,9 @@ public class Cactus : Plante
             temperatureMinimale: 10f,
             temperatureMaximale: 45f
         )
-    { }
+    {
+        HydratationCritique = 10f; // Spécifique au Cactus
+     }
 
 
 
@@ -19,16 +21,8 @@ public class Cactus : Plante
     {
         // À implémenter
     }
-
-
-    public override void Desherber()
-    {
-        // À implémenter
-    }
-
-
     public override void Arroser()
     {
-        // À implémenter
+        base.Arroser();
     }
 }

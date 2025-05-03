@@ -44,7 +44,7 @@ public class VuePotager
         bool estCurseur = (x == _controller.CurseurX && y == _controller.CurseurY);
         var terrain = _plateau[y, x];
 
-        Console.BackgroundColor = estCurseur ? ConsoleColor.DarkCyan : ConsoleColor.Black;
+        Console.BackgroundColor = estCurseur ? ConsoleColor.Cyan : ConsoleColor.Black;
         Console.ForegroundColor = terrain.Couleur;
         Console.Write('[');
 
@@ -52,7 +52,7 @@ public class VuePotager
         {
             Console.ForegroundColor = terrain.Plante.EstMorte
                 ? ConsoleColor.Red
-                : ConsoleColor.Green;
+                : ConsoleColor.White;
             var acronyme = terrain.Plante.Acronyme;
             Console.Write(acronyme.PadRight(CellWidth).Substring(0, CellWidth));
         }
@@ -126,15 +126,17 @@ public class VuePotager
             Console.WriteLine($"=== Préférences de {p.NomPlante} ===\n");
             Console.WriteLine($"Terrain idéal       : {p.TerrainIdeal.NomTerrain}");
             Console.WriteLine($"Saisons semis       : {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
-            Console.WriteLine($"Espace requis       : {p.EspacePris} case(s)");
+            Console.WriteLine($"Hydratation critique : {p.HydratationCritique:F1}");
             Console.WriteLine($"Température tolérée : de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
+            Console.WriteLine($"Espace requis       : {p.EspacePris} case(s)");
+
 
             // 2) Conditions actuelles
             Console.WriteLine("\n=== Conditions actuelles ===\n");
 
             // Hydratation
-            bool condHyd = Math.Abs(p.HydratationActuelle - p.HydratationIdeale) < 20f;
-            Console.WriteLine($"{(condHyd ? "✅" : "❌")} Hydratation : {p.HydratationActuelle:F1}% (idéal {p.HydratationIdeale}%)");
+            bool condHyd = p.HydratationActuelle >= p.HydratationCritique;
+            Console.WriteLine($"{(condHyd ? "✅" : "❌")} Hydratation : {p.HydratationActuelle:F1}% (critique {p.HydratationCritique}%)");
 
             // Luminosité
             bool condLum = Math.Abs(p.LuminositeActuelle - p.LuminositeIdeale) < 20f;

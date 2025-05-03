@@ -32,7 +32,8 @@ public class GestionPlateau
                 plante.Update(
                     tempsEcouleEnJours: 1f,
                     temperatureDuJour: meteo.Temperature,
-                    espaceRespecte: espaceOk
+                    espaceRespecte: espaceOk,
+                    coeffAbsorptionEau: terrain.CoeffAbsorptionEau
                 );
 
                 if (plante.EstMorte)
@@ -124,7 +125,6 @@ public class GestionPlateau
                     break;
 
                 case ConsoleKey.D: // Désherber
-                    terrain.Plante?.Desherber();
                     terrain.Plante = null;
                     choixFait = true;
                     break;
