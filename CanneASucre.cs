@@ -2,28 +2,26 @@ public class CanneASucre : Plante
 {
     public CanneASucre()
         : base(
-            nomPlante: "Canne à Sucre",
+            nomPlante: "Canne à sucre",
             acronyme: "Cs",
             espacePris: 3,
-            terrainIdeal: new TerrainClassiqueTerreux(),
+            terrainIdeal: new TerrainArgileux(),
             saisonCompatible: new List<Saison> { new SaisonPluvieuse() },
-            vitesseDeshydratation: 2.5f, // Très gourmande en eau
+            vitesseDeshydratation: 4f,
             temperatureMinimale: 20f,
-            temperatureMaximale: 38f
+            temperatureMaximale: 38f,
+            vitesseCroissance: 0.10f,
+            hauteurMaximale: 2.0f
         )
     {
-        HydratationCritique = 60f; // Spécifique à la Canne à Sucre
+        HydratationCritique = 60f;
+        LuminositeIdeale = 85f;
     }
 
-
-    public override void Pousser()
+    protected override void Pousser(float tauxSatisfaction)
     {
-        // À implémenter
-    }
-    public override void Arroser()
-    {
-        base.Arroser();
+        // Bonus de croissance tant que la plante est loin de sa taille max
+        float facteur = 1f + 0.3f * (1 - HauteurActuelle / HauteurMaximale);
+        base.Pousser(tauxSatisfaction * facteur);
     }
 }
-
-

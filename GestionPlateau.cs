@@ -33,7 +33,8 @@ public class GestionPlateau
                     tempsEcouleEnJours: 1f,
                     temperatureDuJour: meteo.Temperature,
                     espaceRespecte: espaceOk,
-                    coeffAbsorptionEau: terrain.CoeffAbsorptionEau
+                    coeffAbsorptionEau: terrain.CoeffAbsorptionEau,
+                    luminositeDuJour: meteo.Luminosite
                 );
 
                 if (plante.EstMorte)
@@ -90,12 +91,12 @@ public class GestionPlateau
         }
     }
     private void HandleInfo()
-{
-    var terrain = _plateau[CurseurY, CurseurX];
-    _vue.AfficherPlanteOuTerrain(terrain, CurseurX, CurseurY);
-    Console.WriteLine("\n[Appuyez sur Espace pour revenir]");
-    while (Console.ReadKey(true).Key != ConsoleKey.Spacebar) { }
-}
+    {
+        var terrain = _plateau[CurseurY, CurseurX];
+        _vue.AfficherPlanteOuTerrain(terrain, CurseurX, CurseurY);
+        Console.WriteLine("\n[Appuyez sur Espace pour revenir]");
+        while (Console.ReadKey(true).Key != ConsoleKey.Spacebar) { }
+    }
 
     private void MoveCurseur(int dx, int dy)
     {
@@ -173,6 +174,6 @@ public class GestionPlateau
             }
         return true;
     }
-     public bool CheckEspaceRespecte(int x, int y)
-        => IsEspacementOk(x, y);
+    public bool CheckEspaceRespecte(int x, int y)
+       => IsEspacementOk(x, y);
 }

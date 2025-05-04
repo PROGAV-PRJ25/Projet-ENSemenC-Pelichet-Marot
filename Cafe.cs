@@ -4,26 +4,23 @@ public class Cafe : Plante
         : base(
             nomPlante: "Café",
             acronyme: "Cf",
-            espacePris: 3, // Un peu plus d'espace pour le caféier
-            terrainIdeal: new TerrainArgileux(), // Terrain riche et bien drainé
-            saisonCompatible: new List<Saison> { new SaisonPluvieuse(), new SaisonSeche() }, // Supporte les 2 saisons
-            vitesseDeshydratation: 1.2f, // Moins sensible à la sécheresse, mais quand même sensible
-            temperatureMinimale: 15f, // Température minimale
-            temperatureMaximale: 30f // Température maximale
+            espacePris: 2,
+            terrainIdeal: new TerrainArgileux(),
+            saisonCompatible: new List<Saison> { new SaisonPluvieuse() },
+            vitesseDeshydratation: 3.5f,
+            temperatureMinimale: 15f,
+            temperatureMaximale: 25f,
+            vitesseCroissance: 0.08f,
+            hauteurMaximale: 0.8f
         )
-    { 
-        HydratationCritique = 65f; // Spécifique au Café
+    {
+        HydratationCritique = 65f;
+        LuminositeIdeale = 70f;
     }
-    
 
-    public override void Pousser()
+    protected override void Pousser(float tauxSatisfaction)
     {
-        // Le café pousse de manière lente et régulière en saison des pluies, maturation en saison sèche.
-        // À implémenter quand on aura un système de saison actif.
-        // Console.WriteLine($"{NomPlante} pousse lentement pendant la saison des pluies.");
-    }
-    public override void Arroser()
-    {
-        base.Arroser();
+        // Café préfère une croissance douce et régulière
+        base.Pousser(tauxSatisfaction * 0.8f);
     }
 }

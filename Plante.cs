@@ -1,27 +1,40 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
+
 
 public abstract class Plante
 {
-    public string NomPlante { get; protected set; } = "Plante générique";
-    public string Acronyme { get; protected set; } = "Pl";
-    public int EspacePris { get; protected set; }
-    public Terrain TerrainIdeal { get; protected set; }
-    public List<Saison> SaisonCompatible { get; protected set; }
-    public float HydratationCritique { get; protected set; } = 30f; // Valeur par défaut
-    public float LuminositeIdeale { get; protected set; } = 70f; // Valeur par défaut (ajoutée)
-    public float TemperatureMinimale { get; protected set; }
-    public float TemperatureMaximale { get; protected set; }
-    public float VitesseDeshydratation { get; protected set; } // Ajout de la propriété
-    public float HydratationActuelle { get; protected set; } = 100f;
-    public float LuminositeActuelle { get; protected set; } = 50f;
-    public float TemperatureActuelle { get; set; } = 15f;
-    public Maladie MaladieActuelle { get; set; } = null;
-    public bool EstMorte { get; protected set; } = false;
+    // Générateur partagé pour la maladie
+    private static readonly Random _rng = new Random();
     private int joursSansMaladie = 0;
     private const int probMaladieInverse = 10;
 
+    // — Propriétés / Attributs — 
+    public string NomPlante { get; protected set; }
+    public string Acronyme { get; protected set; }
+    public int EspacePris { get; protected set; }
+    public Terrain TerrainIdeal { get; protected set; }
+    public List<Saison> SaisonCompatible { get; protected set; }
+
+    public float HydratationCritique { get; protected set; } = 30f;
+    public float LuminositeIdeale { get; protected set; } = 70f;
+    public float TemperatureMinimale { get; protected set; }
+    public float TemperatureMaximale { get; protected set; }
+    public float VitesseDeshydratation { get; protected set; }
+
+    public float HydratationActuelle { get; set; } = 100f;
+    public float LuminositeActuelle { get; protected set; } = 50f;
+    public float TemperatureActuelle { get; set; } = 15f;
+
+    public Maladie? MaladieActuelle { get; protected set; } = null;
+    public bool EstMorte { get; protected set; } = false;
+
+    public float VitesseCroissance { get; protected set; }
+    public float HauteurActuelle { get; protected set; } = 0f;
+    public float HauteurMaximale { get; protected set; } = 1f;
+
+    // — Constructeur — 
     protected Plante(
         string nomPlante,
         string acronyme,
@@ -30,7 +43,9 @@ public abstract class Plante
         List<Saison> saisonCompatible,
         float vitesseDeshydratation,
         float temperatureMinimale,
-        float temperatureMaximale
+        float temperatureMaximale,
+        float vitesseCroissance,
+        float hauteurMaximale
     )
     {
         NomPlante = nomPlante;
@@ -38,11 +53,33 @@ public abstract class Plante
         EspacePris = espacePris;
         TerrainIdeal = terrainIdeal;
         SaisonCompatible = saisonCompatible;
+
         VitesseDeshydratation = vitesseDeshydratation;
         TemperatureMinimale = temperatureMinimale;
         TemperatureMaximale = temperatureMaximale;
+
+        VitesseCroissance = vitesseCroissance;
+        HauteurMaximale = hauteurMaximale;
+        HauteurActuelle = 0f;
+
+        // États initiaux
+        HydratationActuelle = 100f;
+        LuminositeActuelle = LuminositeIdeale;
+        TemperatureActuelle = (temperatureMinimale + temperatureMaximale) / 2f;
     }
 
+    // — Méthodes d’aide pour l’extérieur (ex: Obstacle) — 
+    public void ReduireHydratation(float montant)
+    {
+        HydratationActuelle = Math.Max(0f, HydratationActuelle - montant);
+    }
+
+    public void Tuer()
+    {
+        EstMorte = true;
+    }
+
+    // — Actions de base — 
     public virtual void Arroser()
     {
         HydratationActuelle = 100f;
@@ -58,62 +95,45 @@ public abstract class Plante
         TemperatureActuelle = temperature;
     }
 
+    // — Évaluation des 5 conditions — 
     public virtual float EvaluerConditions(bool espaceRespecte)
     {
-        int conditionsNonOptimales = 0;
-        int totalConditions = 5; // Hydratation, Luminosité, Température, Maladie, Espacement
-
-        if (HydratationActuelle < HydratationCritique)
-        {
-            conditionsNonOptimales++;
-        }
-
-        if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f)
-        {
-            conditionsNonOptimales++;
-        }
-
-        if (TemperatureActuelle < TemperatureMinimale || TemperatureActuelle > TemperatureMaximale)
-        {
-            conditionsNonOptimales++;
-        }
-
-        if (MaladieActuelle != null)
-        {
-            conditionsNonOptimales++;
-        }
-
-        if (!espaceRespecte)
-        {
-            conditionsNonOptimales++;
-        }
-
-        return (float)conditionsNonOptimales / totalConditions;
+        int defauts = 0;
+        if (HydratationActuelle < HydratationCritique) defauts++;
+        if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f) defauts++;
+        if (TemperatureActuelle < TemperatureMinimale
+         || TemperatureActuelle > TemperatureMaximale) defauts++;
+        if (MaladieActuelle != null) defauts++;
+        if (!espaceRespecte) defauts++;
+        return (float)defauts / 5f;
     }
 
-    public virtual void Update(float tempsEcouleEnJours, float temperatureDuJour, bool espaceRespecte, float coeffAbsorptionEau)
+    // — Mise à jour journalière — 
+    public virtual void Update(
+        float tempsEcouleEnJours,
+        float temperatureDuJour,
+        bool espaceRespecte,
+        float coeffAbsorptionEau,
+        float luminositeDuJour
+    )
     {
         if (EstMorte) return;
 
-        TemperatureActuelle = temperatureDuJour;
+        // 1) Température
+        SetTemperature(temperatureDuJour);
 
+        // 2) Maladie
         if (MaladieActuelle == null)
         {
-            if (joursSansMaladie >= probMaladieInverse - 1)
+            joursSansMaladie++;
+            if (joursSansMaladie >= probMaladieInverse)
             {
-                if (new Random().Next(probMaladieInverse) == 0)
+                var cand = Maladie.GenererMaladieAleatoire();
+                if (cand.SeDeclare())
                 {
-                    AttraperMaladie(new Maladie("Mildew", "Apparition de taches blanches sur les feuilles."));
+                    MaladieActuelle = cand;
                     joursSansMaladie = 0;
                 }
-                else
-                {
-                    joursSansMaladie++;
-                }
-            }
-            else
-            {
-                joursSansMaladie++;
             }
         }
         else
@@ -121,29 +141,31 @@ public abstract class Plante
             MaladieActuelle.AppliquerEffets(this);
         }
 
-        float evaluationNonOptimale = EvaluerConditions(espaceRespecte);
-
-        if (evaluationNonOptimale >= 0.6f) // Au moins 3 conditions non respectées
+        // 3) Conditions
+        float tauxNonOpt = EvaluerConditions(espaceRespecte);
+        if (tauxNonOpt >= 0.6f)
         {
-            EstMorte = true;
-            Console.WriteLine($"[MORT] {NomPlante} est morte car au moins 3 conditions n'étaient pas réunies.");
+            Tuer();
+            return;
         }
-        else
-        {
-            Console.WriteLine($"{NomPlante} a {(1 - evaluationNonOptimale) * 100:F0}% de ses conditions respectées." + (MaladieActuelle != null ? $" (Malade de {MaladieActuelle.NomMaladie})" : (espaceRespecte ? "" : " (Espacement non respecté)")));
-        }
-        float retention = coeffAbsorptionEau;
-        float perte = VitesseDeshydratation * tempsEcouleEnJours * (1f - retention);
+        float tauxOpt = 1f - tauxNonOpt;
 
-        HydratationActuelle = Math.Max(0f, HydratationActuelle - perte);
+        // 4) Croissance
+        Pousser(tauxOpt);
+
+        // 5) Hydratation (modulée par le sol)
+        float perte = VitesseDeshydratation * tempsEcouleEnJours * (1f - coeffAbsorptionEau);
+        ReduireHydratation(perte);
+
+        // 6) Jauge de lumière persistante
         LuminositeActuelle = Math.Max(0f, LuminositeActuelle - 1f * tempsEcouleEnJours);
     }
 
-    public virtual void AttraperMaladie(Maladie maladie)
+    // — Croissance — 
+    protected virtual void Pousser(float tauxSatisfaction)
     {
-        MaladieActuelle = maladie;
-        Console.WriteLine($"[MALADIE] {NomPlante} a attrapé : {maladie.NomMaladie}");
+        float delta = VitesseCroissance * tauxSatisfaction;
+        HauteurActuelle = Math.Min(HauteurMaximale, HauteurActuelle + delta);
     }
-
-    public abstract void Pousser();
 }
+

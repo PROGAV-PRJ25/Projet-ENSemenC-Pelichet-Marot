@@ -153,7 +153,7 @@ public class VuePotager
 
             // Maladie (sans déréférencer p.MaladieActuelle)
             bool condMal = p.MaladieActuelle == null;
-            string nomMal = p.MaladieActuelle?.NomMaladie ?? "Aucune";
+            string nomMal = p.MaladieActuelle?.Nom ?? "Aucune";
             Console.WriteLine($"{(condMal ? "✅" : "❌")} Maladie     : {nomMal}");
         }
 

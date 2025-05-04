@@ -1,19 +1,27 @@
-public class Maladie
+public abstract class Maladie : Obstacle
 {
-    public string NomMaladie { get; private set; }
-    public string Description { get; private set; }
-    // On pourrait ajouter d'autres propriétés comme la gravité, le taux de propagation, etc.
+    public float Gravite { get; protected set; }   // perte d’eau ou de vigueur
 
-    public Maladie(string nomMaladie, string description)
+    protected Maladie(string nom, string desc, float proba, float gravite)
+        : base(nom, desc, proba)
     {
-        NomMaladie = nomMaladie;
-        Description = description;
+        Gravite = gravite;
     }
 
-    public virtual void AppliquerEffets(Plante plante)
+    public override void AppliquerEffets(Plante p)
     {
-        Console.WriteLine($"[MALADIE] {plante.NomPlante} est affecté par : {NomMaladie}");
-        // Ici, on pourrait implémenter des effets spécifiques de la maladie sur la plante
-        // (réduction de l'hydratation, ralentissement de la croissance, etc.)
+        // Exemple : réduire l’hydratation
+        p.ReduireHydratation(Gravite);
+    }
+    public static Maladie GenererMaladieAleatoire()
+    {
+        var liste = new List<Maladie>
+        {
+            new MaladieMildew(),
+            new MaladieRouille(),
+            // etc.
+        };
+        var idx = new Random().Next(liste.Count);
+        return liste[idx];
     }
 }
