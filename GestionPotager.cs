@@ -6,15 +6,17 @@ public class GestionPotager
     private Saison                  _saisonActuelle;
     private int                     _jourActuel;
     private bool                    _simulationEnCours;
+    private Graines graines;
 
     public GestionPotager(int largeur, int hauteur)
     {
         // 1) Génération des terrains
         var plateau = GenerateurBiome.GenererPlateau(largeur, hauteur);
+        graines = new Graines();
 
         // 2) Création du controller et de la vue
         _controller = new GestionPlateau(plateau);
-        _vue        = new VuePotager(plateau, _controller);
+        _vue        = new VuePotager(plateau, _controller, graines);
         _controller.SetVue(_vue);
 
         // 3) État initial

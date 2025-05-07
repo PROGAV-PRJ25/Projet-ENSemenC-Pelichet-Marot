@@ -1,7 +1,8 @@
 public class Soja : Plante
 {
-    public Soja()
+    public Soja(Graines graines)
         : base(
+            prixGraines :        10,
             nomPlante:           "Soja",
             acronyme:            "So",
             espacePris:          2,
@@ -11,7 +12,8 @@ public class Soja : Plante
             temperatureMinimale: 10f,
             temperatureMaximale: 35f,
             vitesseCroissance:   0.1f,     // ex. 0.1 unité / jour
-            hauteurMaximale:     1.0f
+            hauteurMaximale:     1.0f,
+            graines : graines
         )
     { }
     

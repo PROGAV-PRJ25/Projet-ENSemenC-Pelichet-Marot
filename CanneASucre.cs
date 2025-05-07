@@ -1,7 +1,8 @@
 public class CanneASucre : Plante
 {
-    public CanneASucre()
+    public CanneASucre(Graines graines)
         : base(
+            prixGraines :        14,
             nomPlante: "Canne à sucre",
             acronyme: "Cs",
             espacePris: 3,
@@ -11,7 +12,8 @@ public class CanneASucre : Plante
             temperatureMinimale: 20f,
             temperatureMaximale: 38f,
             vitesseCroissance: 0.10f,
-            hauteurMaximale: 2.0f
+            hauteurMaximale: 2.0f,
+            graines : graines
         )
     {
         HydratationCritique = 60f;

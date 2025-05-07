@@ -1,7 +1,8 @@
 public class Cafe : Plante
 {
-    public Cafe()
+    public Cafe(Graines graines)
         : base(
+            prixGraines :        16,
             nomPlante: "Café",
             acronyme: "Cf",
             espacePris: 2,
@@ -11,7 +12,8 @@ public class Cafe : Plante
             temperatureMinimale: 15f,
             temperatureMaximale: 25f,
             vitesseCroissance: 0.08f,
-            hauteurMaximale: 0.8f
+            hauteurMaximale: 0.8f,
+            graines : graines
         )
     {
         HydratationCritique = 65f;

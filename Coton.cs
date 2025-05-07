@@ -1,7 +1,8 @@
 public class Coton : Plante
     {
-        public Coton()
+        public Coton(Graines graines)
             : base(
+                prixGraines :        15,
                 nomPlante:            "Coton",
                 acronyme:             "Co",
                 espacePris:           2,
@@ -11,7 +12,8 @@ public class Coton : Plante
                 temperatureMinimale:  18f,
                 temperatureMaximale:  30f,
                 vitesseCroissance:    0.12f,
-                hauteurMaximale:      1.0f
+                hauteurMaximale:      1.0f,
+                graines : graines
             )
         {
             HydratationCritique = 35f;
