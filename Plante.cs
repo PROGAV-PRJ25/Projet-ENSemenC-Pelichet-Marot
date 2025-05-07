@@ -96,17 +96,26 @@ public abstract class Plante
     }
 
     // — Évaluation des 5 conditions — 
-    public virtual float EvaluerConditions(bool espaceRespecte)
-    {
-        int defauts = 0;
-        if (HydratationActuelle < HydratationCritique) defauts++;
-        if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f) defauts++;
-        if (TemperatureActuelle < TemperatureMinimale
-         || TemperatureActuelle > TemperatureMaximale) defauts++;
-        if (MaladieActuelle != null) defauts++;
-        if (!espaceRespecte) defauts++;
-        return (float)defauts / 5f;
-    }
+    public virtual float EvaluerConditions(bool espaceRespecte, Saison saisonActuelle)
+{
+    int defauts = 0;
+    // Hydratation
+    if (HydratationActuelle < HydratationCritique)                defauts++;
+    // Luminosité
+    if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f)    defauts++;
+    // Température
+    if (TemperatureActuelle < TemperatureMinimale
+     || TemperatureActuelle > TemperatureMaximale)                defauts++;
+    // Maladie
+    if (MaladieActuelle != null)                                  defauts++;
+    // Espacement
+    if (!espaceRespecte)                                           defauts++;
+    // Saison de semis
+    bool condSaison = SaisonCompatible.Any(s => s.NomSaison == saisonActuelle.NomSaison);
+    if (!condSaison)                                              defauts++;
+
+    return (float)defauts / 6f;
+}
 
     // — Mise à jour journalière — 
     public virtual void Update(
@@ -114,7 +123,8 @@ public abstract class Plante
         float temperatureDuJour,
         bool espaceRespecte,
         float coeffAbsorptionEau,
-        float luminositeDuJour
+        float luminositeDuJour,
+        Saison saisonActuelle
     )
     {
         if (EstMorte) return;
@@ -142,8 +152,8 @@ public abstract class Plante
         }
 
         // 3) Conditions
-        float tauxNonOpt = EvaluerConditions(espaceRespecte);
-        if (tauxNonOpt >= 0.6f)
+        float tauxNonOpt = EvaluerConditions(espaceRespecte, saisonActuelle);
+        if (tauxNonOpt >= 0.5f)
         {
             Tuer();
             return;

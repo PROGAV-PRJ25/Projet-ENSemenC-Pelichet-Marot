@@ -155,6 +155,11 @@ public class VuePotager
             bool condMal = p.MaladieActuelle == null;
             string nomMal = p.MaladieActuelle?.Nom ?? "Aucune";
             Console.WriteLine($"{(condMal ? "✅" : "❌")} Maladie     : {nomMal}");
+
+            // Saison de semis
+            var saison = _meteo.SaisonActuelle;
+            bool condSaison = p.SaisonCompatible.Any(s => s.NomSaison == saison.NomSaison);
+            Console.WriteLine($"{(condSaison ? "✅" : "❌")} Saison       : {saison.NomSaison}");
         }
 
         Console.WriteLine("\n[Appuyez sur Espace pour revenir]");

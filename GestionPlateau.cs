@@ -34,7 +34,8 @@ public class GestionPlateau
                     temperatureDuJour: meteo.Temperature,
                     espaceRespecte: espaceOk,
                     coeffAbsorptionEau: terrain.CoeffAbsorptionEau,
-                    luminositeDuJour: meteo.Luminosite
+                    luminositeDuJour: meteo.Luminosite,
+                    saisonActuelle: meteo.SaisonActuelle
                 );
 
                 if (plante.EstMorte)
