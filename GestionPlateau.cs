@@ -45,9 +45,6 @@ public class GestionPlateau
                     saisonActuelle: meteo.SaisonActuelle,
                     terrainActuel: terrain
                 );
-
-                if (plante.EstMorte)
-                    terrain.Plante = null;
             }
     }
 
