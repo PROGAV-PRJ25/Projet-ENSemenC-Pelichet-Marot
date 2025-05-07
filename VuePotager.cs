@@ -160,6 +160,10 @@ public class VuePotager
             var saison = _meteo.SaisonActuelle;
             bool condSaison = p.SaisonCompatible.Any(s => s.NomSaison == saison.NomSaison);
             Console.WriteLine($"{(condSaison ? "✅" : "❌")} Saison       : {saison.NomSaison}");
+
+            // 7) Terrain préféré
+            bool condTerrain = terrain.GetType() == p.TerrainIdeal.GetType();
+            Console.WriteLine($"{(condTerrain ? "✅" : "❌")} Terrain     : {terrain.NomTerrain}");
         }
 
         Console.WriteLine("\n[Appuyez sur Espace pour revenir]");

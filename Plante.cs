@@ -96,7 +96,7 @@ public abstract class Plante
     }
 
     // — Évaluation des 5 conditions — 
-    public virtual float EvaluerConditions(bool espaceRespecte, Saison saisonActuelle)
+    public virtual float EvaluerConditions(bool espaceRespecte, Saison saisonActuelle, Terrain terrainActuel)
 {
     int defauts = 0;
     // Hydratation
@@ -113,8 +113,11 @@ public abstract class Plante
     // Saison de semis
     bool condSaison = SaisonCompatible.Any(s => s.NomSaison == saisonActuelle.NomSaison);
     if (!condSaison)                                              defauts++;
+    // Terrain préféré
+    bool condTerrain = terrainActuel.GetType() == TerrainIdeal.GetType();
+    if (!condTerrain)                                             defauts++;
 
-    return (float)defauts / 6f;
+    return (float)defauts / 7f;
 }
 
     // — Mise à jour journalière — 
@@ -124,7 +127,8 @@ public abstract class Plante
         bool espaceRespecte,
         float coeffAbsorptionEau,
         float luminositeDuJour,
-        Saison saisonActuelle
+        Saison saisonActuelle,
+        Terrain terrainActuel
     )
     {
         if (EstMorte) return;
@@ -152,7 +156,7 @@ public abstract class Plante
         }
 
         // 3) Conditions
-        float tauxNonOpt = EvaluerConditions(espaceRespecte, saisonActuelle);
+        float tauxNonOpt = EvaluerConditions(espaceRespecte, saisonActuelle, terrainActuel);
         if (tauxNonOpt >= 0.5f)
         {
             Tuer();

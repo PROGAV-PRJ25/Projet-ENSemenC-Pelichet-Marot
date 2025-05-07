@@ -35,7 +35,8 @@ public class GestionPlateau
                     espaceRespecte: espaceOk,
                     coeffAbsorptionEau: terrain.CoeffAbsorptionEau,
                     luminositeDuJour: meteo.Luminosite,
-                    saisonActuelle: meteo.SaisonActuelle
+                    saisonActuelle: meteo.SaisonActuelle,
+                    terrainActuel: terrain
                 );
 
                 if (plante.EstMorte)
