@@ -7,8 +7,7 @@ public abstract class Plante
 {
     // Générateur partagé pour la maladie
     private static readonly Random _rng = new Random();
-    private int joursSansMaladie = 0;
-    private const int probMaladieInverse = 10;
+
 
     // — Propriétés / Attributs — 
     public string NomPlante { get; protected set; }
@@ -27,7 +26,7 @@ public abstract class Plante
     public float LuminositeActuelle { get; protected set; } = 50f;
     public float TemperatureActuelle { get; set; } = 15f;
 
-    public Maladie? MaladieActuelle { get; protected set; } = null;
+    public Obstacle? ObstacleActuel { get; private set; } = null;
     public bool EstMorte { get; protected set; } = false;
 
     public float VitesseCroissance { get; protected set; }
@@ -97,28 +96,28 @@ public abstract class Plante
 
     // — Évaluation des 5 conditions — 
     public virtual float EvaluerConditions(bool espaceRespecte, Saison saisonActuelle, Terrain terrainActuel)
-{
-    int defauts = 0;
-    // Hydratation
-    if (HydratationActuelle < HydratationCritique)                defauts++;
-    // Luminosité
-    if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f)    defauts++;
-    // Température
-    if (TemperatureActuelle < TemperatureMinimale
-     || TemperatureActuelle > TemperatureMaximale)                defauts++;
-    // Maladie
-    if (MaladieActuelle != null)                                  defauts++;
-    // Espacement
-    if (!espaceRespecte)                                           defauts++;
-    // Saison de semis
-    bool condSaison = SaisonCompatible.Any(s => s.NomSaison == saisonActuelle.NomSaison);
-    if (!condSaison)                                              defauts++;
-    // Terrain préféré
-    bool condTerrain = terrainActuel.GetType() == TerrainIdeal.GetType();
-    if (!condTerrain)                                             defauts++;
+    {
+        int defauts = 0;
+        // Hydratation
+        if (HydratationActuelle < HydratationCritique) defauts++;
+        // Luminosité
+        if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f) defauts++;
+        // Température
+        if (TemperatureActuelle < TemperatureMinimale
+         || TemperatureActuelle > TemperatureMaximale) defauts++;
+        // Maladie
+        if (ObstacleActuel != null) defauts++;
+        // Espacement
+        if (!espaceRespecte) defauts++;
+        // Saison de semis
+        bool condSaison = SaisonCompatible.Any(s => s.NomSaison == saisonActuelle.NomSaison);
+        if (!condSaison) defauts++;
+        // Terrain préféré
+        bool condTerrain = terrainActuel.GetType() == TerrainIdeal.GetType();
+        if (!condTerrain) defauts++;
 
-    return (float)defauts / 7f;
-}
+        return (float)defauts / 7f;
+    }
 
     // — Mise à jour journalière — 
     public virtual void Update(
@@ -136,24 +135,9 @@ public abstract class Plante
         // 1) Température
         SetTemperature(temperatureDuJour);
 
-        // 2) Maladie
-        if (MaladieActuelle == null)
-        {
-            joursSansMaladie++;
-            if (joursSansMaladie >= probMaladieInverse)
-            {
-                var cand = Maladie.GenererMaladieAleatoire();
-                if (cand.SeDeclare())
-                {
-                    MaladieActuelle = cand;
-                    joursSansMaladie = 0;
-                }
-            }
-        }
-        else
-        {
-            MaladieActuelle.AppliquerEffets(this);
-        }
+        // 2) Effets de l’obstacle s’il y en a un
+        if (ObstacleActuel != null)
+            ObstacleActuel.AppliquerEffets(this);
 
         // 3) Conditions
         float tauxNonOpt = EvaluerConditions(espaceRespecte, saisonActuelle, terrainActuel);
@@ -180,6 +164,12 @@ public abstract class Plante
     {
         float delta = VitesseCroissance * tauxSatisfaction;
         HauteurActuelle = Math.Min(HauteurMaximale, HauteurActuelle + delta);
+    }
+
+
+    public void PlacerObstacle(Obstacle obs)
+    {
+        ObstacleActuel = obs;
     }
 }
 

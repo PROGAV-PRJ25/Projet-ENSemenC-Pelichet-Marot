@@ -44,7 +44,7 @@ public class VuePotager
         bool estCurseur = (x == _controller.CurseurX && y == _controller.CurseurY);
         var terrain = _plateau[y, x];
 
-        Console.BackgroundColor = estCurseur ? ConsoleColor.Cyan : ConsoleColor.Black;
+        Console.BackgroundColor = estCurseur ? ConsoleColor.Magenta : ConsoleColor.Black;
         Console.ForegroundColor = terrain.Couleur;
         Console.Write('[');
 
@@ -152,9 +152,9 @@ public class VuePotager
             Console.WriteLine($"{(condEsp ? "✅" : "❌")} Espacement  : {(condEsp ? "OK" : "KO")} (besoin {p.EspacePris})");
 
             // Maladie (sans déréférencer p.MaladieActuelle)
-            bool condMal = p.MaladieActuelle == null;
-            string nomMal = p.MaladieActuelle?.Nom ?? "Aucune";
-            Console.WriteLine($"{(condMal ? "✅" : "❌")} Maladie     : {nomMal}");
+            bool condObs = p.ObstacleActuel == null;
+            string nomObs = p.ObstacleActuel?.Nom ?? "Aucun";
+            Console.WriteLine($"{(condObs ? "✅" : "❌")} Obstacle    : {nomObs}");
 
             // Saison de semis
             var saison = _meteo.SaisonActuelle;

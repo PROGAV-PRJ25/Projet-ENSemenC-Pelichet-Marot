@@ -28,6 +28,13 @@ public class GestionPlateau
                 var plante = terrain.Plante;
                 if (plante == null || plante.EstMorte) continue;
 
+                if (plante.ObstacleActuel == null)
+                {
+                    var obs = GenerateurObstacle.GenererObstacle();
+                    if (obs != null)
+                        plante.PlacerObstacle(obs);
+                }
+
                 bool espaceOk = IsEspacementOk(x, y);
                 plante.Update(
                     tempsEcouleEnJours: 1f,
