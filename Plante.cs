@@ -8,8 +8,10 @@ public abstract class Plante
     // Générateur partagé pour la maladie
     private static readonly Random _rng = new Random();
 
+    private Graines _graines;
 
     // — Propriétés / Attributs — 
+    public int PrixGraines { get; protected set;}
     public string NomPlante { get; protected set; }
     public string Acronyme { get; protected set; }
     public int EspacePris { get; protected set; }
@@ -35,6 +37,8 @@ public abstract class Plante
 
     // — Constructeur — 
     protected Plante(
+        Graines graines,
+        int prixGraines,
         string nomPlante,
         string acronyme,
         int espacePris,
@@ -47,6 +51,8 @@ public abstract class Plante
         float hauteurMaximale
     )
     {
+        _graines = graines;
+        PrixGraines = prixGraines;
         NomPlante = nomPlante;
         Acronyme = acronyme;
         EspacePris = espacePris;
@@ -81,7 +87,11 @@ public abstract class Plante
     // — Actions de base — 
     public virtual void Arroser()
     {
-        HydratationActuelle = 100f;
+        if(_graines.PeutDepenser(5))
+        {
+            _graines.Depenser(5);
+            HydratationActuelle = 100f;
+        }
     }
 
     public virtual void RecevoirLumiere(float intensite)

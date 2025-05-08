@@ -1,7 +1,8 @@
 public class Cactus : Plante
     {
-        public Cactus()
+        public Cactus(Graines graines)
             : base(
+                prixGraines :        20,
                 nomPlante:            "Cactus",
                 acronyme:             "Ca",
                 espacePris:           1,
@@ -11,7 +12,8 @@ public class Cactus : Plante
                 temperatureMinimale:  10f,
                 temperatureMaximale:  40f,
                 vitesseCroissance:    0.02f,
-                hauteurMaximale:      0.5f
+                hauteurMaximale:      0.5f,
+                graines : graines
             )
         {
             HydratationCritique = 10f;

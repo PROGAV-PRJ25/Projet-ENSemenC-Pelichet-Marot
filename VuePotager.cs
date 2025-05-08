@@ -3,12 +3,14 @@ public class VuePotager
     private readonly Terrain[,] _plateau;
     private readonly GestionPlateau _controller;
     private Meteo _meteo;
+    private Graines _graines;
     private const int CellWidth = 2;
 
-    public VuePotager(Terrain[,] plateau, GestionPlateau controller)
+    public VuePotager(Terrain[,] plateau, GestionPlateau controller, Graines graines)
     {
         _plateau = plateau;
         _controller = controller;
+        _graines = graines;
     }
 
     public void SetMeteo(Meteo meteo) => _meteo = meteo;
@@ -16,7 +18,8 @@ public class VuePotager
     public void AfficherPlateau()
     {
         Console.Clear();
-        Console.WriteLine("=== POTAGER VU DU CIEL ===\n");
+        Console.WriteLine("=== POTAGER VU DU CIEL ===");
+        Console.WriteLine($"Nombre de graine : {_graines.Nombre}\n");
 
         if (_meteo != null)
             Console.WriteLine(_meteo.Description + "\n");
@@ -70,10 +73,10 @@ public class VuePotager
     {
         var légendes = new (string Nom, ConsoleColor Couleur)[]
         {
-            ("Argileux", ConsoleColor.DarkGray),
-            ("Sableux",  ConsoleColor.Yellow),
-            ("Classique",ConsoleColor.Green),
-            ("Aquatique",ConsoleColor.Cyan)
+            ("Argile", ConsoleColor.DarkGray),
+            ("Sable",  ConsoleColor.Yellow),
+            ("Terre",ConsoleColor.Green),
+            ("Eau",ConsoleColor.Cyan)
         };
 
         foreach (var (nom, couleur) in légendes)
@@ -95,7 +98,14 @@ public class VuePotager
         if (terrain.Plante != null)
         {
             Console.WriteLine($"Plante : {terrain.Plante.NomPlante}\n");
-            Console.WriteLine("A : Arroser");
+            if (_graines.PeutDepenser(5))
+            {
+                Console.WriteLine("A : Arroser (5 graines)");
+            }
+            else
+            {
+                Console.WriteLine("Vous n'avez pas assez de graines pour arroser (5 graines)");
+            }
             Console.WriteLine("D : Désherber");
             Console.WriteLine("R : Récolter");
         }
@@ -174,31 +184,50 @@ public class VuePotager
     public Plante? ChoisirNouvellePlante()
     {
         Console.Clear();
-        Console.WriteLine("Choisissez une plante :");
-        Console.WriteLine("1 - Soja (So)");
-        Console.WriteLine("2 - Maïs (Ma)");
-        Console.WriteLine("3 - Canne à sucre (Cs)");
-        Console.WriteLine("4 - Café (Cf)");
-        Console.WriteLine("5 - Cactus (Ca)");
-        Console.WriteLine("6 - Coton (Co)");
+        Console.WriteLine($"Graines disponibles : {_graines}");
+        Console.WriteLine();
+        Console.WriteLine("Plantes :");
+        Console.WriteLine("1 - Soja (10 graines)");
+        Console.WriteLine("2 - Maïs (12 graines)");
+        Console.WriteLine("3 - Canne à sucre (14 graines)");
+        Console.WriteLine("4 - Café (16 graines)");
+        Console.WriteLine("5 - Cactus (20 graines)");
+        Console.WriteLine("6 - Coton (15 graines)");
         Console.WriteLine("0 - Annuler");
 
         while (true)
         {
             Console.Write("\nVotre choix : ");
             var saisie = Console.ReadLine();
-            switch (saisie)
+            Plante? plante = saisie switch
             {
-                case "1": return new Soja();
-                case "2": return new Mais();
-                case "3": return new CanneASucre();
-                case "4": return new Cafe();
-                case "5": return new Cactus();
-                case "6": return new Coton();
-                case "0": return null;
-                default:
-                    Console.WriteLine("Choix invalide.");
-                    break;
+                "1" => new Soja(_graines),
+                "2" => new Mais(_graines),
+                "3" => new CanneASucre(_graines),
+                "4" => new Cafe(_graines),
+                "5" => new Cactus(_graines),
+                "6" => new Coton(_graines),
+                "0" => null,
+                _ => null
+            };
+
+            if (plante == null && saisie != "0")
+            {
+                Console.WriteLine("Choix invalide.");
+                continue;
+            }
+
+            if (plante == null) return null;
+
+            if (_graines.PeutDepenser(plante.PrixGraines))
+            {
+                Console.WriteLine($"Vous avez planté un(e) {plante.GetType().Name} !");
+                _graines.Depenser(plante.PrixGraines);
+                return plante;
+            }
+            else
+            {
+                Console.WriteLine("Pas assez de graines pour cette plante.");
             }
         }
     }
