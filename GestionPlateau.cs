@@ -1,24 +1,23 @@
 public class GestionPlateau
 {
     private readonly Terrain[,] _plateau;
+    private readonly Graines _graines;
     private VuePotager _vue;
     private Meteo _meteo;
     public int CurseurX { get; private set; }
     public int CurseurY { get; private set; }
 
-    public GestionPlateau(Terrain[,] plateau)
+    // Injecte les graines et la vue dès la construction
+    public GestionPlateau(Terrain[,] plateau, VuePotager vue, Graines graines)
     {
         _plateau = plateau;
+        _vue = vue;
+        _graines = graines;
         CurseurX = CurseurY = 0;
     }
 
-    public void SetVue(VuePotager vue) => _vue = vue;
     public void SetMeteo(Meteo meteo) => _meteo = meteo;
 
-    /// <summary>
-    /// Met à jour chaque plante selon la météo et l'espacement.
-    /// Si une plante meurt, on la retire du terrain.
-    /// </summary>
     public void MettreAJourPotager(Meteo meteo)
     {
         for (int y = 0; y < _plateau.GetLength(0); y++)
@@ -48,54 +47,43 @@ public class GestionPlateau
             }
     }
 
-    /// <summary>
-    /// Boucle unique pour traiter toutes les touches utiles :
-    /// déplacement, action (espace), jour suivant (E), quitter (Q).
-    /// </summary>
-    public void GererInteractionUtilisateur(
-        out bool avancerJour,
-        out bool quitterSimulation
-    )
+    public void GererInteractionUtilisateur(out bool avancerJour, out bool quitterSimulation)
     {
-        avancerJour = false;
-        quitterSimulation = false;
-
+        avancerJour = quitterSimulation = false;
         bool actionTerminee = false;
         while (!actionTerminee)
         {
             _vue.AfficherPlateau();
             var key = Console.ReadKey(true).Key;
-
             switch (key)
             {
-                // Déplacement du curseur
                 case ConsoleKey.UpArrow: MoveCurseur(0, -1); break;
                 case ConsoleKey.DownArrow: MoveCurseur(0, 1); break;
                 case ConsoleKey.LeftArrow: MoveCurseur(-1, 0); break;
                 case ConsoleKey.RightArrow: MoveCurseur(1, 0); break;
 
-                // Action sur la case courante
                 case ConsoleKey.Spacebar:
                     HandleCaseAction();
+                    actionTerminee = true;
                     break;
 
-                // Passer au jour suivant
                 case ConsoleKey.E:
                     avancerJour = true;
                     actionTerminee = true;
                     break;
 
-                // Quitter la simulation
                 case ConsoleKey.Q:
                     quitterSimulation = true;
                     actionTerminee = true;
                     break;
+
                 case ConsoleKey.I:
                     HandleInfo();
                     break;
             }
         }
     }
+
     private void HandleInfo()
     {
         var terrain = _plateau[CurseurY, CurseurX];
@@ -126,8 +114,21 @@ public class GestionPlateau
             var key = Console.ReadKey(true).Key;
             switch (key)
             {
-                case ConsoleKey.A: // Arroser
-                    terrain.Plante?.Arroser();
+                case ConsoleKey.A: // Arroser (coût fixe 5 graines)
+                    if (terrain.Plante != null)
+                    {
+                        const int coutArrosage = 5;
+                        if (_graines.PeutDepenser(coutArrosage))
+                        {
+                            terrain.Plante.Arroser();
+                            _graines.Depenser(coutArrosage);
+                            Console.WriteLine($"\nArrosage ! (-{coutArrosage} graines)");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nPas assez de graines pour arroser !");
+                        }
+                    }
                     choixFait = true;
                     break;
 
@@ -142,7 +143,7 @@ public class GestionPlateau
                     choixFait = true;
                     break;
 
-                case ConsoleKey.P: // Planter
+                case ConsoleKey.P: // Planter (délègue la dépense à la vue)
                     if (terrain.Plante == null)
                         terrain.Plante = _vue.ChoisirNouvellePlante();
                     choixFait = true;
@@ -155,31 +156,36 @@ public class GestionPlateau
         }
     }
 
-    /// <summary>
-    /// Vérifie qu'aucune autre plante n'existe dans le Chebyshev-radius = EspacePris-1.
-    /// Si EspacePris ≤ 1, l'espacement n'est pas requis.
-    /// </summary>
     private bool IsEspacementOk(int x, int y)
     {
         var plante = _plateau[y, x].Plante;
-        if (plante == null || plante.EspacePris <= 1)
-            return true;
-
+        if (plante == null || plante.EspacePris <= 1) return true;
         int rayon = plante.EspacePris - 1;
-        int y0 = Math.Max(0, y - rayon);
-        int y1 = Math.Min(_plateau.GetLength(0) - 1, y + rayon);
-        int x0 = Math.Max(0, x - rayon);
-        int x1 = Math.Min(_plateau.GetLength(1) - 1, x + rayon);
-
+        int y0 = Math.Max(0, y - rayon), y1 = Math.Min(_plateau.GetLength(0) - 1, y + rayon);
+        int x0 = Math.Max(0, x - rayon), x1 = Math.Min(_plateau.GetLength(1) - 1, x + rayon);
         for (int i = y0; i <= y1; i++)
             for (int j = x0; j <= x1; j++)
-            {
-                if ((i == y && j == x)) continue;
-                if (_plateau[i, j].Plante != null)
+                if (!(i == y && j == x) && _plateau[i, j].Plante != null)
                     return false;
-            }
         return true;
     }
-    public bool CheckEspaceRespecte(int x, int y)
-       => IsEspacementOk(x, y);
+
+    public bool CheckEspaceRespecte(int x, int y) => IsEspacementOk(x, y);
+    
+    public int EspacementActuel(int x, int y)
+{
+    var cible = _plateau[y, x].Plante;
+    if (cible == null) return -1;
+    int minDist = int.MaxValue;
+    int h = _plateau.GetLength(0), w = _plateau.GetLength(1);
+    for (int yy = 0; yy < h; yy++)
+        for (int xx = 0; xx < w; xx++)
+            if (!(xx == x && yy == y) && _plateau[yy, xx].Plante != null)
+            {
+                int dist = Math.Max(Math.Abs(xx - x), Math.Abs(yy - y));
+                if (dist < minDist) minDist = dist;
+            }
+    return minDist == int.MaxValue ? -1 : minDist;
+}
+
 }

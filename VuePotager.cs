@@ -1,19 +1,22 @@
 public class VuePotager
 {
     private readonly Terrain[,] _plateau;
-    private readonly GestionPlateau _controller;
+    private GestionPlateau _controller;
     private Meteo _meteo;
     private Graines _graines;
     private const int CellWidth = 2;
 
-    public VuePotager(Terrain[,] plateau, GestionPlateau controller, Graines graines)
+    public VuePotager(Terrain[,] plateau, Graines graines)
     {
         _plateau = plateau;
-        _controller = controller;
         _graines = graines;
     }
 
     public void SetMeteo(Meteo meteo) => _meteo = meteo;
+    public void SetController(GestionPlateau controller)
+    {
+        _controller = controller;
+    }
 
     public void AfficherPlateau()
     {
@@ -118,67 +121,65 @@ public class VuePotager
         Console.WriteLine("\nEspace : annuler");
     }
     public void AfficherPlanteOuTerrain(Terrain terrain, int xPlante, int yPlante)
+{
+    Console.Clear();
+
+    if (terrain.Plante == null)
     {
-        Console.Clear();
-
-        if (terrain.Plante == null)
-        {
-            // Infos terrain
-            Console.WriteLine($"=== Terrain : {terrain.NomTerrain} ===\n");
-            Console.WriteLine($"Fertilité        : {terrain.Fertilité:P0}");
-            Console.WriteLine($"Absorption eau   : {terrain.CoeffAbsorptionEau:P0}");
-        }
-        else
-        {
-            var p = terrain.Plante;
-
-            // 1) Préférences de la plante
-            Console.WriteLine($"=== Préférences de {p.NomPlante} ===\n");
-            Console.WriteLine($"Terrain idéal       : {p.TerrainIdeal.NomTerrain}");
-            Console.WriteLine($"Saisons semis       : {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
-            Console.WriteLine($"Hydratation critique : {p.HydratationCritique:F1}");
-            Console.WriteLine($"Température tolérée : de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
-            Console.WriteLine($"Espace requis       : {p.EspacePris} case(s)");
-
-
-            // 2) Conditions actuelles
-            Console.WriteLine("\n=== Conditions actuelles ===\n");
-
-            // Hydratation
-            bool condHyd = p.HydratationActuelle >= p.HydratationCritique;
-            Console.WriteLine($"{(condHyd ? "✅" : "❌")} Hydratation : {p.HydratationActuelle:F1}% (critique {p.HydratationCritique}%)");
-
-            // Luminosité
-            bool condLum = Math.Abs(p.LuminositeActuelle - p.LuminositeIdeale) < 20f;
-            Console.WriteLine($"{(condLum ? "✅" : "❌")} Luminosité  : {p.LuminositeActuelle:F1}% (idéal {p.LuminositeIdeale}%)");
-
-            // Température
-            bool condTemp = p.TemperatureActuelle >= p.TemperatureMinimale
-                         && p.TemperatureActuelle <= p.TemperatureMaximale;
-            Console.WriteLine($"{(condTemp ? "✅" : "❌")} Température : {p.TemperatureActuelle:F1}°C");
-
-            // Espacement (appelle la méthode publique de votre controller)
-            bool condEsp = _controller.CheckEspaceRespecte(xPlante, yPlante);
-            Console.WriteLine($"{(condEsp ? "✅" : "❌")} Espacement  : {(condEsp ? "OK" : "KO")} (besoin {p.EspacePris})");
-
-            // Maladie (sans déréférencer p.MaladieActuelle)
-            bool condObs = p.ObstacleActuel == null;
-            string nomObs = p.ObstacleActuel?.Nom ?? "Aucun";
-            Console.WriteLine($"{(condObs ? "✅" : "❌")} Obstacle    : {nomObs}");
-
-            // Saison de semis
-            var saison = _meteo.SaisonActuelle;
-            bool condSaison = p.SaisonCompatible.Any(s => s.NomSaison == saison.NomSaison);
-            Console.WriteLine($"{(condSaison ? "✅" : "❌")} Saison       : {saison.NomSaison}");
-
-            // 7) Terrain préféré
-            bool condTerrain = terrain.GetType() == p.TerrainIdeal.GetType();
-            Console.WriteLine($"{(condTerrain ? "✅" : "❌")} Terrain     : {terrain.NomTerrain}");
-        }
-
-        Console.WriteLine("\n[Appuyez sur Espace pour revenir]");
-        while (Console.ReadKey(true).Key != ConsoleKey.Spacebar) { }
+        // Affichage quand il n'y a pas de plante
+        Console.WriteLine($"=== Terrain {terrain.NomTerrain} ===\n");
+        Console.WriteLine($"Fertilité : {terrain.Fertilité}");
+        Console.WriteLine($"Absorption d'eau : {terrain.CoeffAbsorptionEau}");
     }
+    else
+    {
+        var p = terrain.Plante;
+        const int labelWidth = 22;  // Ajusté pour aligner le texte
+
+        // 1) Préférences de la plante
+        Console.WriteLine($"=== Préférences de {p.NomPlante} ===\n");
+        Console.WriteLine($"{"Terrain idéal".PadRight(labelWidth)}: {p.TerrainIdeal.NomTerrain}");
+        Console.WriteLine($"{"Saisons semis".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
+        Console.WriteLine($"{"Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
+        Console.WriteLine($"{"Température tolérée".PadRight(labelWidth)}: de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
+        Console.WriteLine($"{"Espace requis".PadRight(labelWidth)}: {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
+
+        // 2) État actuel des conditions
+        Console.WriteLine("\n=== État actuel ===\n");
+
+        bool condHyd  = p.HydratationActuelle >= p.HydratationCritique;
+        bool condLum  = Math.Abs(p.LuminositeActuelle - p.LuminositeIdeale) < 20f;
+        bool condTemp = p.TemperatureActuelle >= p.TemperatureMinimale
+                     && p.TemperatureActuelle <= p.TemperatureMaximale;
+
+        int espActuelle = _controller.EspacementActuel(xPlante, yPlante);
+        bool condEsp  = espActuelle < 0 || espActuelle >= p.EspacePris;
+        string texteEsp = espActuelle < 0
+            ? "aucune autre plante"
+            : $"{espActuelle} case{(espActuelle > 1 ? "s" : "")}";
+
+        bool condObs = p.ObstacleActuel == null;
+        string nomObs = p.ObstacleActuel?.Nom ?? "Aucun";
+
+        bool condSaison = p.SaisonCompatible
+            .Any(s => s.NomSaison == _meteo.SaisonActuelle.NomSaison);
+
+        bool condTerrain = terrain.GetType() == p.TerrainIdeal.GetType();
+
+        // Affichage des 7 conditions
+        Console.WriteLine($"{(condHyd  ? "✅" : "❌")} {"Hydratation".PadRight(labelWidth)}: {p.HydratationActuelle:F1}%");
+        Console.WriteLine($"{(condLum  ? "✅" : "❌")} {"Luminosité".PadRight(labelWidth)}: {p.LuminositeActuelle:F1}%");
+        Console.WriteLine($"{(condTemp ? "✅" : "❌")} {"Température".PadRight(labelWidth)}: {p.TemperatureActuelle:F1}°C");
+        Console.WriteLine($"{(condEsp  ? "✅" : "❌")} {"Espacement actuel".PadRight(labelWidth)}: {texteEsp} (besoin : {p.EspacePris})");
+        Console.WriteLine($"{(condObs  ? "✅" : "❌")} {"Maladie/Nuisible".PadRight(labelWidth)}: {nomObs}");
+        Console.WriteLine($"{(condSaison? "✅" : "❌")} {"Saison".PadRight(labelWidth)}: {_meteo.SaisonActuelle.NomSaison}");
+        Console.WriteLine($"{(condTerrain? "✅" : "❌")} {"Terrain".PadRight(labelWidth)}: {terrain.NomTerrain}");
+    }
+
+    Console.WriteLine("\n[Appuyez sur Espace pour revenir]");
+    while (Console.ReadKey(true).Key != ConsoleKey.Spacebar) { }
+}
+
 
 
     public Plante? ChoisirNouvellePlante()

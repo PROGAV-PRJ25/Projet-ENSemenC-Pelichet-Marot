@@ -11,7 +11,7 @@ public abstract class Plante
     private Graines _graines;
 
     // — Propriétés / Attributs — 
-    public int PrixGraines { get; protected set;}
+    public int PrixGraines { get; protected set;} = 0;
     public string NomPlante { get; protected set; }
     public string Acronyme { get; protected set; }
     public int EspacePris { get; protected set; }
