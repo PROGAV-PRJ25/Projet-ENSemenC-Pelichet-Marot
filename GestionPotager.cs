@@ -27,14 +27,14 @@ public class GestionPotager
 
     public void LancerSimulation()
 {
-    while (_simulationEnCours && _jourActuel <= 30)
+    while (_simulationEnCours)
     {
         // 1) Génération de la météo
         var meteo = Meteo.GenererPourSaison(_saisonActuelle, _jourActuel);
 
         // 2) On informe à la fois le controller et la vue
         _controller.SetMeteo(meteo);
-        _vue.SetMeteo(meteo);    // ← c’est cette ligne qui manquait
+        _vue.SetMeteo(meteo);   
 
         // 3) Mise à jour des plantes
         _controller.MettreAJourPotager(meteo);
@@ -51,10 +51,7 @@ public class GestionPotager
         if (quitterSimulation) break;
         if (avancerJour)     _jourActuel++;
     }
-
-    Console.WriteLine(_simulationEnCours
-        ? "Fin de la simulation (30 jours atteints)."
-        : "Simulation arrêtée par l'utilisateur.");
+    Console.WriteLine("Simulation arrêtée par l'utilisateur.");
 }
 
     public void ArreterSimulation() => _simulationEnCours = false;
