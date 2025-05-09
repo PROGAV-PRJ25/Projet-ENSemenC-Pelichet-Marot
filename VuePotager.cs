@@ -143,7 +143,7 @@ public class VuePotager
             Console.WriteLine($"{"Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
             Console.WriteLine($"{"Température tolérée".PadRight(labelWidth)}: de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
             Console.WriteLine($"{"Espace requis".PadRight(labelWidth)}: {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
-            var niveaux = new[] { "très faible", "très faible à faible", "faible à modré", "modéré à fort", "fort à très fort" };
+            var niveaux = new[] { "très faible", "très faible à faible", "faible à modéré", "modéré à fort", "fort à très fort" };
             Console.WriteLine($"{"Ensoleillement souhaité".PadRight(labelWidth)}: indices {p.LuminositeIdeale-1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
 
             // Affichage de la barre de croissance
