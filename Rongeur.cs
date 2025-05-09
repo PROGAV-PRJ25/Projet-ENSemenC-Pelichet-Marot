@@ -4,7 +4,7 @@ public class Rongeur : Animal
     public override void AppliquerEffets(Plante p)
     {
         // Ex : plante meurt immédiatement
-        p.Tuer();
+        //p.Tuer();
     }   
     
 }

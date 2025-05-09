@@ -15,7 +15,9 @@ public class Soja : Plante
             hauteurMaximale:     1.0f,
             graines : graines
         )
-    { }
+    { 
+        RendementBase = 8;
+    }
     
     // Optionnel : on peut affiner le pattern de croissance pour le soja
     protected override void Pousser(float tauxSatisfaction)

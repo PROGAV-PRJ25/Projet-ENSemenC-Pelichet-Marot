@@ -11,7 +11,7 @@ public abstract class Plante
     private Graines _graines;
 
     // — Propriétés / Attributs — 
-    public int PrixGraines { get; protected set;} = 0;
+    public int PrixGraines { get; protected set; } = 0;
     public string NomPlante { get; protected set; }
     public string Acronyme { get; protected set; }
     public int EspacePris { get; protected set; }
@@ -19,13 +19,13 @@ public abstract class Plante
     public List<Saison> SaisonCompatible { get; protected set; }
 
     public float HydratationCritique { get; protected set; } = 30f;
-    public float LuminositeIdeale { get; protected set; } = 70f;
+    public int LuminositeIdeale { get; protected set; } = 3; // échelle 1–5
     public float TemperatureMinimale { get; protected set; }
     public float TemperatureMaximale { get; protected set; }
     public float VitesseDeshydratation { get; protected set; }
 
     public float HydratationActuelle { get; set; } = 100f;
-    public float LuminositeActuelle { get; protected set; } = 50f;
+    public int LuminositeActuelle { get; protected set; } = 3;
     public float TemperatureActuelle { get; set; } = 15f;
 
     public Obstacle? ObstacleActuel { get; private set; } = null;
@@ -34,6 +34,16 @@ public abstract class Plante
     public float VitesseCroissance { get; protected set; }
     public float HauteurActuelle { get; protected set; } = 0f;
     public float HauteurMaximale { get; protected set; } = 1f;
+
+
+    // Pour le suivi de maturation
+    public int JoursDepuisPlantation { get; private set; } = 0;
+    private float sommeSatisfaction = 0f;
+    public bool EstMature => HauteurActuelle >= HauteurMaximale;
+
+    // Nombre de graines produites à maturation parfaite.
+    public int RendementBase { get; protected set; } = 1;
+
 
     // — Constructeur — 
     protected Plante(
@@ -87,16 +97,16 @@ public abstract class Plante
     // — Actions de base — 
     public virtual void Arroser()
     {
-        if(_graines.PeutDepenser(5))
+        if (_graines.PeutDepenser(5))
         {
             _graines.Depenser(5);
             HydratationActuelle = 100f;
         }
     }
 
-    public virtual void RecevoirLumiere(float intensite)
+    public void SetLuminosite(int indice)
     {
-        LuminositeActuelle = Math.Min(100f, LuminositeActuelle + intensite);
+        LuminositeActuelle = Math.Clamp(indice, 1, 5);
     }
 
     public virtual void SetTemperature(float temperature)
@@ -110,8 +120,11 @@ public abstract class Plante
         int defauts = 0;
         // Hydratation
         if (HydratationActuelle < HydratationCritique) defauts++;
-        // Luminosité
-        if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f) defauts++;
+        // 2) Luminosité : valide si == idéale ou == idéale−1
+        if (LuminositeActuelle != LuminositeIdeale && LuminositeActuelle != (LuminositeIdeale - 1))
+        {
+            defauts++;
+        }
         // Température
         if (TemperatureActuelle < TemperatureMinimale
          || TemperatureActuelle > TemperatureMaximale) defauts++;
@@ -131,26 +144,31 @@ public abstract class Plante
 
     // — Mise à jour journalière — 
     public virtual void Update(
-        float tempsEcouleEnJours,
-        float temperatureDuJour,
-        bool espaceRespecte,
-        float coeffAbsorptionEau,
-        float luminositeDuJour,
-        Saison saisonActuelle,
-        Terrain terrainActuel
-    )
+    float tempsEcouleEnJours,
+    float temperatureDuJour,
+    bool espaceRespecte,
+    float coeffAbsorptionEau,
+    int luminositeDuJour,
+    Saison saisonActuelle,
+    Terrain terrainActuel
+)
     {
-        if (EstMorte) return;
+        if (EstMorte)
+            return;
 
-        // 1) Température
+        // 1) Appliquer la température du jour
         SetTemperature(temperatureDuJour);
 
-        // 2) Effets de l’obstacle s’il y en a un
+        // 2) Effets de l’obstacle (maladie, insecte, animal…)
         if (ObstacleActuel != null)
             ObstacleActuel.AppliquerEffets(this);
 
-        // 3) Conditions
-        float tauxNonOpt = EvaluerConditions(espaceRespecte, saisonActuelle, terrainActuel);
+        // 3) Calcul du taux de non-satisfaction (7 critères)
+        float tauxNonOpt = EvaluerConditions(
+            espaceRespecte,
+            saisonActuelle,
+            terrainActuel
+        );
         if (tauxNonOpt >= 0.5f)
         {
             Tuer();
@@ -158,15 +176,38 @@ public abstract class Plante
         }
         float tauxOpt = 1f - tauxNonOpt;
 
-        // 4) Croissance
+        // 4) Comptabiliser le jour et accumuler la satisfaction
+        JoursDepuisPlantation++;
+        sommeSatisfaction += tauxOpt;
+
+        // 5) Croissance proportionnelle à la satisfaction
         Pousser(tauxOpt);
 
-        // 5) Hydratation (modulée par le sol)
-        float perte = VitesseDeshydratation * tempsEcouleEnJours * (1f - coeffAbsorptionEau);
-        ReduireHydratation(perte);
+        // 6) Perte d’eau modulée par le sol
+        float perteEau = VitesseDeshydratation
+                       * tempsEcouleEnJours
+                       * (1f - coeffAbsorptionEau);
+        ReduireHydratation(perteEau);
 
-        // 6) Jauge de lumière persistante
-        LuminositeActuelle = Math.Max(0f, LuminositeActuelle - 1f * tempsEcouleEnJours);
+        // 7) Fixer l’indice de luminosité du jour (1 à 5)
+        SetLuminosite(luminositeDuJour);
+    }
+
+
+
+
+    public int Recolter()
+    {
+        if (!EstMature)
+            return 0;
+
+        // rendement proportionnel à la satisfaction moyenne
+        float moyenne = sommeSatisfaction / JoursDepuisPlantation;
+        int grainesGain = (int)Math.Round(RendementBase * moyenne);
+
+        // on marque la plante comme morte (elle disparaîtra au désherbage)
+        Tuer();
+        return grainesGain;
     }
 
     // — Croissance — 

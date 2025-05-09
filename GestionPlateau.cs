@@ -139,7 +139,20 @@ public class GestionPlateau
 
                 case ConsoleKey.R: // Récolter
                     if (terrain.Plante != null)
+                    {
+                        int gain = terrain.Plante.Recolter();
+                        if (gain > 0)
+                        {
+                            _graines.Ajouter(gain);
+                            Console.WriteLine($"\nRécolté ! +{gain} graines obtenues.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nLa plante n'est pas encore mature.");
+                        }
+                        // on retire la plante du plateau
                         terrain.Plante = null;
+                    }
                     choixFait = true;
                     break;
 
@@ -171,21 +184,21 @@ public class GestionPlateau
     }
 
     public bool CheckEspaceRespecte(int x, int y) => IsEspacementOk(x, y);
-    
+
     public int EspacementActuel(int x, int y)
-{
-    var cible = _plateau[y, x].Plante;
-    if (cible == null) return -1;
-    int minDist = int.MaxValue;
-    int h = _plateau.GetLength(0), w = _plateau.GetLength(1);
-    for (int yy = 0; yy < h; yy++)
-        for (int xx = 0; xx < w; xx++)
-            if (!(xx == x && yy == y) && _plateau[yy, xx].Plante != null)
-            {
-                int dist = Math.Max(Math.Abs(xx - x), Math.Abs(yy - y));
-                if (dist < minDist) minDist = dist;
-            }
-    return minDist == int.MaxValue ? -1 : minDist;
-}
+    {
+        var cible = _plateau[y, x].Plante;
+        if (cible == null) return -1;
+        int minDist = int.MaxValue;
+        int h = _plateau.GetLength(0), w = _plateau.GetLength(1);
+        for (int yy = 0; yy < h; yy++)
+            for (int xx = 0; xx < w; xx++)
+                if (!(xx == x && yy == y) && _plateau[yy, xx].Plante != null)
+                {
+                    int dist = Math.Max(Math.Abs(xx - x), Math.Abs(yy - y));
+                    if (dist < minDist) minDist = dist;
+                }
+        return minDist == int.MaxValue ? -1 : minDist;
+    }
 
 }

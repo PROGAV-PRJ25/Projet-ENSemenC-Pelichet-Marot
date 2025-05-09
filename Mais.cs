@@ -17,6 +17,7 @@ public class Mais : Plante
         )
     {
         HydratationCritique = 40f;
-        LuminositeIdeale    = 80f;
+        LuminositeIdeale    = 4;
+        RendementBase = 10;
     }
 }

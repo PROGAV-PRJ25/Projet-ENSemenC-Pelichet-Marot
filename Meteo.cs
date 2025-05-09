@@ -1,12 +1,9 @@
-// Meteo.cs
-using System;
-
 public class Meteo
 {
     private static readonly Random _rng = new Random();
 
     public float QuantitePluie   { get; }
-    public float Luminosite      { get; }
+    public int   Luminosite      { get; }    // 1 (nul) à 5 (très fort)
     public float Temperature     { get; }
     public bool  Intemperie      { get; }
     public Saison SaisonActuelle { get; }
@@ -14,71 +11,70 @@ public class Meteo
 
     private Meteo(
         float pluie,
-        float luminosite,
+        int   luminosite,
         float temperature,
-        bool intemperie,
+        bool  intemperie,
         Saison saison,
-        int jourActuel
+        int   jourActuel
     )
     {
         QuantitePluie   = Math.Clamp(pluie,  0f, 1f);
-        Luminosite      = Math.Clamp(luminosite,  0.1f, 1f);
+        Luminosite      = luminosite;           // déjà dans [1..5]
         Temperature     = temperature;
         Intemperie      = intemperie;
         SaisonActuelle  = saison;
-        Description     = GénérerDescription(jourActuel);
+        Description     = GenererDescription(jourActuel);
     }
 
     public static Meteo GenererPourSaison(Saison saison, int jourActuel)
     {
+        // Pluie et température comme avant
         float pluie       = CalculerPluie(saison);
-        float luminosite  = CalculerLuminosite(saison);
         float temperature = CalculerTemperature(saison);
         bool  intemperie  = DeterminerIntemperie(saison);
 
-        if (pluie > 0f)
-        {
-            luminosite = Math.Max(0.1f, luminosite - 0.2f);
-            temperature -= 5f;
-        }
+        // Nouvelle échelle 1–5 selon la saison
+        int lum;
+        if (saison is SaisonPluvieuse)
+            lum = _rng.Next(1, 4); // 1, 2 ou 3
+        else
+            lum = _rng.Next(3, 6); // 3, 4 ou 5
 
-        return new Meteo(pluie, luminosite, temperature, intemperie, saison, jourActuel);
+        // Impact de la pluie sur la température seulement
+        if (pluie > 0f)
+            temperature -= 5f;
+
+        return new Meteo(pluie, lum, temperature, intemperie, saison, jourActuel);
     }
 
     private static float CalculerPluie(Saison saison)
     {
         if (_rng.NextSingle() < saison.ProbabilitePluie)
         {
-            // Pluie randomisée entre 80% et 120% de la probabilité de la saison
-            var factor = 0.8f + _rng.NextSingle() * 0.4f;
+            float factor = 0.8f + _rng.NextSingle() * 0.4f;
             return Math.Clamp(saison.ProbabilitePluie * factor, 0f, 1f);
         }
         return 0f;
     }
 
-    private static float CalculerLuminosite(Saison saison)
-    {
-        var factor = 0.9f + _rng.NextSingle() * 0.2f;
-        return Math.Clamp(saison.LuminositeMoyenne * factor, 0.1f, 1f);
-    }
-
     private static float CalculerTemperature(Saison saison)
-    {
-        return saison.TemperatureMoyenne
-             + ( _rng.NextSingle() * 2f - 1f )
-             * saison.VariationTemperature;
-    }
+        => saison.TemperatureMoyenne
+         + ( _rng.NextSingle() * 2f - 1f )
+         * saison.VariationTemperature;
 
     private static bool DeterminerIntemperie(Saison saison)
         => _rng.NextSingle() < saison.ProbabiliteIntemperie;
 
-    private string GénérerDescription(int jour)
+    private string GenererDescription(int jour)
     {
-        var desc = $"Jour : {jour}\n" +
-                   $"Saison       : {SaisonActuelle.NomSaison}\n" +
-                   $"Température  : {Temperature:F1}°C\n" +
-                   $"Pluie        : {QuantitePluie:P0}\n" +
-                   $"Luminosité   : {Luminosite:P0}";
+        // Cartographie verbale pour les indices 1–5
+        string[] niveaux = { "nul", "faible", "modéré", "fort", "très fort" };
+
+        string desc = $"Jour               : {jour}\n" +
+                      $"Saison             : {SaisonActuelle.NomSaison}\n" +
+                      $"Température        : {Temperature:F1}°C\n" +
+                      $"Pluie              : {QuantitePluie:P0}\n" +
+                      $"Ensoleillement     : indice {Luminosite} ({niveaux[Luminosite-1]})";
 
         if (jour > 14 && Intemperie)
         {
