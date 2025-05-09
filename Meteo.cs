@@ -15,7 +15,7 @@ public class Meteo
         float temperature,
         bool  intemperie,
         Saison saison,
-        int   jourActuel
+        int   semaineActuelle
     )
     {
         QuantitePluie   = Math.Clamp(pluie,  0f, 1f);
@@ -23,10 +23,10 @@ public class Meteo
         Temperature     = temperature;
         Intemperie      = intemperie;
         SaisonActuelle  = saison;
-        Description     = GenererDescription(jourActuel);
+        Description     = GenererDescription(semaineActuelle);
     }
 
-    public static Meteo GenererPourSaison(Saison saison, int jourActuel)
+    public static Meteo GenererPourSaison(Saison saison, int semaineActuelle)
     {
         // Pluie et température comme avant
         float pluie       = CalculerPluie(saison);
@@ -44,7 +44,7 @@ public class Meteo
         if (pluie > 0f)
             temperature -= 5f;
 
-        return new Meteo(pluie, lum, temperature, intemperie, saison, jourActuel);
+        return new Meteo(pluie, lum, temperature, intemperie, saison, semaineActuelle);
     }
 
     private static float CalculerPluie(Saison saison)
@@ -65,18 +65,18 @@ public class Meteo
     private static bool DeterminerIntemperie(Saison saison)
         => _rng.NextSingle() < saison.ProbabiliteIntemperie;
 
-    private string GenererDescription(int jour)
+    private string GenererDescription(int semaine)
     {
         // Cartographie verbale pour les indices 1–5
         string[] niveaux = { "nul", "faible", "modéré", "fort", "très fort" };
 
-        string desc = $"Jour               : {jour}\n" +
+        string desc = $"Semaine               : {semaine}\n" +
                       $"Saison             : {SaisonActuelle.NomSaison}\n" +
                       $"Température        : {Temperature:F1}°C\n" +
                       $"Pluie              : {QuantitePluie:P0}\n" +
                       $"Ensoleillement     : indice {Luminosite} ({niveaux[Luminosite-1]})";
 
-        if (jour > 14 && Intemperie)
+        if (semaine > 5 && Intemperie)
         {
             desc += _rng.Next(2) == 0
                 ? "\n⚡ Orage"

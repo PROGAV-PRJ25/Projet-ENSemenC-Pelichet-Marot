@@ -37,7 +37,7 @@ public abstract class Plante
 
 
     // Pour le suivi de maturation
-    public int JoursDepuisPlantation { get; private set; } = 0;
+    public int SemainesDepuisPlantation { get; private set; } = 0;
     private float sommeSatisfaction = 0f;
     public bool EstMature => HauteurActuelle >= HauteurMaximale;
 
@@ -144,11 +144,11 @@ public abstract class Plante
 
     // — Mise à jour journalière — 
     public virtual void Update(
-    float tempsEcouleEnJours,
-    float temperatureDuJour,
+    float tempsEcouleEnSemaines,
+    float temperatureSemaine,
     bool espaceRespecte,
     float coeffAbsorptionEau,
-    int luminositeDuJour,
+    int luminositeSemaine,
     Saison saisonActuelle,
     Terrain terrainActuel
 )
@@ -156,8 +156,8 @@ public abstract class Plante
         if (EstMorte)
             return;
 
-        // 1) Appliquer la température du jour
-        SetTemperature(temperatureDuJour);
+        // 1) Appliquer la température de la semaines
+        SetTemperature(temperatureSemaine);
 
         // 2) Effets de l’obstacle (maladie, insecte, animal…)
         if (ObstacleActuel != null)
@@ -176,8 +176,8 @@ public abstract class Plante
         }
         float tauxOpt = 1f - tauxNonOpt;
 
-        // 4) Comptabiliser le jour et accumuler la satisfaction
-        JoursDepuisPlantation++;
+        // 4) Comptabiliser les semaines et accumuler la satisfaction
+        SemainesDepuisPlantation++;
         sommeSatisfaction += tauxOpt;
 
         // 5) Croissance proportionnelle à la satisfaction
@@ -185,12 +185,12 @@ public abstract class Plante
 
         // 6) Perte d’eau modulée par le sol
         float perteEau = VitesseDeshydratation
-                       * tempsEcouleEnJours
+                       * tempsEcouleEnSemaines
                        * (1f - coeffAbsorptionEau);
         ReduireHydratation(perteEau);
 
-        // 7) Fixer l’indice de luminosité du jour (1 à 5)
-        SetLuminosite(luminositeDuJour);
+        // 7) Fixer l’indice de luminosité de la semaine (1 à 5)
+        SetLuminosite(luminositeSemaine);
     }
 
 
@@ -202,7 +202,8 @@ public abstract class Plante
             return 0;
 
         // rendement proportionnel à la satisfaction moyenne
-        float moyenne = sommeSatisfaction / JoursDepuisPlantation;
+        float moyenne = sommeSatisfaction / SemainesDepuisPlantation;
+        sommeSatisfaction = SemainesDepuisPlantation;
         int grainesGain = (int)Math.Round(RendementBase * moyenne);
 
         // on marque la plante comme morte (elle disparaîtra au désherbage)

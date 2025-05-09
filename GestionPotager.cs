@@ -4,7 +4,7 @@ public class GestionPotager
     private readonly VuePotager _vue;
     private readonly Graines _graines;
     private Saison _saisonActuelle;
-    private int _jourActuel;
+    private int _semaineActuelle;
     private bool _simulationEnCours;
 
     public GestionPotager(int largeur, int hauteur)
@@ -26,7 +26,7 @@ public class GestionPotager
 
         // 6) État initial
         _saisonActuelle = new SaisonPluvieuse();
-        _jourActuel = 1;
+        _semaineActuelle = 1;
         _simulationEnCours = true;
     }
 
@@ -35,7 +35,7 @@ public class GestionPotager
         while (_simulationEnCours)
         {
             // a) Génération de la météo
-            var meteo = Meteo.GenererPourSaison(_saisonActuelle, _jourActuel);
+            var meteo = Meteo.GenererPourSaison(_saisonActuelle, _semaineActuelle);
 
             // b) On informe le contrôleur et la vue
             _controller.SetMeteo(meteo);
@@ -56,7 +56,7 @@ public class GestionPotager
             if (quitterSimulation)
                 break;
             if (avancerJour)
-                _jourActuel++;
+                _semaineActuelle++;
         }
 
         Console.WriteLine("Simulation arrêtée par l'utilisateur.");

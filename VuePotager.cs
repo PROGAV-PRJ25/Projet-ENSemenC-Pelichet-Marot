@@ -42,7 +42,7 @@ public class VuePotager
 
         Console.WriteLine(
             "\n🡅/🡇/🡄/🡆 : déplacer  \n" +
-            "Espace : action | E : jour suivant | I: info | Q : quitter");
+            "Espace : action | E : semaine suivante | I: info | Q : quitter");
     }
 
     private void AfficherCase(int x, int y)

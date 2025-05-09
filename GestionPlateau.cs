@@ -36,20 +36,20 @@ public class GestionPlateau
 
                 bool espaceOk = IsEspacementOk(x, y);
                 plante.Update(
-                    tempsEcouleEnJours: 1f,
-                    temperatureDuJour: meteo.Temperature,
+                    tempsEcouleEnSemaines: 1f,
+                    temperatureSemaine: meteo.Temperature,
                     espaceRespecte: espaceOk,
                     coeffAbsorptionEau: terrain.CoeffAbsorptionEau,
-                    luminositeDuJour: meteo.Luminosite,
+                    luminositeSemaine: meteo.Luminosite,
                     saisonActuelle: meteo.SaisonActuelle,
                     terrainActuel: terrain
                 );
             }
     }
 
-    public void GererInteractionUtilisateur(out bool avancerJour, out bool quitterSimulation)
+    public void GererInteractionUtilisateur(out bool avancerSemaine, out bool quitterSimulation)
     {
-        avancerJour = quitterSimulation = false;
+        avancerSemaine = quitterSimulation = false;
         bool actionTerminee = false;
         while (!actionTerminee)
         {
@@ -68,7 +68,7 @@ public class GestionPlateau
                     break;
 
                 case ConsoleKey.E:
-                    avancerJour = true;
+                    avancerSemaine = true;
                     actionTerminee = true;
                     break;
 
