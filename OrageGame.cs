@@ -21,6 +21,7 @@ public class OrageGame : IMiniJeu
 {
     Console.Clear();
     Console.WriteLine("Gérer un gros orage : posez la bâche sur 5 plantes en 10 s !");
+    Console.WriteLine("Utilise les flèches et espace");
     Thread.Sleep(1000);
 
     // 1) Récupère jusqu'à 5 plantes existantes
