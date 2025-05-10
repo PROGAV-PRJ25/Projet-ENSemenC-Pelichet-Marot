@@ -88,7 +88,7 @@ public class GestionPlateau
     {
         var terrain = _plateau[CurseurY, CurseurX];
         _vue.AfficherPlanteOuTerrain(terrain, CurseurX, CurseurY);
-        Console.WriteLine("\n[Appuyez sur Espace pour revenir]");
+        Console.WriteLine("\n\n[Appuyez sur Espace pour revenir]");
         while (Console.ReadKey(true).Key != ConsoleKey.Spacebar) { }
         Thread.Sleep(1000);
     }

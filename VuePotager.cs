@@ -43,7 +43,7 @@ public class VuePotager
 
         Console.WriteLine(
             "\n🡅/🡇/🡄/🡆 : se déplacer  \n" +
-            "Espace  : action  \nE       : semaine suivante \nI       : info \nQ       : quitter");
+            "Espace  : action  \nI       : info \nE       : semaine suivante\nQ       : quitter"); 
     }
 
     private void AfficherCase(int x, int y)
@@ -136,28 +136,22 @@ public class VuePotager
         else
         {
             var p = terrain.Plante;
-            const int labelWidth = 30;  // Ajusté pour aligner le texte
+
 
             // 1) Préférences de la plante
+            int labelWidth = 30;
+
             Console.WriteLine($"=== Préférences de {p.NomPlante} ===\n");
-            Console.WriteLine($"{"⛰️ Terrain idéal".PadRight(labelWidth)}: {p.TerrainIdeal.NomTerrain}");
-            Console.WriteLine($"{"🍂 Saison préférée".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
-            Console.WriteLine($"{"💧 Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
-            Console.WriteLine($"{"🌡️ Température tolérée".PadRight(labelWidth)}: de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
-            Console.WriteLine($"{"↔️ Espace requis".PadRight(labelWidth)}: {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
+            Console.WriteLine($"{"⛰️  Terrain idéal".PadRight(labelWidth)}: {p.TerrainIdeal.NomTerrain}");
+            Console.WriteLine($"{"🍂  Saison préférée".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
+            Console.WriteLine($"{"💧  Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
+            Console.WriteLine($"{"🌡️  Température tolérée".PadRight(labelWidth)} : de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
+            Console.WriteLine($"{"↔️  Espace requis".PadRight(labelWidth)}: {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
+
             var niveaux = new[] { "très faible", "très faible à faible", "faible à modéré", "modéré à fort", "fort à très fort" };
-            Console.WriteLine($"{"☀️ Ensoleillement souhaité".PadRight(labelWidth)}: indices {p.LuminositeIdeale - 1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
+            Console.WriteLine($"{"☀️  Ensoleillement souhaité".PadRight(labelWidth)}: indices {p.LuminositeIdeale - 1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
 
-            // Affichage de la barre de croissance
-            double ratio = p.HauteurActuelle / p.HauteurMaximale;
-            int totalSegments = 10;
-            int remplis = (int)Math.Round(ratio * totalSegments);
-            string barre = "["
-                         + new string('#', remplis)
-                         + new string(' ', totalSegments - remplis)
-                         + $"] {ratio * 100:F0}%";
 
-            Console.WriteLine($"\n{"Croissance".PadRight(labelWidth)}: {barre} 🌱 Récoltez quand la plante est mature");
 
 
 
@@ -194,6 +188,18 @@ public class VuePotager
             Console.WriteLine($"{(condObs ? "✅" : "❌")} {"Maladie/Nuisible".PadRight(labelWidth)}: {nomObs} {detailsObs}");
             Console.WriteLine($"{(condSaison ? "✅" : "❌")} {"Saison".PadRight(labelWidth)}: {_meteo.SaisonActuelle.NomSaison}");
             Console.WriteLine($"{(condTerrain ? "✅" : "❌")} {"Terrain".PadRight(labelWidth)}: {terrain.NomTerrain}");
+
+            // Affichage de la barre de croissance
+            double ratio = p.HauteurActuelle / p.HauteurMaximale;
+            int totalSegments = 10;
+            int remplis = (int)Math.Round(ratio * totalSegments);
+            string barre = "["
+                         + new string('#', remplis)
+                         + new string(' ', totalSegments - remplis)
+                         + $"] {ratio * 100:F0}%";
+
+            Console.WriteLine($"\nCroissance... récolter quand la plante est mature");
+            Console.WriteLine($"🌱  {barre}");
         }
     }
 
