@@ -6,6 +6,7 @@ public class VuePotager
     private Graines _graines;
     private const int CellWidth = 2;
 
+
     public VuePotager(Terrain[,] plateau, Graines graines)
     {
         _plateau = plateau;
@@ -144,7 +145,7 @@ public class VuePotager
             Console.WriteLine($"{"Température tolérée".PadRight(labelWidth)}: de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
             Console.WriteLine($"{"Espace requis".PadRight(labelWidth)}: {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
             var niveaux = new[] { "très faible", "très faible à faible", "faible à modéré", "modéré à fort", "fort à très fort" };
-            Console.WriteLine($"{"Ensoleillement souhaité".PadRight(labelWidth)}: indices {p.LuminositeIdeale-1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
+            Console.WriteLine($"{"Ensoleillement souhaité".PadRight(labelWidth)}: indices {p.LuminositeIdeale - 1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
 
             // Affichage de la barre de croissance
             double ratio = p.HauteurActuelle / p.HauteurMaximale;

@@ -2,36 +2,36 @@ public class Meteo
 {
     private static readonly Random _rng = new Random();
 
-    public float QuantitePluie   { get; }
-    public int   Luminosite      { get; }    // 1 (nul) à 5 (très fort)
-    public float Temperature     { get; }
-    public bool  Intemperie      { get; }
+    public float QuantitePluie { get; }
+    public int Luminosite { get; }    // 1 (nul) à 5 (très fort)
+    public float Temperature { get; }
+    public bool Intemperie { get; }
     public Saison SaisonActuelle { get; }
-    public string Description    { get; }
+    public string Description { get; }
 
     private Meteo(
         float pluie,
-        int   luminosite,
+        int luminosite,
         float temperature,
-        bool  intemperie,
+        bool intemperie,
         Saison saison,
-        int   semaineActuelle
+        int semaineActuelle
     )
     {
-        QuantitePluie   = Math.Clamp(pluie,  0f, 1f);
-        Luminosite      = luminosite;           // déjà dans [1..5]
-        Temperature     = temperature;
-        Intemperie      = intemperie;
-        SaisonActuelle  = saison;
-        Description     = GenererDescription(semaineActuelle);
+        QuantitePluie = Math.Clamp(pluie, 0f, 1f);
+        Luminosite = luminosite;           // déjà dans [1..5]
+        Temperature = temperature;
+        Intemperie = intemperie;
+        SaisonActuelle = saison;
+        Description = GenererDescription(semaineActuelle);
     }
 
     public static Meteo GenererPourSaison(Saison saison, int semaineActuelle)
     {
         // Pluie et température comme avant
-        float pluie       = CalculerPluie(saison);
+        float pluie = CalculerPluie(saison);
         float temperature = CalculerTemperature(saison);
-        bool  intemperie  = DeterminerIntemperie(saison);
+        bool intemperie = DeterminerIntemperie(saison);
 
         // Nouvelle échelle 1–5 selon la saison
         int lum;
@@ -59,7 +59,7 @@ public class Meteo
 
     private static float CalculerTemperature(Saison saison)
         => saison.TemperatureMoyenne
-         + ( _rng.NextSingle() * 2f - 1f )
+         + (_rng.NextSingle() * 2f - 1f)
          * saison.VariationTemperature;
 
     private static bool DeterminerIntemperie(Saison saison)
@@ -74,7 +74,7 @@ public class Meteo
                       $"Saison             : {SaisonActuelle.NomSaison}\n" +
                       $"Température        : {Temperature:F1}°C\n" +
                       $"Pluie              : {QuantitePluie:P0}\n" +
-                      $"Ensoleillement     : indice {Luminosite} ({niveaux[Luminosite-1]})";
+                      $"Ensoleillement     : indice {Luminosite} ({niveaux[Luminosite - 1]})";
 
         if (semaine > 5 && Intemperie)
         {
