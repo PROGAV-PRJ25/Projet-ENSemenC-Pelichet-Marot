@@ -218,4 +218,25 @@ public class GestionPlateau
         return minDist == int.MaxValue ? -1 : minDist;
     }
 
+    public List<(int x, int y)> Choisir5PlantesAleatoires()
+    {
+        var toutes = new List<(int x, int y)>();
+        int h = _plateau.GetLength(0), w = _plateau.GetLength(1);
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+                if (_plateau[y, x].Plante != null)
+                    toutes.Add((x, y));
+
+        // Mélange
+        var rnd = new Random();
+        for (int i = toutes.Count - 1; i > 0; i--)
+        {
+            int j = rnd.Next(i + 1);
+            (toutes[i], toutes[j]) = (toutes[j], toutes[i]);
+        }
+
+        // On retourne au plus 5
+        return toutes.GetRange(0, Math.Min(5, toutes.Count));
+    }
+
 }

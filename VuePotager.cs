@@ -5,6 +5,8 @@ public class VuePotager
     private Meteo _meteo;
     private Graines _graines;
     private const int CellWidth = 2;
+    public int Hauteur => _plateau.GetLength(0);
+    public int Largeur => _plateau.GetLength(1);
 
 
     public VuePotager(Terrain[,] plateau, Graines graines)
@@ -43,7 +45,7 @@ public class VuePotager
 
         Console.WriteLine(
             "\n🡅/🡇/🡄/🡆 : se déplacer  \n" +
-            "Espace  : action  \nI       : info \nE       : semaine suivante\nQ       : quitter"); 
+            "Espace  : action  \nI       : info \nE       : semaine suivante\nQ       : quitter");
     }
 
     private void AfficherCase(int x, int y)
@@ -262,5 +264,44 @@ public class VuePotager
             }
         }
     }
+
+    public void AfficherPotagerMasque(List<(int x, int y)> targets, HashSet<(int x, int y)> proteges, (int x, int y) cursor)
+    {
+        Console.Clear();
+        Console.WriteLine("=== MODE URGENCE : PROTÉGER LES PLANTES ===\n");
+
+        for (int y = 0; y < Hauteur; y++)
+        {
+            for (int x = 0; x < Largeur; x++)
+            {
+                bool estCurseur = (x == cursor.x && y == cursor.y);
+                bool estProtege = proteges.Contains((x, y));
+                bool estCible = targets.Contains((x, y));
+
+                // Couleur du fond si sur le curseur
+                Console.BackgroundColor = estCurseur ? ConsoleColor.DarkCyan : ConsoleColor.Black;
+
+                if (estProtege)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(" 🛡️ ");
+                }
+                else if (estCible)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(" 🌱 ");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write(" XX ");
+                }
+
+                Console.ResetColor();
+            }
+            Console.WriteLine();
+        }
+    }
+
 
 }
