@@ -18,7 +18,7 @@ public class CanneASucre : Plante
     {
         HydratationCritique = 60f;
         LuminositeIdeale = 4;
-        RendementBase = 15;
+        RendementBase = 18;
     }
 
     protected override void Pousser(float tauxSatisfaction)

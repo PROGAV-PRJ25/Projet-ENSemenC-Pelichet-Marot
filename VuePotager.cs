@@ -23,7 +23,7 @@ public class VuePotager
     {
         Console.Clear();
         Console.WriteLine("=== POTAGER VU DU CIEL ===");
-        Console.WriteLine($"Nombre de graine : {_graines.Nombre}\n");
+        Console.WriteLine($"💵 Nombre de graine : {_graines.Nombre}\n");
 
         if (_meteo != null)
             Console.WriteLine(_meteo.Description + "\n");
@@ -42,8 +42,8 @@ public class VuePotager
         }
 
         Console.WriteLine(
-            "\n🡅/🡇/🡄/🡆 : déplacer  \n" +
-            "Espace : action | E : semaine suivante | I: info | Q : quitter");
+            "\n🡅/🡇/🡄/🡆 : se déplacer  \n" +
+            "Espace  : action  \nE       : semaine suivante \nI       : info \nQ       : quitter");
     }
 
     private void AfficherCase(int x, int y)
@@ -77,10 +77,10 @@ public class VuePotager
     {
         var légendes = new (string Nom, ConsoleColor Couleur)[]
         {
-            ("Argile", ConsoleColor.DarkGray),
-            ("Sable",  ConsoleColor.Yellow),
-            ("Terre",ConsoleColor.Green),
-            ("Eau",ConsoleColor.Cyan)
+            ("Argileux", ConsoleColor.DarkGray),
+            ("Sableux",  ConsoleColor.Yellow),
+            ("Terreux",ConsoleColor.Green),
+            ("Point d'eau",ConsoleColor.Cyan)
         };
 
         foreach (var (nom, couleur) in légendes)
@@ -104,19 +104,20 @@ public class VuePotager
             Console.WriteLine($"\nPlante : {terrain.Plante.NomPlante}\n");
             if (_graines.PeutDepenser(5))
             {
-                Console.WriteLine("A : Arroser (5 graines)");
+                Console.WriteLine("A : Arroser 🚿 (5 graines)");
             }
             else
             {
                 Console.WriteLine("Vous n'avez pas assez de graines pour arroser (5 graines)");
             }
-            Console.WriteLine("D : Désherber");
-            Console.WriteLine("R : Récolter");
+            Console.WriteLine("R : Récolter 🫴 ");
+            Console.WriteLine("D : Désherber 🪓");
+
         }
         else
         {
             Console.WriteLine("Aucune plante.\n");
-            Console.WriteLine("P : Planter");
+            Console.WriteLine("P : Planter 🌱");
         }
 
         Console.WriteLine("Espace : annuler");
@@ -129,23 +130,23 @@ public class VuePotager
         {
             // Affichage quand il n'y a pas de plante
             Console.WriteLine($"=== Terrain {terrain.NomTerrain} ===\n");
-            Console.WriteLine($"Fertilité : {terrain.Fertilité}");
-            Console.WriteLine($"Absorption d'eau : {terrain.CoeffAbsorptionEau}");
+            Console.WriteLine($"Fertilité 📈       : {terrain.Fertilité}");
+            Console.WriteLine($"Absorption d'eau 💧: {terrain.CoeffAbsorptionEau}");
         }
         else
         {
             var p = terrain.Plante;
-            const int labelWidth = 24;  // Ajusté pour aligner le texte
+            const int labelWidth = 30;  // Ajusté pour aligner le texte
 
             // 1) Préférences de la plante
             Console.WriteLine($"=== Préférences de {p.NomPlante} ===\n");
-            Console.WriteLine($"{"Terrain idéal".PadRight(labelWidth)}: {p.TerrainIdeal.NomTerrain}");
-            Console.WriteLine($"{"Saisons semis".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
-            Console.WriteLine($"{"Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
-            Console.WriteLine($"{"Température tolérée".PadRight(labelWidth)}: de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
-            Console.WriteLine($"{"Espace requis".PadRight(labelWidth)}: {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
+            Console.WriteLine($"{"⛰️ Terrain idéal".PadRight(labelWidth)}: {p.TerrainIdeal.NomTerrain}");
+            Console.WriteLine($"{"🍂 Saison préférée".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
+            Console.WriteLine($"{"💧 Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
+            Console.WriteLine($"{"🌡️ Température tolérée".PadRight(labelWidth)}: de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
+            Console.WriteLine($"{"↔️ Espace requis".PadRight(labelWidth)}: {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
             var niveaux = new[] { "très faible", "très faible à faible", "faible à modéré", "modéré à fort", "fort à très fort" };
-            Console.WriteLine($"{"Ensoleillement souhaité".PadRight(labelWidth)}: indices {p.LuminositeIdeale - 1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
+            Console.WriteLine($"{"☀️ Ensoleillement souhaité".PadRight(labelWidth)}: indices {p.LuminositeIdeale - 1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
 
             // Affichage de la barre de croissance
             double ratio = p.HauteurActuelle / p.HauteurMaximale;
@@ -156,7 +157,9 @@ public class VuePotager
                          + new string(' ', totalSegments - remplis)
                          + $"] {ratio * 100:F0}%";
 
-            Console.WriteLine($"\n{"Croissance".PadRight(labelWidth)}: {barre}");
+            Console.WriteLine($"\n{"Croissance".PadRight(labelWidth)}: {barre} 🌱 Récoltez quand la plante est mature");
+
+
 
             // 2) État actuel des conditions
             Console.WriteLine("\n=== État actuel ===\n");
@@ -174,6 +177,8 @@ public class VuePotager
 
             bool condObs = p.ObstacleActuel == null;
             string nomObs = p.ObstacleActuel?.Nom ?? "Aucun";
+            string detailsObs = p.ObstacleActuel != null ? $" ({p.ObstacleActuel.Description})"
+    : "";
 
             bool condSaison = p.SaisonCompatible
                 .Any(s => s.NomSaison == _meteo.SaisonActuelle.NomSaison);
@@ -186,65 +191,70 @@ public class VuePotager
             Console.WriteLine($"{(condLum ? "✅" : "❌")} {"Ensoleillement".PadRight(labelWidth)}: indice {p.LuminositeActuelle}");
             Console.WriteLine($"{(condTemp ? "✅" : "❌")} {"Température".PadRight(labelWidth)}: {p.TemperatureActuelle:F1}°C");
             Console.WriteLine($"{(condEsp ? "✅" : "❌")} {"Espacement actuel".PadRight(labelWidth)}: {texteEsp} (besoin : {p.EspacePris})");
-            Console.WriteLine($"{(condObs ? "✅" : "❌")} {"Maladie/Nuisible".PadRight(labelWidth)}: {nomObs}");
+            Console.WriteLine($"{(condObs ? "✅" : "❌")} {"Maladie/Nuisible".PadRight(labelWidth)}: {nomObs} {detailsObs}");
             Console.WriteLine($"{(condSaison ? "✅" : "❌")} {"Saison".PadRight(labelWidth)}: {_meteo.SaisonActuelle.NomSaison}");
             Console.WriteLine($"{(condTerrain ? "✅" : "❌")} {"Terrain".PadRight(labelWidth)}: {terrain.NomTerrain}");
         }
-
-        Console.WriteLine("\n[Appuyez sur Espace pour revenir]");
-        while (Console.ReadKey(true).Key != ConsoleKey.Spacebar) { }
     }
 
 
 
     public Plante? ChoisirNouvellePlante()
     {
-        Console.Clear();
-        Console.WriteLine($"Graines disponibles : {_graines}");
-        Console.WriteLine();
-        Console.WriteLine("Plantes :");
-        Console.WriteLine("1 - Soja (10 graines)");
-        Console.WriteLine("2 - Maïs (12 graines)");
-        Console.WriteLine("3 - Canne à sucre (14 graines)");
-        Console.WriteLine("4 - Café (16 graines)");
-        Console.WriteLine("5 - Cactus (20 graines)");
-        Console.WriteLine("6 - Coton (15 graines)");
-        Console.WriteLine("0 - Annuler");
-
         while (true)
         {
+            Console.Clear();
+            Console.WriteLine($"Graines disponibles : {_graines}\n");
+            Console.WriteLine("Plantes :");
+            Console.WriteLine("1 - 🫛 Soja          (10 graines)");
+            Console.WriteLine("2 - 🌽 Maïs          (12 graines)");
+            Console.WriteLine("3 - 🎍 Canne à sucre (14 graines)");
+            Console.WriteLine("4 - ☕ Café          (16 graines)");
+            Console.WriteLine("5 - 🌵 Cactus        (20 graines)");
+            Console.WriteLine("6 - 🧶 Coton         (15 graines)");
+            Console.WriteLine("0 - Annuler");
             Console.Write("\nVotre choix : ");
-            var saisie = Console.ReadLine();
-            Plante? plante = saisie switch
+
+            var key = Console.ReadKey(true).Key;
+            Plante? plante = key switch
             {
-                "1" => new Soja(_graines),
-                "2" => new Mais(_graines),
-                "3" => new CanneASucre(_graines),
-                "4" => new Cafe(_graines),
-                "5" => new Cactus(_graines),
-                "6" => new Coton(_graines),
-                "0" => null,
+                ConsoleKey.D1 or ConsoleKey.NumPad1 => new Soja(_graines),
+                ConsoleKey.D2 or ConsoleKey.NumPad2 => new Mais(_graines),
+                ConsoleKey.D3 or ConsoleKey.NumPad3 => new CanneASucre(_graines),
+                ConsoleKey.D4 or ConsoleKey.NumPad4 => new Cafe(_graines),
+                ConsoleKey.D5 or ConsoleKey.NumPad5 => new Cactus(_graines),
+                ConsoleKey.D6 or ConsoleKey.NumPad6 => new Coton(_graines),
+                ConsoleKey.D0 or ConsoleKey.NumPad0 => null,
                 _ => null
             };
 
-            if (plante == null && saisie != "0")
+            if (plante == null && key != ConsoleKey.D0 && key != ConsoleKey.NumPad0)
             {
-                Console.WriteLine("Choix invalide.");
+                Console.WriteLine("\nChoix invalide.");
+                Thread.Sleep(2000);
                 continue;
             }
 
-            if (plante == null) return null;
+            if (plante == null)
+            {
+                // Annulation
+                return null;
+            }
 
             if (_graines.PeutDepenser(plante.PrixGraines))
             {
-                Console.WriteLine($"Vous avez planté un(e) {plante.GetType().Name} !");
                 _graines.Depenser(plante.PrixGraines);
+                Console.WriteLine($"\nVous avez planté un(e) {plante.GetType().Name} !");
+                Thread.Sleep(1000);
                 return plante;
             }
             else
             {
-                Console.WriteLine("Pas assez de graines pour cette plante.");
+                Console.WriteLine("\nPas assez de graines pour cette plante.");
+                Thread.Sleep(1000);
+                continue;
             }
         }
     }
+
 }

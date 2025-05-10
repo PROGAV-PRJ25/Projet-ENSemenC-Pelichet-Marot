@@ -4,7 +4,7 @@ public class MaladieRouille : Maladie
         : base(
             nom: "Rouille",
             desc: "Poussière orange sur les tiges",
-            proba: 0.08f,
+            proba: 0.008f,
             gravite: 3f
         )
     {}

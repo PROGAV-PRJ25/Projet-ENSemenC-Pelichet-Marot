@@ -18,7 +18,7 @@ public class Cactus : Plante
         {
             HydratationCritique = 10f;
             LuminositeIdeale    = 5;
-            RendementBase = 2;
+            RendementBase = 40;
         }
 
         protected override void Pousser(float tauxSatisfaction)

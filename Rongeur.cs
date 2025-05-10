@@ -1,10 +1,13 @@
 public class Rongeur : Animal
 {
-    public Rongeur() : base("Rongeur", "Mangeur de racines", 0.05f) { }
+    public Rongeur() : base(
+        nom: "Rongeur",
+        desc: "Mangeur de racines",
+        proba: 0.0005f) { }
     public override void AppliquerEffets(Plante p)
     {
-        // Ex : plante meurt immédiatement
-        //p.Tuer();
+        // plante meurt immédiatement
+        p.Tuer();
     }   
     
 }

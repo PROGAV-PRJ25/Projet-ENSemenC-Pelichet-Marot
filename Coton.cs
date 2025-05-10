@@ -18,7 +18,7 @@ public class Coton : Plante
     {
         HydratationCritique = 35f;
         LuminositeIdeale = 3;
-        RendementBase = 7;
+        RendementBase = 20;
     }
 
     protected override void Pousser(float tauxSatisfaction)

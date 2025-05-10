@@ -90,6 +90,7 @@ public class GestionPlateau
         _vue.AfficherPlanteOuTerrain(terrain, CurseurX, CurseurY);
         Console.WriteLine("\n[Appuyez sur Espace pour revenir]");
         while (Console.ReadKey(true).Key != ConsoleKey.Spacebar) { }
+        Thread.Sleep(1000);
     }
 
     private void MoveCurseur(int dx, int dy)
@@ -123,16 +124,19 @@ public class GestionPlateau
                             terrain.Plante.Arroser();
                             _graines.Depenser(coutArrosage);
                             Console.WriteLine($"\nArrosage ! (-{coutArrosage} graines)");
+                            Thread.Sleep(1000);
                         }
                         else
                         {
                             Console.WriteLine("\nPas assez de graines pour arroser !");
+                            Thread.Sleep(1000);
                         }
                     }
                     choixFait = true;
                     break;
 
                 case ConsoleKey.D: // Désherber
+                    Thread.Sleep(1000);
                     terrain.Plante = null;
                     choixFait = true;
                     break;
@@ -144,14 +148,16 @@ public class GestionPlateau
                         if (gain > 0)
                         {
                             _graines.Ajouter(gain);
+                            // on retire la plante du plateau
+                            terrain.Plante = null;
                             Console.WriteLine($"\nRécolté ! +{gain} graines obtenues.");
+                            Thread.Sleep(2000);
                         }
                         else
                         {
                             Console.WriteLine("\nLa plante n'est pas encore mature.");
+                            Thread.Sleep(2000);
                         }
-                        // on retire la plante du plateau
-                        terrain.Plante = null;
                     }
                     choixFait = true;
                     break;
@@ -162,8 +168,7 @@ public class GestionPlateau
                         if (terrain is TerrainAquatique)
                         {
                             Console.WriteLine("\n\nVous ne pouvez pas planter sur un terrain aquatique 🌊");
-                            Console.WriteLine("[Appuyez sur une touche pour continuer]");
-                            Console.ReadKey(true);   // ← Attend que le joueur valide
+                            Thread.Sleep(2000);
                         }
                         else
                         {

@@ -16,7 +16,7 @@ public class Soja : Plante
             graines : graines
         )
     { 
-        RendementBase = 8;
+        RendementBase = 12;
     }
     
     // Optionnel : on peut affiner le pattern de croissance pour le soja

@@ -18,7 +18,7 @@ public class Cafe : Plante
     {
         HydratationCritique = 65f;
         LuminositeIdeale = 2;
-        RendementBase = 5;
+        RendementBase = 20;
     }
 
     protected override void Pousser(float tauxSatisfaction)
