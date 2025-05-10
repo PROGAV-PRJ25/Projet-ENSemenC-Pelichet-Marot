@@ -156,11 +156,23 @@ public class GestionPlateau
                     choixFait = true;
                     break;
 
-                case ConsoleKey.P: // Planter (délègue la dépense à la vue)
+                case ConsoleKey.P: // Planter
                     if (terrain.Plante == null)
-                        terrain.Plante = _vue.ChoisirNouvellePlante();
+                    {
+                        if (terrain is TerrainAquatique)
+                        {
+                            Console.WriteLine("\n\nVous ne pouvez pas planter sur un terrain aquatique 🌊");
+                            Console.WriteLine("[Appuyez sur une touche pour continuer]");
+                            Console.ReadKey(true);   // ← Attend que le joueur valide
+                        }
+                        else
+                        {
+                            terrain.Plante = _vue.ChoisirNouvellePlante();
+                        }
+                    }
                     choixFait = true;
                     break;
+
 
                 case ConsoleKey.Spacebar: // Annuler
                     choixFait = true;

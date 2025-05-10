@@ -30,9 +30,9 @@ public class VuePotager
         else
             Console.WriteLine("Météo non disponible.\n");
 
-        AfficherLegende();
-
         Console.WriteLine($"Curseur: X={_controller.CurseurX}, Y={_controller.CurseurY}\n");
+
+        AfficherLegende();
 
         for (int y = 0; y < _plateau.GetLength(0); y++)
         {
@@ -96,12 +96,12 @@ public class VuePotager
     public void AfficherActionsCase(Terrain terrain)
     {
         Console.Clear();
-        Console.WriteLine("=== ACTION PARCELLE ===\n");
-        Console.WriteLine($"Terrain : {terrain.NomTerrain}\n");
+        Console.WriteLine("=== ACTION PARCELLE ===");
+        Console.WriteLine($"Terrain : {terrain.NomTerrain}");
 
         if (terrain.Plante != null)
         {
-            Console.WriteLine($"Plante : {terrain.Plante.NomPlante}\n");
+            Console.WriteLine($"\nPlante : {terrain.Plante.NomPlante}\n");
             if (_graines.PeutDepenser(5))
             {
                 Console.WriteLine("A : Arroser (5 graines)");
@@ -119,7 +119,7 @@ public class VuePotager
             Console.WriteLine("P : Planter");
         }
 
-        Console.WriteLine("\nEspace : annuler");
+        Console.WriteLine("Espace : annuler");
     }
     public void AfficherPlanteOuTerrain(Terrain terrain, int xPlante, int yPlante)
     {
