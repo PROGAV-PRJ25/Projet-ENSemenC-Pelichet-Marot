@@ -8,7 +8,8 @@ public static class GenerateurObstacle
             () => new MaladieMildew(),
             () => new MaladieRouille(),
             () => new Puceron(),
-            () => new Rongeur()
+            () => new Rongeur(),
+            () => new Oiseau()
             // ajoute ici d’autres obstacles/insectes/animaux si besoin
         };
 

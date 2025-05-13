@@ -16,7 +16,30 @@ public class GestionPlateau
         CurseurX = CurseurY = 0;
     }
 
-    public void SetMeteo(Meteo meteo) => _meteo = meteo;
+    public void SetMeteo(Meteo meteo)
+    {
+        _meteo = meteo;
+
+        // --- NOUVEAU : on propage immédiatement la météo à toutes les plantes ---
+        // Cela permet de mettre à jour TemperatureActuelle et LuminositeActuelle
+        // avant l'affichage final, évitant tout décalage.
+        for (int y = 0; y < _plateau.GetLength(0); y++)
+        {
+            for (int x = 0; x < _plateau.GetLength(1); x++)
+            {
+                var p = _plateau[y, x].Plante;
+                if (p != null && !p.EstMorte)
+                {
+                    // Met à jour la température
+                    p.SetTemperature(meteo.Temperature);
+                    // Met à jour l’indice de luminosité
+                    p.SetLuminosite(meteo.Luminosite);
+                }
+            }
+        }
+    }
+
+
 
     public void MettreAJourPotager(Meteo meteo)
     {
@@ -172,13 +195,19 @@ public class GestionPlateau
                         }
                         else
                         {
-                            terrain.Plante = _vue.ChoisirNouvellePlante();
+                            var nouvelle = _vue.ChoisirNouvellePlante();
+                            if (nouvelle != null)
+                            {
+                                terrain.Plante = nouvelle;
+
+                                // ← NOUVEAU : appliquer la météo courante tout de suite
+                                nouvelle.SetTemperature(_meteo.Temperature);
+                                nouvelle.SetLuminosite(_meteo.Luminosite);
+                            }
                         }
                     }
                     choixFait = true;
                     break;
-
-
                 case ConsoleKey.Spacebar: // Annuler
                     choixFait = true;
                     break;

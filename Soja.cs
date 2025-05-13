@@ -27,4 +27,8 @@ public class Soja : Plante
         float facteur = 1f + 0.5f * (1 - HauteurActuelle / HauteurMaximale);
         base.Pousser(tauxSatisfaction * facteur);
     }
+    public override void DiminuerRendement(int quantite)
+    {
+        RendementBase = Math.Max(1, RendementBase - quantite);
+    }
 }

@@ -243,5 +243,8 @@ public abstract class Plante
     {
         VitesseCroissance = Math.Max(0f, VitesseCroissance - montant);
     }
+    public virtual void DiminuerRendement(int quantite)
+    {
+        RendementBase = Math.Max(1, RendementBase - quantite);
+    }
 }
-

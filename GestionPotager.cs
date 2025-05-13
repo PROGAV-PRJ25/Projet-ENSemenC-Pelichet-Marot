@@ -44,19 +44,17 @@ public class GestionPotager
 
     public void LancerSimulation()
     {
+        // ——————— 0) Initialisation : météo SEMAINE 1 ———————
+        var meteo = Meteo.GenererPourSaison(_saisonActuelle, _semaineActuelle);
+        _controller.SetMeteo(meteo);
+        _vue.SetMeteo(meteo);
+
         while (_simulationEnCours)
         {
-            // a) Météo de la semaine courante
-            var meteo = Meteo.GenererPourSaison(_saisonActuelle, _semaineActuelle);
-
-            // b) Mise à jour du contrôleur & de la vue
-            _controller.SetMeteo(meteo);
-            _vue.SetMeteo(meteo);
-
-            // c) Affichage
+            // ——————— 1) Affichage (plateau + météo de la semaine ACTIVE) ———————
             _vue.AfficherPlateau();
 
-            // d) Entrées utilisateur
+            // ——————— 2) Saisie utilisateur ———————
             _controller.GererInteractionUtilisateur(
                 out bool avancerSemaine,
                 out bool quitterSimulation
@@ -66,7 +64,7 @@ public class GestionPotager
 
             if (avancerSemaine)
             {
-                // 1) Mode urgence aléatoire…
+                // ——— 3) Mode urgence ? ———
                 if (_rng.NextDouble() < _urgenceProba)
                 {
                     Thread.Sleep(1000);
@@ -74,20 +72,31 @@ public class GestionPotager
                     continue; // on reste sur la même semaine
                 }
 
-                // 2) Quand on confirme la semaine, là *seulement* on met à jour les plantes
+                // ——— 4) MAJ plantes pour la semaine ACTIVE ———
                 _controller.MettreAJourPotager(meteo);
 
-                // 3) On incrémente la semaine et change la saison si besoin
+                // ——— 5) Incrément semaine et changement de saison ———
                 _semaineActuelle++;
                 if ((_semaineActuelle - 1) % 26 == 0)
+                {
                     _saisonActuelle = _saisonActuelle is SaisonPluvieuse
-                        ? new SaisonSeche()
+                        ? (Saison)new SaisonSeche()
                         : new SaisonPluvieuse();
+                }
+
+                // ——— 6) Génére et assigne la météo pour la NOUVELLE semaine ———
+                meteo = Meteo.GenererPourSaison(_saisonActuelle, _semaineActuelle);
+                _controller.SetMeteo(meteo);
+                _vue.SetMeteo(meteo);
             }
         }
 
         Console.WriteLine("Simulation arrêtée par l'utilisateur.");
     }
+
+
+
+
 
     public void ArreterSimulation() => _simulationEnCours = false;
 }

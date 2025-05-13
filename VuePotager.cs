@@ -59,9 +59,13 @@ public class VuePotager
 
         if (terrain.Plante != null)
         {
-            Console.ForegroundColor = terrain.Plante.EstMorte
-                ? ConsoleColor.Red
-                : ConsoleColor.White;
+            if (terrain.Plante.EstMorte)
+                Console.ForegroundColor = ConsoleColor.Red;
+            else if (terrain.Plante.EstMature)
+                Console.ForegroundColor = ConsoleColor.Green;
+            else 
+                Console.ForegroundColor = ConsoleColor.White;
+            
             var acronyme = terrain.Plante.Acronyme;
             Console.Write(acronyme.PadRight(CellWidth).Substring(0, CellWidth));
         }
@@ -226,7 +230,7 @@ public class VuePotager
             Console.WriteLine("3 - 🎍 Canne à sucre (14 graines)");
             Console.WriteLine("4 - ☕ Café          (16 graines)");
             Console.WriteLine("5 - 🌵 Cactus        (20 graines)");
-            Console.WriteLine("6 - 🧶 Coton         (15 graines)");
+            Console.WriteLine("6 - ☁️  Coton         (15 graines)");
             Console.WriteLine("0 - Annuler");
             Console.Write("\nVotre choix : ");
 
