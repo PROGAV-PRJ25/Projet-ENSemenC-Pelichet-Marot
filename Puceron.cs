@@ -3,7 +3,7 @@ public class Puceron : Insecte
     public float Degats { get; } = 5f;
     public Puceron() : base(
         nom: "Puceron",
-        desc: "Petit insecte suceur",
+        desc: "Petit insecte suceur, déshydrate",
         proba: 0.0012f
         )
     { }

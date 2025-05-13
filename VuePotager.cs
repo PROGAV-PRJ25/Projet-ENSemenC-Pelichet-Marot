@@ -145,8 +145,8 @@ public class VuePotager
 
             Console.WriteLine($"=== Préférences de {p.NomPlante} ===\n");
             Console.WriteLine($"{"⛰️  Terrain idéal".PadRight(labelWidth)} : {p.TerrainIdeal.NomTerrain}");
-            Console.WriteLine($"{"🍂  Saison préférée".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
-            Console.WriteLine($"{"💧  Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
+            Console.WriteLine($"{"🍂 Saison préférée".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
+            Console.WriteLine($"{"💧 Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
             Console.WriteLine($"{"🌡️  Température tolérée".PadRight(labelWidth)}  : de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
             Console.WriteLine($"{"↔️  Espace requis".PadRight(labelWidth)} : {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
 
@@ -181,7 +181,6 @@ public class VuePotager
 
             bool condTerrain = terrain.GetType() == p.TerrainIdeal.GetType();
 
-
             // Affichage des 7 conditions
             Console.WriteLine($"{(condHyd ? "✅" : "❌")} {"Hydratation".PadRight(labelWidth)}: {p.HydratationActuelle:F1}%");
             Console.WriteLine($"{(condLum ? "✅" : "❌")} {"Ensoleillement".PadRight(labelWidth)}: indice {p.LuminositeActuelle}");
@@ -200,9 +199,16 @@ public class VuePotager
                          + new string(' ', totalSegments - remplis)
                          + $"] {ratio * 100:F0}%";
 
-            Console.WriteLine($"\nCroissance... récolter quand la plante est mature");
-            Console.WriteLine($"🌱  {barre}");
-            Console.WriteLine($"Age : {p.SemainesDepuisPlantation} semaines");
+            if (p.EstMorte)
+            {
+                Console.WriteLine($"\n{p.NomPlante} est mort(e) 💀");
+            }
+            else
+            {
+                Console.WriteLine($"\nCroissance... récolter quand la plante est mature");
+                Console.WriteLine($"🌱  {barre}");
+                Console.WriteLine($"Age : {p.SemainesDepuisPlantation} semaines");
+            }
         }
     }
 

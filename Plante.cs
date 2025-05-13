@@ -239,5 +239,9 @@ public abstract class Plante
     {
         ObstacleActuel = obs;
     }
+    public void RalentirCroissance(float montant)
+    {
+        VitesseCroissance = Math.Max(0f, VitesseCroissance - montant);
+    }
 }
 

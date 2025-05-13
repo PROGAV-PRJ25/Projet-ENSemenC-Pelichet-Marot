@@ -11,7 +11,6 @@ public abstract class Maladie : Obstacle
     public override void AppliquerEffets(Plante p)
     {
         // Exemple : réduire l’hydratation
-        p.ReduireHydratation(Gravite);
     }
     public static Maladie GenererMaladieAleatoire()
     {

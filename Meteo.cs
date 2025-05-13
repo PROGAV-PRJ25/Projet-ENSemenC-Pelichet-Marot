@@ -70,11 +70,11 @@ public class Meteo
         // Cartographie verbale pour les indices 1–5
         string[] niveaux = { "nul", "faible", "modéré", "fort", "très fort" };
 
-        string desc = $"📆 Semaine            : {semaine}\n" +
-                      $"🍂 Saison             : {SaisonActuelle.NomSaison}\n" +
-                      $"🌡️ Température        : {Temperature:F1}°C\n" +
-                      $"🌧️ Pluie              : {QuantitePluie:P0}\n" +
-                      $"☀️ Ensoleillement     : indice {Luminosite} ({niveaux[Luminosite - 1]})";
+        string desc = $"📆 Semaine           : {semaine}\n" +
+                      $"🍂 Saison            : {SaisonActuelle.NomSaison}\n" +
+                      $"🌡️  Température       : {Temperature:F1}°C\n" +
+                      $"🌧️  Pluie             : {QuantitePluie:P0}\n" +
+                      $"☀️  Ensoleillement    : indice {Luminosite} ({niveaux[Luminosite - 1]})";
 
         if (semaine > 5 && Intemperie)
         {

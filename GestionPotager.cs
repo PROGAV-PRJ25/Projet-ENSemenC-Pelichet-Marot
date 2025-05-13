@@ -11,7 +11,7 @@ public class GestionPotager
     private int _semaineActuelle;
     private bool _simulationEnCours;
     private readonly Random _rng = new Random();
-    private readonly double _urgenceProba = 0.01; // 10% par défaut
+    private readonly double _urgenceProba = 0.1; // 10% par défaut
 
     public GestionPotager(int largeur, int hauteur)
     {
