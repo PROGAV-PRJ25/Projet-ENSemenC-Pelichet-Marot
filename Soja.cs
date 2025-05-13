@@ -13,7 +13,8 @@ public class Soja : Plante
             temperatureMaximale: 35f,
             vitesseCroissance:   0.1f,     // ex. 0.1 unité / jour
             hauteurMaximale:     1.0f,
-            graines : graines
+            graines : graines,
+            esperanceDeVieSemaines: 30
         )
     { 
         RendementBase = 12;

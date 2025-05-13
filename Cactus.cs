@@ -13,7 +13,8 @@ public class Cactus : Plante
                 temperatureMaximale:  40f,
                 vitesseCroissance:    0.02f,
                 hauteurMaximale:      0.5f,
-                graines : graines
+                graines : graines,
+                esperanceDeVieSemaines: 500
             )
         {
             HydratationCritique = 10f;

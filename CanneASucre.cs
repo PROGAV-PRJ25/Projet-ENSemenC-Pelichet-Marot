@@ -13,7 +13,8 @@ public class CanneASucre : Plante
             temperatureMaximale: 38f,
             vitesseCroissance: 0.10f,
             hauteurMaximale: 2.0f,
-            graines : graines
+            graines : graines,
+            esperanceDeVieSemaines: 300
         )
     {
         HydratationCritique = 60f;

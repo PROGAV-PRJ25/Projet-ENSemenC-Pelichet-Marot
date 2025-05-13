@@ -13,10 +13,11 @@ public class Cafe : Plante
             temperatureMaximale: 25f,
             vitesseCroissance: 0.08f,
             hauteurMaximale: 0.8f,
-            graines : graines
+            graines : graines,
+            esperanceDeVieSemaines: 150
         )
     {
-        HydratationCritique = 65f;
+        HydratationCritique = 35f;
         LuminositeIdeale = 2;
         RendementBase = 20;
     }

@@ -13,7 +13,8 @@ public class Coton : Plante
             temperatureMaximale: 30f,
             vitesseCroissance: 0.12f,
             hauteurMaximale: 1.0f,
-            graines: graines
+            graines: graines,
+            esperanceDeVieSemaines: 35
         )
     {
         HydratationCritique = 35f;

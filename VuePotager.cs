@@ -144,14 +144,14 @@ public class VuePotager
             int labelWidth = 30;
 
             Console.WriteLine($"=== Préférences de {p.NomPlante} ===\n");
-            Console.WriteLine($"{"⛰️  Terrain idéal".PadRight(labelWidth)}: {p.TerrainIdeal.NomTerrain}");
+            Console.WriteLine($"{"⛰️  Terrain idéal".PadRight(labelWidth)} : {p.TerrainIdeal.NomTerrain}");
             Console.WriteLine($"{"🍂  Saison préférée".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
             Console.WriteLine($"{"💧  Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
-            Console.WriteLine($"{"🌡️  Température tolérée".PadRight(labelWidth)} : de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
-            Console.WriteLine($"{"↔️  Espace requis".PadRight(labelWidth)}: {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
+            Console.WriteLine($"{"🌡️  Température tolérée".PadRight(labelWidth)}  : de {p.TemperatureMinimale}°C à {p.TemperatureMaximale}°C");
+            Console.WriteLine($"{"↔️  Espace requis".PadRight(labelWidth)} : {p.EspacePris} case{(p.EspacePris > 1 ? "s" : "")}");
 
             var niveaux = new[] { "très faible", "très faible à faible", "faible à modéré", "modéré à fort", "fort à très fort" };
-            Console.WriteLine($"{"☀️  Ensoleillement souhaité".PadRight(labelWidth)}: indices {p.LuminositeIdeale - 1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
+            Console.WriteLine($"{"☀️  Ensoleillement souhaité".PadRight(labelWidth)} : indices {p.LuminositeIdeale - 1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
 
 
 
@@ -202,6 +202,7 @@ public class VuePotager
 
             Console.WriteLine($"\nCroissance... récolter quand la plante est mature");
             Console.WriteLine($"🌱  {barre}");
+            Console.WriteLine($"Age : {p.SemainesDepuisPlantation} semaines");
         }
     }
 
@@ -214,7 +215,7 @@ public class VuePotager
             Console.Clear();
             Console.WriteLine($"Graines disponibles : {_graines}\n");
             Console.WriteLine("Plantes :");
-            Console.WriteLine("1 - 🫛 Soja          (10 graines)");
+            Console.WriteLine("1 - 🫛  Soja          (10 graines)");
             Console.WriteLine("2 - 🌽 Maïs          (12 graines)");
             Console.WriteLine("3 - 🎍 Canne à sucre (14 graines)");
             Console.WriteLine("4 - ☕ Café          (16 graines)");

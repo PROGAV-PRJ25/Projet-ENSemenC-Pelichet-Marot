@@ -13,7 +13,8 @@ public class Mais : Plante
             temperatureMaximale:  32f,
             vitesseCroissance:    0.15f,
             hauteurMaximale:      1.5f,
-            graines : graines
+            graines : graines,
+            esperanceDeVieSemaines: 32
         )
     {
         HydratationCritique = 40f;

@@ -40,6 +40,7 @@ public abstract class Plante
     public int SemainesDepuisPlantation { get; private set; } = 0;
     private float sommeSatisfaction = 0f;
     public bool EstMature => HauteurActuelle >= HauteurMaximale;
+    public int EsperanceDeVieSemaines { get; protected set; }
 
     // Nombre de graines produites à maturation parfaite.
     public int RendementBase { get; protected set; } = 1;
@@ -58,7 +59,8 @@ public abstract class Plante
         float temperatureMinimale,
         float temperatureMaximale,
         float vitesseCroissance,
-        float hauteurMaximale
+        float hauteurMaximale,
+        int esperanceDeVieSemaines
     )
     {
         _graines = graines;
@@ -76,6 +78,8 @@ public abstract class Plante
         VitesseCroissance = vitesseCroissance;
         HauteurMaximale = hauteurMaximale;
         HauteurActuelle = 0f;
+        EsperanceDeVieSemaines = esperanceDeVieSemaines;
+
 
         // États initiaux
         HydratationActuelle = 100f;
@@ -156,6 +160,17 @@ public abstract class Plante
         if (EstMorte)
             return;
 
+
+        // 0) Age + espérance de vie plante
+        SemainesDepuisPlantation += (int)Math.Floor(tempsEcouleEnSemaines);
+        if (SemainesDepuisPlantation >= EsperanceDeVieSemaines)
+        {
+            EstMorte = true;
+            Console.WriteLine($"[MORT] {NomPlante} a dépassé son espérance de vie ({EsperanceDeVieSemaines} semaines).");
+            Thread.Sleep(2000);
+            return;
+        }
+
         // 1) Appliquer la température de la semaines
         SetTemperature(temperatureSemaine);
 
@@ -172,12 +187,13 @@ public abstract class Plante
         if (tauxNonOpt >= 0.5f)
         {
             Tuer();
+            Console.WriteLine($"[MORT] {NomPlante} ne peut plus vivre dans de telles conditions");
+            Thread.Sleep(2000);
             return;
         }
         float tauxOpt = 1f - tauxNonOpt;
 
-        // 4) Comptabiliser les semaines et accumuler la satisfaction
-        SemainesDepuisPlantation++;
+        // 4)accumuler la satisfaction
         sommeSatisfaction += tauxOpt;
 
         // 5) Croissance proportionnelle à la satisfaction

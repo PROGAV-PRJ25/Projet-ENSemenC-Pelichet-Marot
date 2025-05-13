@@ -3,15 +3,15 @@ using System.Threading;
 
 public class GestionPotager
 {
-    private readonly GestionPlateau      _controller;
-    private readonly VuePotager          _vue;
-    private readonly Graines             _graines;
-    private readonly ModeUrgenceManager  _urgence;       // ← nouvel ajout
-    private Saison                        _saisonActuelle;
-    private int                           _semaineActuelle;
-    private bool                          _simulationEnCours;
-    private readonly Random               _rng = new Random();
-    private readonly double               _urgenceProba = 0.9; // 10% par défaut
+    private readonly GestionPlateau _controller;
+    private readonly VuePotager _vue;
+    private readonly Graines _graines;
+    private readonly ModeUrgenceManager _urgence;       // ← nouvel ajout
+    private Saison _saisonActuelle;
+    private int _semaineActuelle;
+    private bool _simulationEnCours;
+    private readonly Random _rng = new Random();
+    private readonly double _urgenceProba = 0.01; // 10% par défaut
 
     public GestionPotager(int largeur, int hauteur)
     {
@@ -37,8 +37,8 @@ public class GestionPotager
         );
 
         // 7) État initial
-        _saisonActuelle    = new SaisonPluvieuse();
-        _semaineActuelle   = 1;
+        _saisonActuelle = new SaisonPluvieuse();
+        _semaineActuelle = 1;
         _simulationEnCours = true;
     }
 
@@ -53,13 +53,10 @@ public class GestionPotager
             _controller.SetMeteo(meteo);
             _vue.SetMeteo(meteo);
 
-            // c) Mise à jour des plantes
-            _controller.MettreAJourPotager(meteo);
-
-            // d) Affichage
+            // c) Affichage
             _vue.AfficherPlateau();
 
-            // e) Entrées utilisateur
+            // d) Entrées utilisateur
             _controller.GererInteractionUtilisateur(
                 out bool avancerSemaine,
                 out bool quitterSimulation
@@ -69,24 +66,23 @@ public class GestionPotager
 
             if (avancerSemaine)
             {
-                // Mode urgence aléatoire
+                // 1) Mode urgence aléatoire…
                 if (_rng.NextDouble() < _urgenceProba)
                 {
-                    Thread.Sleep(1000);       // petit effet de suspense
-                    _urgence.LancerUrgence(); // lance un mini-jeu
-                    continue;                 // on reste sur la même semaine
+                    Thread.Sleep(1000);
+                    _urgence.LancerUrgence();
+                    continue; // on reste sur la même semaine
                 }
 
-                // Sinon on incrémente la semaine
+                // 2) Quand on confirme la semaine, là *seulement* on met à jour les plantes
+                _controller.MettreAJourPotager(meteo);
+
+                // 3) On incrémente la semaine et change la saison si besoin
                 _semaineActuelle++;
-
-                // Rotation de saison toutes les 26 semaines
                 if ((_semaineActuelle - 1) % 26 == 0)
-                {
                     _saisonActuelle = _saisonActuelle is SaisonPluvieuse
-                        ? (Saison)new SaisonSeche()
+                        ? new SaisonSeche()
                         : new SaisonPluvieuse();
-                }
             }
         }
 
