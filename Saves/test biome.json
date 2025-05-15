@@ -1,0 +1,54 @@
+{
+  "Semaine": 1,
+  "Graines": 154,
+  "Plantes": [
+    {
+      "X": 1,
+      "Y": 2,
+      "TypePlante": "Caf\u00E9",
+      "TerrainNom": null,
+      "HauteurActuelle": 0,
+      "EstMature": false,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 0,
+      "SommeSatisfaction": 0,
+      "HydratationActuelle": 100,
+      "LuminositeActuelle": 0,
+      "TemperatureActuelle": 0,
+      "ObstacleNom": null,
+      "RendementBase": 0
+    },
+    {
+      "X": 0,
+      "Y": 3,
+      "TypePlante": "Soja",
+      "TerrainNom": null,
+      "HauteurActuelle": 0,
+      "EstMature": false,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 0,
+      "SommeSatisfaction": 0,
+      "HydratationActuelle": 100,
+      "LuminositeActuelle": 0,
+      "TemperatureActuelle": 0,
+      "ObstacleNom": null,
+      "RendementBase": 0
+    },
+    {
+      "X": 5,
+      "Y": 8,
+      "TypePlante": "Cactus",
+      "TerrainNom": null,
+      "HauteurActuelle": 0,
+      "EstMature": false,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 0,
+      "SommeSatisfaction": 0,
+      "HydratationActuelle": 100,
+      "LuminositeActuelle": 0,
+      "TemperatureActuelle": 0,
+      "ObstacleNom": null,
+      "RendementBase": 0
+    }
+  ]
+}

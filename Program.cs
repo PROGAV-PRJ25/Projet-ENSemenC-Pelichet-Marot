@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-
-const int largeur = 10, hauteur = 10;
+﻿const int largeur = 10, hauteur = 10;
 
 while (true)
 {
-    // 1) Menu de départ
+    // 1) Affiche l'écran d'accueil
     var choix = StartMenu.Show();
+
     if (choix == MenuOption.Quitter)
         return;
 
@@ -23,7 +19,7 @@ while (true)
         case MenuOption.ChargerSauvegarde:
             sim = MenuChargerSauvegarde(largeur, hauteur);
             if (sim == null)
-                continue;  // retour au menu principal
+                continue; // retour au menu principal
             break;
 
         case MenuOption.ReglesDuJeu:
@@ -31,15 +27,15 @@ while (true)
             continue;
     }
 
-    // 2) Lancer la simulation si elle existe
+    // 2) Lancement de la simulation
     sim.LancerSimulation();
 
-    // 3) À la sortie, on force la question de sauvegarde
+    // 3) Après fermeture : menu sauvegarde
     MenuSauvegarder(sim);
 }
 
 
-// Affiche et gère l'écran des règles
+// ── Affiche les règles et attend une touche ─────────────────────
 static void AfficherRegles()
 {
     Console.Clear();
@@ -53,13 +49,14 @@ static void AfficherRegles()
     Console.ReadKey(true);
 }
 
-// Menu pour charger ou supprimer des slots
+// ── Menu pour charger ou supprimer des sauvegardes ───────────────
 static GestionPotager MenuChargerSauvegarde(int largeur, int hauteur)
 {
     while (true)
     {
         var slots = SaveManager.ListerSlots();
         Console.Clear();
+
         if (slots.Count == 0)
         {
             Console.WriteLine("⚠️  Aucune sauvegarde trouvée.");
@@ -71,8 +68,9 @@ static GestionPotager MenuChargerSauvegarde(int largeur, int hauteur)
         Console.WriteLine("=== Charger une sauvegarde ===\n");
         for (int i = 0; i < slots.Count; i++)
             Console.WriteLine($"  {i + 1}. {slots[i]}");
+
         Console.WriteLine("\n  D<num> : Supprimer le slot #num (ex: D2)");
-        Console.WriteLine("  0 : Retour au menu principal");
+        Console.WriteLine("  0      : Retour au menu principal");
         Console.Write("\nVotre choix : ");
 
         string input = Console.ReadLine()?.Trim() ?? "";
@@ -85,10 +83,10 @@ static GestionPotager MenuChargerSauvegarde(int largeur, int hauteur)
             && int.TryParse(input.Substring(1), out int delIdx)
             && delIdx >= 1 && delIdx <= slots.Count)
         {
-            var slotToDelete = slots[delIdx - 1];
-            System.IO.File.Delete(System.IO.Path.Combine("Saves", slotToDelete + ".json"));
-            Console.WriteLine($"Slot « {slotToDelete} » supprimé.");
-            Console.WriteLine("Appuyez sur une touche pour recharger la liste.");
+            string toDelete = slots[delIdx - 1];
+            System.IO.File.Delete(System.IO.Path.Combine("Saves", toDelete + ".json"));
+            Console.WriteLine($"Slot « {toDelete} » supprimé.");
+            Console.WriteLine("Appuyez sur une touche pour actualiser la liste.");
             Console.ReadKey(true);
             continue;
         }
@@ -114,37 +112,52 @@ static GestionPotager MenuChargerSauvegarde(int largeur, int hauteur)
             foreach (var cell in data.Plantes)
             {
                 var p = sim.CreerPlanteParNom(cell.TypePlante);
-                if (p != null)
+                if (p == null) continue;
+
+                // Restauration des champs essentiels
+                p.HauteurActuelle = cell.HauteurActuelle;
+                p.HydratationActuelle = cell.HydratationActuelle;
+                p.LuminositeActuelle = cell.LuminositeActuelle;
+                p.TemperatureActuelle = cell.TemperatureActuelle;
+                p.SemainesDepuisPlantation = cell.SemainesDepuisPlantation;
+                p.SommeSatisfaction = cell.SommeSatisfaction;
+                p.RendementBase = cell.RendementBase;
+                if (cell.EstMorte) p.Tuer();
+
+                // Placement de la plante
+                plateau[cell.Y, cell.X].Plante = p;
+
+                // Restauration de l'obstacle
+                if (!string.IsNullOrEmpty(cell.ObstacleNom))
                 {
-                    p.HauteurActuelle = cell.HauteurActuelle;
-                    p.HydratationActuelle = cell.HydratationActuelle;
-                    plateau[cell.Y, cell.X].Plante = p;
+                    var obs = GenerateurObstacle.CreerParNom(cell.ObstacleNom);
+                    if (obs != null) p.PlacerObstacle(obs);
                 }
             }
+
             return sim;
         }
 
-        // Choix invalide
-        Console.WriteLine("Choix invalide, réessayez.");
-        System.Threading.Thread.Sleep(1000);
+        // Choix invalide : on boucle
+        Console.WriteLine("Choix invalide, réessayez…");
+        System.Threading.Thread.Sleep(800);
     }
 }
 
-// Menu pour sauvegarder après la simulation
+// ── Menu pour sauvegarder la partie en cours ─────────────────────
 static void MenuSauvegarder(GestionPotager sim)
 {
+    // On force l'utilisateur à répondre S ou N
     while (true)
     {
         Console.Clear();
         Console.WriteLine("Sauvegarder la partie ? (S/N)");
         var key = Console.ReadKey(true).Key;
-        if (key == ConsoleKey.N)
-            return; // on revient au menu principal
-        if (key == ConsoleKey.S)
-            break;
+        if (key == ConsoleKey.N) return;
+        if (key == ConsoleKey.S) break;
     }
 
-    // Choix du slot
+    // Liste des slots existants
     var existing = SaveManager.ListerSlots();
     Console.Clear();
     Console.WriteLine("=== Sauvegarder la partie ===\n");
@@ -153,8 +166,8 @@ static void MenuSauvegarder(GestionPotager sim)
     Console.WriteLine("  N. Nouveau slot");
     Console.Write("\nVotre choix (numéro ou N) : ");
     string input = Console.ReadLine()?.Trim() ?? "";
-    string slotName;
 
+    string slotName;
     if (input.Equals("N", StringComparison.OrdinalIgnoreCase))
     {
         Console.Write("Nom du nouveau slot : ");
@@ -172,31 +185,9 @@ static void MenuSauvegarder(GestionPotager sim)
         return;
     }
 
-    // Construction de la donnée
-    var sd = new SaveData
-    {
-        Semaine = sim.GetSemaine(),
-        Graines = sim.GetGraines().Nombre
-    };
-    var plat = sim.GetPlateau();
-    for (int y = 0; y < sim.GetHauteur(); y++)
-        for (int x = 0; x < sim.GetLargeur(); x++)
-        {
-            var p = plat[y, x].Plante;
-            if (p != null)
-            {
-                sd.Plantes.Add(new PlantCell
-                {
-                    X = x,
-                    Y = y,
-                    TypePlante = p.NomPlante,
-                    HauteurActuelle = p.HauteurActuelle,
-                    HydratationActuelle = p.HydratationActuelle
-                });
-            }
-        }
+    // Délègue entièrement à SaveManager
+    SaveManager.Sauvegarder(slotName, sim);
 
-    SaveManager.Sauvegarder(slotName, sd);
     Console.WriteLine($"✅ Partie sauvegardée sous « {slotName} » !");
     Console.WriteLine("Appuyez sur une touche pour revenir au menu principal.");
     Console.ReadKey(true);

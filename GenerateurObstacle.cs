@@ -31,4 +31,17 @@ public static class GenerateurObstacle
         }
         return null;
     }
+
+    public static Obstacle CreerParNom(string nom)
+    {
+        return nom switch
+        {
+            "Puceron" => new Puceron(),
+            "Rouille" => new MaladieRouille(),
+            "Mildew" => new MaladieMildew(),
+            "Oiseau" => new Oiseau(),
+            "Rongeur" => new Rongeur(),
+            _ => null
+        };
+    }
 }

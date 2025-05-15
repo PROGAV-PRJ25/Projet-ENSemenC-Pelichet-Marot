@@ -75,11 +75,22 @@ public class VuePotager
             //    - 3 conditions non satisfaites → orange
             //    - Mûre → vert
             //    - Sinon → blanc
-            Console.ForegroundColor =
-                   p.EstMorte ? ConsoleColor.Red
-                 : nonOptCount >= 3 ? ConsoleColor.DarkYellow
-                 : p.EstMature ? ConsoleColor.Green
-                 : ConsoleColor.White;
+            if (p.EstMorte)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+            else if (nonOptCount == 3)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+            }
+            else if (p.EstMature)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+            }
 
             // 3) Affichage de l’acronyme
             var code = p.Acronyme.PadRight(CellWidth).Substring(0, CellWidth);

@@ -25,7 +25,7 @@ public abstract class Plante
     public float VitesseDeshydratation { get; protected set; }
 
     public float HydratationActuelle { get; set; } = 100f;
-    public int LuminositeActuelle { get; protected set; } = 3;
+    public int LuminositeActuelle { get; set; } = 3;
     public float TemperatureActuelle { get; set; } = 15f;
 
     public Obstacle? ObstacleActuel { get; private set; } = null;
@@ -37,13 +37,13 @@ public abstract class Plante
 
 
     // Pour le suivi de maturation
-    public int SemainesDepuisPlantation { get; private set; } = 0;
-    private float sommeSatisfaction = 0f;
+    public int SemainesDepuisPlantation { get; set; } = 0;
+    public float SommeSatisfaction { get; set; } = 0f;
     public bool EstMature => HauteurActuelle >= HauteurMaximale;
     public int EsperanceDeVieSemaines { get; protected set; }
 
     // Nombre de graines produites à maturation parfaite.
-    public int RendementBase { get; protected set; } = 1;
+    public int RendementBase { get; set; } = 1;
 
 
     // — Constructeur — 
@@ -194,7 +194,7 @@ public abstract class Plante
         float tauxOpt = 1f - tauxNonOpt;
 
         // 4)accumuler la satisfaction
-        sommeSatisfaction += tauxOpt;
+        SommeSatisfaction += tauxOpt;
 
         // 5) Croissance proportionnelle à la satisfaction
         Pousser(tauxOpt);
@@ -218,8 +218,8 @@ public abstract class Plante
             return 0;
 
         // rendement proportionnel à la satisfaction moyenne
-        float moyenne = sommeSatisfaction / SemainesDepuisPlantation;
-        sommeSatisfaction = SemainesDepuisPlantation;
+        float moyenne = SommeSatisfaction / SemainesDepuisPlantation;
+        SommeSatisfaction = SemainesDepuisPlantation;
         int grainesGain = (int)Math.Round(RendementBase * moyenne);
 
         // on marque la plante comme morte (elle disparaîtra au désherbage)
