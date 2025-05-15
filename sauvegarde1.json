@@ -1,0 +1,8 @@
+{
+  "Semaine": 5,
+  "Graines": 42,
+  "Plantes": [
+    { "X": 2, "Y": 1, "TypePlante": "Soja", "HauteurActuelle": 0.5, "HydratationActuelle": 85.0 },
+    { "X": 4, "Y": 3, "TypePlante": "Cafe", "HauteurActuelle": 0.2, "HydratationActuelle": 95.0 }
+  ]
+}

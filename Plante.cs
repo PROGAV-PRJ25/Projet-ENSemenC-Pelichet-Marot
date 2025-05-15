@@ -32,7 +32,7 @@ public abstract class Plante
     public bool EstMorte { get; protected set; } = false;
 
     public float VitesseCroissance { get; protected set; }
-    public float HauteurActuelle { get; protected set; } = 0f;
+    public float HauteurActuelle { get; set; } = 0f;
     public float HauteurMaximale { get; protected set; } = 1f;
 
 
