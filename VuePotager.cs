@@ -209,7 +209,7 @@ public class VuePotager
             Console.WriteLine($"{(condLum ? "✅" : "❌")} {"Ensoleillement".PadRight(labelWidth)}: indice {p.LuminositeActuelle}");
             Console.WriteLine($"{(condTemp ? "✅" : "❌")} {"Température".PadRight(labelWidth)}: {p.TemperatureActuelle:F1}°C");
             Console.WriteLine($"{(condEsp ? "✅" : "❌")} {"Espacement actuel".PadRight(labelWidth)}: {texteEsp} (besoin : {p.EspacePris})");
-            Console.WriteLine($"{(condObs ? "✅" : "❌")} {"Maladie/Nuisible".PadRight(labelWidth)}: {nomObs} {detailsObs}");
+            Console.WriteLine($"{(condObs ? "✅" : "❌")} {"Obstacle".PadRight(labelWidth)}: {nomObs} {detailsObs}");
             Console.WriteLine($"{(condSaison ? "✅" : "❌")} {"Saison".PadRight(labelWidth)}: {_meteo.SaisonActuelle.NomSaison}");
             Console.WriteLine($"{(condTerrain ? "✅" : "❌")} {"Terrain".PadRight(labelWidth)}: {terrain.NomTerrain}");
 
