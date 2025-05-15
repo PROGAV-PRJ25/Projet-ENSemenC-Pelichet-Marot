@@ -59,18 +59,36 @@ public class VuePotager
 
         if (terrain.Plante != null)
         {
-            if (terrain.Plante.EstMorte)
-                Console.ForegroundColor = ConsoleColor.Red;
-            else if (terrain.Plante.EstMature)
-                Console.ForegroundColor = ConsoleColor.Green;
-            else 
-                Console.ForegroundColor = ConsoleColor.White;
-            
-            var acronyme = terrain.Plante.Acronyme;
-            Console.Write(acronyme.PadRight(CellWidth).Substring(0, CellWidth));
+            var p = terrain.Plante;
+
+            // 1) Calcul du nombre de critères non optimaux
+            bool espaceOk = _controller.CheckEspaceRespecte(x, y);
+            float fracNonOpt = p.EvaluerConditions(
+                espaceOk,
+                _meteo.SaisonActuelle,
+                terrain
+            );
+            int nonOptCount = (int)Math.Round(fracNonOpt * 7);
+
+            // 2) Choix de la couleur, dans l’ordre de priorité :
+            //    - Mort → rouge
+            //    - 3 conditions non satisfaites → orange
+            //    - Mûre → vert
+            //    - Sinon → blanc
+            Console.ForegroundColor =
+                   p.EstMorte ? ConsoleColor.Red
+                 : nonOptCount >= 3 ? ConsoleColor.DarkYellow
+                 : p.EstMature ? ConsoleColor.Green
+                 : ConsoleColor.White;
+
+            // 3) Affichage de l’acronyme
+            var code = p.Acronyme.PadRight(CellWidth).Substring(0, CellWidth);
+            Console.Write(code);
         }
         else
         {
+            // Case vide
+            Console.ForegroundColor = terrain.Couleur;
             Console.Write(new string(' ', CellWidth));
         }
 
@@ -78,6 +96,7 @@ public class VuePotager
         Console.Write(']');
         Console.ResetColor();
     }
+
 
     private void AfficherLegende()
     {

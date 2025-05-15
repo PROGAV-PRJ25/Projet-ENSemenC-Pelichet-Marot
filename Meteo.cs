@@ -76,7 +76,7 @@ public class Meteo
                       $"🌧️  Pluie             : {QuantitePluie:P0}\n" +
                       $"☀️  Ensoleillement    : indice {Luminosite} ({niveaux[Luminosite - 1]})";
 
-        if (semaine > 5 && Intemperie)
+        if (semaine > 15 && Intemperie)
         {
             desc += _rng.Next(2) == 0
                 ? "\n⛈️ Orage"
