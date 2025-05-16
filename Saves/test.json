@@ -1,0 +1,689 @@
+{
+  "Semaine": 31,
+  "Graines": 113,
+  "MeteoPluie": 0,
+  "MeteoLuminosite": 5,
+  "MeteoTemperature": 30.478447,
+  "MeteoIntemperie": false,
+  "MeteoSaison": "S\u00E8che",
+  "Terrains": [
+    {
+      "X": 0,
+      "Y": 0,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 0,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 0,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 3,
+      "Y": 0,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 4,
+      "Y": 0,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 5,
+      "Y": 0,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 0,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 7,
+      "Y": 0,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 8,
+      "Y": 0,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 9,
+      "Y": 0,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 0,
+      "Y": 1,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 1,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 2,
+      "Y": 1,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 3,
+      "Y": 1,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 4,
+      "Y": 1,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 5,
+      "Y": 1,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 6,
+      "Y": 1,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 7,
+      "Y": 1,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 8,
+      "Y": 1,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 9,
+      "Y": 1,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 0,
+      "Y": 2,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 2,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 2,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 3,
+      "Y": 2,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 4,
+      "Y": 2,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 5,
+      "Y": 2,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 2,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 7,
+      "Y": 2,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 8,
+      "Y": 2,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 9,
+      "Y": 2,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 0,
+      "Y": 3,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 3,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 3,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 3,
+      "Y": 3,
+      "TypeTerrain": "Argileux"
+    },
+    {
+      "X": 4,
+      "Y": 3,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 5,
+      "Y": 3,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 3,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 7,
+      "Y": 3,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 8,
+      "Y": 3,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 9,
+      "Y": 3,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 0,
+      "Y": 4,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 4,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 4,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 3,
+      "Y": 4,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 4,
+      "Y": 4,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 5,
+      "Y": 4,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 4,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 7,
+      "Y": 4,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 8,
+      "Y": 4,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 9,
+      "Y": 4,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 0,
+      "Y": 5,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 5,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 5,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 3,
+      "Y": 5,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 4,
+      "Y": 5,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 5,
+      "Y": 5,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 5,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 7,
+      "Y": 5,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 8,
+      "Y": 5,
+      "TypeTerrain": "Sableux"
+    },
+    {
+      "X": 9,
+      "Y": 5,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 0,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 3,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 4,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 5,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 7,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 8,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 9,
+      "Y": 6,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 0,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 3,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 4,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 5,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 7,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 8,
+      "Y": 7,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 9,
+      "Y": 7,
+      "TypeTerrain": "Aquatique"
+    },
+    {
+      "X": 0,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 3,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 4,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 5,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 7,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 8,
+      "Y": 8,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 9,
+      "Y": 8,
+      "TypeTerrain": "Aquatique"
+    },
+    {
+      "X": 0,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 1,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 2,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 3,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 4,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 5,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 6,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 7,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 8,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    },
+    {
+      "X": 9,
+      "Y": 9,
+      "TypeTerrain": "Terre"
+    }
+  ],
+  "Plantes": [
+    {
+      "X": 7,
+      "Y": 0,
+      "TypePlante": "Ma\u00EFs",
+      "TerrainNom": "Terre",
+      "HauteurActuelle": 1.5,
+      "EstMature": true,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 15,
+      "SommeSatisfaction": 11.857142,
+      "HydratationActuelle": 79.75002,
+      "LuminositeActuelle": 5,
+      "TemperatureActuelle": 30.478447,
+      "RendementBase": 10,
+      "ObstacleNom": null
+    },
+    {
+      "X": 9,
+      "Y": 0,
+      "TypePlante": "Ma\u00EFs",
+      "TerrainNom": "Terre",
+      "HauteurActuelle": 1.5,
+      "EstMature": true,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 15,
+      "SommeSatisfaction": 11.857142,
+      "HydratationActuelle": 79.75002,
+      "LuminositeActuelle": 5,
+      "TemperatureActuelle": 30.478447,
+      "RendementBase": 10,
+      "ObstacleNom": null
+    },
+    {
+      "X": 1,
+      "Y": 1,
+      "TypePlante": "Caf\u00E9",
+      "TerrainNom": "Argileux",
+      "HauteurActuelle": 0.8,
+      "EstMature": true,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 30,
+      "SommeSatisfaction": 26.142855,
+      "HydratationActuelle": 79.00009,
+      "LuminositeActuelle": 5,
+      "TemperatureActuelle": 30.478447,
+      "RendementBase": 20,
+      "ObstacleNom": null
+    },
+    {
+      "X": 3,
+      "Y": 1,
+      "TypePlante": "Caf\u00E9",
+      "TerrainNom": "Argileux",
+      "HauteurActuelle": 0.8,
+      "EstMature": true,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 30,
+      "SommeSatisfaction": 26.142855,
+      "HydratationActuelle": 79.00009,
+      "LuminositeActuelle": 5,
+      "TemperatureActuelle": 30.478447,
+      "RendementBase": 20,
+      "ObstacleNom": null
+    },
+    {
+      "X": 3,
+      "Y": 3,
+      "TypePlante": "Caf\u00E9",
+      "TerrainNom": "Argileux",
+      "HauteurActuelle": 0.8,
+      "EstMature": true,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 30,
+      "SommeSatisfaction": 26.142855,
+      "HydratationActuelle": 79.00009,
+      "LuminositeActuelle": 5,
+      "TemperatureActuelle": 30.478447,
+      "RendementBase": 20,
+      "ObstacleNom": null
+    },
+    {
+      "X": 8,
+      "Y": 3,
+      "TypePlante": "Cactus",
+      "TerrainNom": "Sableux",
+      "HauteurActuelle": 0.47285715,
+      "EstMature": false,
+      "EstMorte": false,
+      "SemainesDepuisPlantation": 30,
+      "SommeSatisfaction": 22.428572,
+      "HydratationActuelle": 79.00009,
+      "LuminositeActuelle": 5,
+      "TemperatureActuelle": 30.478447,
+      "RendementBase": 40,
+      "ObstacleNom": null
+    },
+    {
+      "X": 0,
+      "Y": 4,
+      "TypePlante": "Coton",
+      "TerrainNom": "Terre",
+      "HauteurActuelle": 0.24685715,
+      "EstMature": false,
+      "EstMorte": true,
+      "SemainesDepuisPlantation": 12,
+      "SommeSatisfaction": 8.142858,
+      "HydratationActuelle": 87.625,
+      "LuminositeActuelle": 4,
+      "TemperatureActuelle": 31.286448,
+      "RendementBase": 20,
+      "ObstacleNom": "Rouille"
+    },
+    {
+      "X": 0,
+      "Y": 9,
+      "TypePlante": "Soja",
+      "TerrainNom": "Terre",
+      "HauteurActuelle": 1,
+      "EstMature": true,
+      "EstMorte": true,
+      "SemainesDepuisPlantation": 30,
+      "SommeSatisfaction": 26.857141,
+      "HydratationActuelle": 73.899956,
+      "LuminositeActuelle": 3,
+      "TemperatureActuelle": 25.932467,
+      "RendementBase": 12,
+      "ObstacleNom": null
+    },
+    {
+      "X": 2,
+      "Y": 9,
+      "TypePlante": "Soja",
+      "TerrainNom": "Terre",
+      "HauteurActuelle": 0.53810894,
+      "EstMature": false,
+      "EstMorte": true,
+      "SemainesDepuisPlantation": 30,
+      "SommeSatisfaction": 23.285711,
+      "HydratationActuelle": 73.899956,
+      "LuminositeActuelle": 3,
+      "TemperatureActuelle": 25.932467,
+      "RendementBase": 12,
+      "ObstacleNom": "Rouille"
+    },
+    {
+      "X": 4,
+      "Y": 9,
+      "TypePlante": "Soja",
+      "TerrainNom": "Terre",
+      "HauteurActuelle": 1,
+      "EstMature": true,
+      "EstMorte": true,
+      "SemainesDepuisPlantation": 30,
+      "SommeSatisfaction": 26.857141,
+      "HydratationActuelle": 73.899956,
+      "LuminositeActuelle": 3,
+      "TemperatureActuelle": 25.932467,
+      "RendementBase": 12,
+      "ObstacleNom": null
+    },
+    {
+      "X": 6,
+      "Y": 9,
+      "TypePlante": "Soja",
+      "TerrainNom": "Terre",
+      "HauteurActuelle": 1,
+      "EstMature": true,
+      "EstMorte": true,
+      "SemainesDepuisPlantation": 30,
+      "SommeSatisfaction": 26.857141,
+      "HydratationActuelle": 73.899956,
+      "LuminositeActuelle": 3,
+      "TemperatureActuelle": 25.932467,
+      "RendementBase": 12,
+      "ObstacleNom": null
+    }
+  ]
+}

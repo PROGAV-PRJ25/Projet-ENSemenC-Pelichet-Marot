@@ -9,7 +9,7 @@ public class Meteo
     public Saison SaisonActuelle { get; }
     public string Description { get; }
 
-    private Meteo(
+    public Meteo(
         float pluie,
         int luminosite,
         float temperature,

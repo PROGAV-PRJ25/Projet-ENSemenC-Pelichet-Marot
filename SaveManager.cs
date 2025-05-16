@@ -25,7 +25,6 @@ public static class SaveManager
     // NOUVELLE surcharge : on construit directement SaveData à partir de la simulation
     public static void Sauvegarder(string slot, GestionPotager sim)
     {
-        // 1) Crée et initialise SaveData avec contexte et météo
         var meteo = sim.GetDerniereMeteo();
         var data = new SaveData
         {
@@ -39,31 +38,26 @@ public static class SaveManager
         };
 
         var plateau = sim.GetPlateau();
-        int hauteur = sim.GetHauteur();
-        int largeur = sim.GetLargeur();
+        int h = sim.GetHauteur(), w = sim.GetLargeur();
 
-        // 2) Sauvegarde du biome complet
-        for (int y = 0; y < hauteur; y++)
-        {
-            for (int x = 0; x < largeur; x++)
-            {
+        // *** Sauvegarde du biome COMPLET ***
+        data.Terrains.Clear();
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
                 data.Terrains.Add(new TerrainCell
                 {
                     X = x,
                     Y = y,
                     TypeTerrain = plateau[y, x].NomTerrain
                 });
-            }
-        }
 
-        // 3) Sauvegarde des plantes et de leur état complet
-        for (int y = 0; y < hauteur; y++)
-        {
-            for (int x = 0; x < largeur; x++)
+        // Sauvegarde des plantes…
+        data.Plantes.Clear();
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
             {
                 var p = plateau[y, x].Plante;
                 if (p == null) continue;
-
                 data.Plantes.Add(new PlantCell
                 {
                     X = x,
@@ -82,14 +76,13 @@ public static class SaveManager
                     ObstacleNom = p.ObstacleActuel?.Nom
                 });
             }
-        }
 
-        // 4) Sérialisation et écriture dans le fichier JSON
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        string json = JsonSerializer.Serialize(data, options);
-        string path = Path.Combine("Saves", slot + ".json");
-        File.WriteAllText(path, json);
+        // Sérialisation inchangée…
+        var opts = new JsonSerializerOptions { WriteIndented = true };
+        string json = JsonSerializer.Serialize(data, opts);
+        File.WriteAllText(Path.Combine("Saves", slot + ".json"), json);
     }
+
 
 
     public static List<string> ListerSlots()

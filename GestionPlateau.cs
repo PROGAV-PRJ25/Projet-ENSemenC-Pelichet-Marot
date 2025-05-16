@@ -145,7 +145,6 @@ public class GestionPlateau
                         if (_graines.PeutDepenser(coutArrosage))
                         {
                             terrain.Plante.Arroser();
-                            _graines.Depenser(coutArrosage);
                             Console.WriteLine($"\nArrosage ! (-{coutArrosage} graines)");
                             Thread.Sleep(1000);
                         }

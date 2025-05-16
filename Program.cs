@@ -104,17 +104,40 @@ static GestionPotager MenuChargerSauvegarde(int largeur, int hauteur)
             }
 
             // Reconstruire la simulation
-            var sim = new GestionPotager(largeur, hauteur);
-            sim.SetSemaine(data.Semaine);
-            sim.SetGraines(data.Graines);
+            // 1) Recréer le plateau à l’identique
+            var plateau = new Terrain[hauteur, largeur];
+            foreach (var tcell in data.Terrains)
+            {
+                plateau[tcell.Y, tcell.X] =
+                    GenerateurBiome.CreerTerrainParNom(tcell.TypeTerrain);
+            }
 
-            var plateau = sim.GetPlateau();
+            // 2) Construire GestionPotager avec ce plateau et la météo restaurée
+            var meteoInit = new Meteo(
+                pluie: data.MeteoPluie,
+                luminosite: data.MeteoLuminosite,
+                temperature: data.MeteoTemperature,
+                intemperie: data.MeteoIntemperie,
+                saison: data.MeteoSaison == "Pluvieuse"
+                               ? (Saison)new SaisonPluvieuse()
+                               : new SaisonSeche(),
+                semaineActuelle: data.Semaine
+            );
+            var sim = new GestionPotager(
+                plateauChargé: plateau,
+                grainesInitiales: data.Graines,
+                semaineInitiale: data.Semaine,
+                saisonInitiale: meteoInit.SaisonActuelle,
+                meteoInitial: meteoInit
+            );
+
+            // 3) Puis restaurer toutes les plantes (+ obstacles)
             foreach (var cell in data.Plantes)
             {
                 var p = sim.CreerPlanteParNom(cell.TypePlante);
                 if (p == null) continue;
 
-                // Restauration des champs essentiels
+                // Restorer l’état complet
                 p.HauteurActuelle = cell.HauteurActuelle;
                 p.HydratationActuelle = cell.HydratationActuelle;
                 p.LuminositeActuelle = cell.LuminositeActuelle;
@@ -124,16 +147,17 @@ static GestionPotager MenuChargerSauvegarde(int largeur, int hauteur)
                 p.RendementBase = cell.RendementBase;
                 if (cell.EstMorte) p.Tuer();
 
-                // Placement de la plante
+                // Placement
                 plateau[cell.Y, cell.X].Plante = p;
 
-                // Restauration de l'obstacle
+                // Obstacle
                 if (!string.IsNullOrEmpty(cell.ObstacleNom))
                 {
                     var obs = GenerateurObstacle.CreerParNom(cell.ObstacleNom);
                     if (obs != null) p.PlacerObstacle(obs);
                 }
             }
+
 
             return sim;
         }

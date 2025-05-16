@@ -10,11 +10,11 @@ public class GestionPotager
     private          Graines         _graines;
     private readonly ModeUrgenceManager _urgence;
 
-    private Saison   _saisonActuelle;
-    private Meteo    _derniereMeteo;
+    public Saison   _saisonActuelle;
+    public Meteo    _derniereMeteo;
     public  Meteo    GetDerniereMeteo() => _derniereMeteo;
 
-    private int      _semaineActuelle;
+    public int      _semaineActuelle;
     private bool     _simulationEnCours;
     private readonly Random   _rng         = new Random();
     private readonly double   _urgenceProba = 0.1;
