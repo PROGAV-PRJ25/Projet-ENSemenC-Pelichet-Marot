@@ -83,7 +83,7 @@ public class VuePotager
             {
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
             }
-            else if (p.EstMature)
+            else if (p.EstMature && p.PeutProduireFruits)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
             }
@@ -91,6 +91,7 @@ public class VuePotager
             {
                 Console.ForegroundColor = ConsoleColor.White;
             }
+
 
             // 3) Affichage de l’acronyme
             var code = p.Acronyme.PadRight(CellWidth).Substring(0, CellWidth);
@@ -174,10 +175,10 @@ public class VuePotager
             var p = terrain.Plante;
 
 
-            // 1) Préférences de la plante
+            // 1) Caractéristiques de la plante
             int labelWidth = 30;
 
-            Console.WriteLine($"=== Préférences de {p.NomPlante} ===\n");
+            Console.WriteLine($"=== Caractéristiques de {p.NomPlante} ===\n");
             Console.WriteLine($"{"⛰️  Terrain idéal".PadRight(labelWidth)} : {p.TerrainIdeal.NomTerrain}");
             Console.WriteLine($"{"🍂 Saison préférée".PadRight(labelWidth)}: {string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))}");
             Console.WriteLine($"{"💧 Hydratation critique".PadRight(labelWidth)}: {p.HydratationCritique:F1}%");
@@ -186,7 +187,7 @@ public class VuePotager
 
             var niveaux = new[] { "très faible", "très faible à faible", "faible à modéré", "modéré à fort", "fort à très fort" };
             Console.WriteLine($"{"☀️  Ensoleillement souhaité".PadRight(labelWidth)} : indices {p.LuminositeIdeale - 1} à {p.LuminositeIdeale}  ({niveaux[p.LuminositeIdeale - 1]})");
-
+            Console.WriteLine($"{"🌸 Plante vivace ?".PadRight(labelWidth)}: {(p.EstVivace ? "✅" : "❌")}");
 
 
 
@@ -215,6 +216,8 @@ public class VuePotager
 
             bool condTerrain = terrain.GetType() == p.TerrainIdeal.GetType();
 
+    
+
             // Affichage des 7 conditions
             Console.WriteLine($"{(condHyd ? "✅" : "❌")} {"Hydratation".PadRight(labelWidth)}: {p.HydratationActuelle:F1}%");
             Console.WriteLine($"{(condLum ? "✅" : "❌")} {"Ensoleillement".PadRight(labelWidth)}: indice {p.LuminositeActuelle}");
@@ -239,9 +242,16 @@ public class VuePotager
             }
             else
             {
-                Console.WriteLine($"\nCroissance... récolter quand la plante est mature");
+                Console.WriteLine($"\nBarre de croissance... ");
                 Console.WriteLine($"🌱  {barre}");
                 Console.WriteLine($"Age : {p.SemainesDepuisPlantation} semaines");
+                if (p.EstVivace && p.EstMature && !p.PeutProduireFruits)
+                {
+                    Console.WriteLine($"\n⏳ La plante est en attente de nouvelle production (vivace)");
+                    Console.WriteLine($"Temps écoulé depuis la dernière récolte : {p.SemainesDepuisDerniereRecolte} semaines");
+                    Console.WriteLine($"Refleurira après 10 semaines si la saison est favorable ({string.Join(", ", p.SaisonCompatible.Select(s => s.NomSaison))})");
+                }
+
             }
         }
     }

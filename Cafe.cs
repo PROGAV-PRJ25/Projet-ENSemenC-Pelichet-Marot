@@ -2,7 +2,7 @@ public class Cafe : Plante
 {
     public Cafe(Graines graines)
         : base(
-            prixGraines :        16,
+            prixGraines: 16,
             nomPlante: "Café",
             acronyme: "Cf",
             espacePris: 2,
@@ -13,13 +13,14 @@ public class Cafe : Plante
             temperatureMaximale: 25f,
             vitesseCroissance: 0.08f,
             hauteurMaximale: 0.8f,
-            graines : graines,
+            graines: graines,
             esperanceDeVieSemaines: 150
         )
     {
         HydratationCritique = 35f;
         LuminositeIdeale = 2;
         RendementBase = 20;
+        EstVivace = true;
     }
 
     protected override void Pousser(float tauxSatisfaction)

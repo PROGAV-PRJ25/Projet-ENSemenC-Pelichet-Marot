@@ -2,7 +2,7 @@ public class CanneASucre : Plante
 {
     public CanneASucre(Graines graines)
         : base(
-            prixGraines :        14,
+            prixGraines: 14,
             nomPlante: "Canne à sucre",
             acronyme: "Cs",
             espacePris: 3,
@@ -13,13 +13,14 @@ public class CanneASucre : Plante
             temperatureMaximale: 38f,
             vitesseCroissance: 0.10f,
             hauteurMaximale: 2.0f,
-            graines : graines,
+            graines: graines,
             esperanceDeVieSemaines: 300
         )
     {
         HydratationCritique = 60f;
         LuminositeIdeale = 4;
         RendementBase = 18;
+        EstVivace = true;
     }
 
     protected override void Pousser(float tauxSatisfaction)

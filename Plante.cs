@@ -42,6 +42,11 @@ public abstract class Plante
     public bool EstMature => HauteurActuelle >= HauteurMaximale;
     public int EsperanceDeVieSemaines { get; protected set; }
 
+    public bool EstVivace { get; protected set; } = false;
+    public bool PeutProduireFruits { get; set; } = true; // ← pour gérer l’attente après récolte
+    public int SemainesDepuisDerniereRecolte { get; set; } = 0;
+
+
     // Nombre de graines produites à maturation parfaite.
     public int RendementBase { get; set; } = 1;
 
@@ -207,6 +212,23 @@ public abstract class Plante
 
         // 7) Fixer l’indice de luminosité de la semaine (1 à 5)
         SetLuminosite(luminositeSemaine);
+
+        // 8) Gestion de la refloraison pour les plantes vivaces
+        if (EstVivace && EstMature && !PeutProduireFruits)
+        {
+            SemainesDepuisDerniereRecolte++;
+
+            bool saisonOK = SaisonCompatible.Any(s => s.NomSaison == saisonActuelle.NomSaison);
+            bool attenteOK = SemainesDepuisDerniereRecolte >= 10;
+
+            if (saisonOK && attenteOK)
+            {
+                PeutProduireFruits = true;
+                SemainesDepuisDerniereRecolte = 0;
+                Console.WriteLine($"{NomPlante} refleurit 🌸");
+                Thread.Sleep(1000);
+            }
+        }
     }
 
 
@@ -214,18 +236,30 @@ public abstract class Plante
 
     public int Recolter()
     {
-        if (!EstMature)
+        if (EstMorte)
             return 0;
 
-        // rendement proportionnel à la satisfaction moyenne
+        if (!EstMature || !PeutProduireFruits)
+            return 0;
+
         float moyenne = SommeSatisfaction / SemainesDepuisPlantation;
         SommeSatisfaction = SemainesDepuisPlantation;
         int grainesGain = (int)Math.Round(RendementBase * moyenne);
 
-        // on marque la plante comme morte (elle disparaîtra au désherbage)
-        Tuer();
+        if (EstVivace)
+        {
+            PeutProduireFruits = false;
+            SemainesDepuisDerniereRecolte = 0;
+        }
+        else
+        {
+            Tuer();
+        }
+
         return grainesGain;
     }
+
+
 
     // — Croissance — 
     protected virtual void Pousser(float tauxSatisfaction)

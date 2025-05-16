@@ -166,23 +166,35 @@ public class GestionPlateau
                 case ConsoleKey.R: // Récolter
                     if (terrain.Plante != null)
                     {
-                        int gain = terrain.Plante.Recolter();
-                        if (gain > 0)
+                        var p = terrain.Plante;
+
+                        if (p.EstMorte)
                         {
-                            _graines.Ajouter(gain);
-                            // on retire la plante du plateau
-                            terrain.Plante = null;
-                            Console.WriteLine($"\nRécolté ! +{gain} graines obtenues.");
-                            Thread.Sleep(2000);
+                            Console.WriteLine("\n💀 La plante est morte. Il faut désherber !");
+                        }
+                        else if (!p.EstMature)
+                        {
+                            Console.WriteLine("\n🌱 La plante est encore en croissance...");
+                        }
+                        else if (p.EstVivace && !p.PeutProduireFruits)
+                        {
+                            Console.WriteLine("\n⏳ En attente de refloraison... Patience !");
                         }
                         else
                         {
-                            Console.WriteLine("\nLa plante n'est pas encore mature.");
-                            Thread.Sleep(2000);
+                            int gain = p.Recolter();
+                            _graines.Ajouter(gain);
+                            Console.WriteLine($"\n✅ Récolté ! +{gain} graines obtenues.");
+
+                            if (!p.EstVivace)
+                                terrain.Plante = null; // ne retirer que les annuelles
                         }
+
+                        Thread.Sleep(2000);
                     }
                     choixFait = true;
                     break;
+
 
                 case ConsoleKey.P: // Planter
                     if (terrain.Plante == null)

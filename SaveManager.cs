@@ -73,7 +73,10 @@ public static class SaveManager
                     LuminositeActuelle = p.LuminositeActuelle,
                     TemperatureActuelle = p.TemperatureActuelle,
                     RendementBase = p.RendementBase,
-                    ObstacleNom = p.ObstacleActuel?.Nom
+                    ObstacleNom = p.ObstacleActuel?.Nom,
+                    EstVivace = p.EstVivace,                       
+                    PeutProduireFruits = p.PeutProduireFruits,     
+                    DerniereRecolte = p.SemainesDepuisDerniereRecolte 
                 });
             }
 

@@ -145,6 +145,8 @@ static GestionPotager MenuChargerSauvegarde(int largeur, int hauteur)
                 p.SemainesDepuisPlantation = cell.SemainesDepuisPlantation;
                 p.SommeSatisfaction = cell.SommeSatisfaction;
                 p.RendementBase = cell.RendementBase;
+                p.PeutProduireFruits = cell.PeutProduireFruits;
+                p.SemainesDepuisDerniereRecolte = cell.DerniereRecolte;
                 if (cell.EstMorte) p.Tuer();
 
                 // Placement
