@@ -27,11 +27,11 @@ while (true)
             continue;
     }
 
-    // 2) Lancement de la simulation
-    sim.LancerSimulation();
-
-    // 3) Après fermeture : menu sauvegarde
-    MenuSauvegarder(sim);
+        if (sim != null)
+    {
+        sim.LancerSimulation();
+        MenuSauvegarder(sim);
+    }
 }
 
 

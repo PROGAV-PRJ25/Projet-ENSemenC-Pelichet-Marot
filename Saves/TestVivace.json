@@ -1,6 +1,6 @@
 {
   "Semaine": 36,
-  "Graines": 82,
+  "Graines": 52,
   "MeteoPluie": 0,
   "MeteoLuminosite": 4,
   "MeteoTemperature": 37.88242,
@@ -598,7 +598,7 @@
       "RemplissageCompost": 0
     },
     {
-      "X": 0,
+      "X": 2,
       "Y": 4,
       "TypePlante": "Compost",
       "TerrainNom": "Terre",
@@ -617,7 +617,7 @@
       "ObstacleNom": null,
       "Equipement": "Aucun",
       "EstCompost": true,
-      "RemplissageCompost": 25
+      "RemplissageCompost": 0
     },
     {
       "X": 6,
