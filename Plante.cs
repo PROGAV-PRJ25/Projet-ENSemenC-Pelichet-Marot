@@ -54,6 +54,13 @@ public abstract class Plante
     // Nombre de graines produites à maturation parfaite.
     public int RendementBase { get; set; } = 1;
 
+    // Equipements
+    public enum Equipement { Aucun, Serre, Ombrelle }
+    public Equipement Accessoire { get; private set; } = Equipement.Aucun; //Au dessus ?
+
+    public bool ASerre => Accessoire == Equipement.Serre;
+    public bool AOmbrelle => Accessoire == Equipement.Ombrelle;
+
 
     // — Constructeur — 
     protected Plante(
@@ -118,7 +125,7 @@ public abstract class Plante
     }
 
     // _ Soigner _
-    public bool EnCoursDeTraitement { get; private set; } = false; //mettre au dessus ?
+    public bool EnCoursDeTraitement { get; private set; } = false; 
 
     public void LancerTraitement()
     {
@@ -315,12 +322,9 @@ public abstract class Plante
     }
 
     // _ Mise en place d'une Ombrelle ou d'une Serre sur la plante pour la booster _
-    public enum Equipement { Aucun, Serre, Ombrelle }
+    
 
-    public Equipement Accessoire { get; private set; } = Equipement.Aucun; //Au dessus ?
-
-    public bool ASerre => Accessoire == Equipement.Serre;
-    public bool AOmbrelle => Accessoire == Equipement.Ombrelle;
+    
 
     public void Equiper(Equipement eq)
     {

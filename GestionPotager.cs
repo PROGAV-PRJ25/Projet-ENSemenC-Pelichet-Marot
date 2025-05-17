@@ -4,33 +4,33 @@ using System.Threading;
 public class GestionPotager
 {
     // ── 1) Champs internes ────────────────────────────────────────────
-    private readonly Terrain[,]      _plateau;
-    private readonly GestionPlateau  _controller;
-    private readonly VuePotager      _vue;
-    private          Graines         _graines;
+    private readonly Terrain[,] _plateau;
+    private readonly GestionPlateau _controller;
+    private readonly VuePotager _vue;
+    private Graines _graines;
     private readonly ModeUrgenceManager _urgence;
 
-    public Saison   _saisonActuelle;
-    public Meteo    _derniereMeteo;
-    public  Meteo    GetDerniereMeteo() => _derniereMeteo;
+    public Saison _saisonActuelle;
+    public Meteo _derniereMeteo;
+    public Meteo GetDerniereMeteo() => _derniereMeteo;
 
-    public int      _semaineActuelle;
-    private bool     _simulationEnCours;
-    private readonly Random   _rng         = new Random();
-    private readonly double   _urgenceProba = 0.1;
+    public int _semaineActuelle;
+    private bool _simulationEnCours;
+    private readonly Random _rng = new Random();
+    private readonly double _urgenceProba = 0.1;
 
     // ── 2a) Nouveau constructeur : partie NEUVE ───────────────────────
     public GestionPotager(int largeur, int hauteur)
     {
         // Génération aléatoire du plateau
-        _plateau        = GenerateurBiome.GenererPlateau(largeur, hauteur);
+        _plateau = GenerateurBiome.GenererPlateau(largeur, hauteur);
 
         // Monnaie
-        _graines        = new Graines(initial: 200);
+        _graines = new Graines(initial: 200);
 
         // Vue & controller
-        _vue            = new VuePotager(_plateau, _graines);
-        _controller     = new GestionPlateau(_plateau, _vue, _graines);
+        _vue = new VuePotager(_plateau, _graines);
+        _controller = new GestionPlateau(_plateau, _vue, _graines);
         _vue.SetController(_controller);
 
         // Mode urgence
@@ -40,9 +40,9 @@ public class GestionPotager
         );
 
         // État initial
-        _saisonActuelle   = new SaisonPluvieuse();
-        _semaineActuelle  = 1;
-        _simulationEnCours= true;
+        _saisonActuelle = new SaisonPluvieuse();
+        _semaineActuelle = 1;
+        _simulationEnCours = true;
 
         // Calculer et stocker la première météo
         var meteo = Meteo.GenererPourSaison(_saisonActuelle, _semaineActuelle);
@@ -54,21 +54,21 @@ public class GestionPotager
     // ── 2b) Nouveau constructeur : RESTAURATION depuis une sauvegarde ───
     public GestionPotager(
         Terrain[,] plateauChargé,
-        int        grainesInitiales,
-        int        semaineInitiale,
-        Saison     saisonInitiale,
-        Meteo      meteoInitial
+        int grainesInitiales,
+        int semaineInitiale,
+        Saison saisonInitiale,
+        Meteo meteoInitial
     )
     {
         // On réutilise exactement le plateau chargé
-        _plateau        = plateauChargé;
+        _plateau = plateauChargé;
 
         // Monnaie restaurée
-        _graines        = new Graines(grainesInitiales);
+        _graines = new Graines(grainesInitiales);
 
         // Vue & controller sur ce plateau
-        _vue            = new VuePotager(_plateau, _graines);
-        _controller     = new GestionPlateau(_plateau, _vue, _graines);
+        _vue = new VuePotager(_plateau, _graines);
+        _controller = new GestionPlateau(_plateau, _vue, _graines);
         _vue.SetController(_controller);
 
         // Mode urgence (inchangé)
@@ -78,12 +78,12 @@ public class GestionPotager
         );
 
         // État restauré
-        _saisonActuelle   = saisonInitiale;
-        _semaineActuelle  = semaineInitiale;
-        _simulationEnCours= true;
+        _saisonActuelle = saisonInitiale;
+        _semaineActuelle = semaineInitiale;
+        _simulationEnCours = true;
 
         // Injecte directement la météo restaurée
-        _derniereMeteo    = meteoInitial;
+        _derniereMeteo = meteoInitial;
         _controller.SetMeteo(meteoInitial);
         _vue.SetMeteo(meteoInitial);
     }
@@ -97,27 +97,28 @@ public class GestionPotager
     }
 
     // ── 3) API pour la sauvegarde / inspection ────────────────────────
-    public int       GetSemaine()     => _semaineActuelle;
-    public void      SetSemaine(int s)=> _semaineActuelle = s;
+    public int GetSemaine() => _semaineActuelle;
+    public void SetSemaine(int s) => _semaineActuelle = s;
 
-    public Graines  GetGraines()      => _graines;
-    public void      SetGraines(int n)=> _graines = new Graines(initial: n);
+    public Graines GetGraines() => _graines;
+    public void SetGraines(int n) => _graines = new Graines(initial: n);
 
-    public Terrain[,] GetPlateau()    => _plateau;
-    public int        GetLargeur()    => _plateau.GetLength(1);
-    public int        GetHauteur()    => _plateau.GetLength(0);
+    public Terrain[,] GetPlateau() => _plateau;
+    public int GetLargeur() => _plateau.GetLength(1);
+    public int GetHauteur() => _plateau.GetLength(0);
 
-    public Plante    CreerPlanteParNom(string type)
+    public Plante CreerPlanteParNom(string type)
     {
         return type switch
         {
-            "Soja"          => new Soja(_graines),
-            "Maïs"          => new Mais(_graines),
+            "Soja" => new Soja(_graines),
+            "Maïs" => new Mais(_graines),
             "Canne à sucre" => new CanneASucre(_graines),
-            "Café"          => new Cafe(_graines),
-            "Cactus"        => new Cactus(_graines),
-            "Coton"         => new Coton(_graines),
-            _               => null
+            "Café" => new Cafe(_graines),
+            "Cactus" => new Cactus(_graines),
+            "Coton" => new Coton(_graines),
+            "Compost" => new Compost(_graines),
+            _ => null
         };
     }
 
@@ -171,6 +172,12 @@ public class GestionPotager
 
         Console.WriteLine("Simulation arrêtée par l'utilisateur.");
     }
+    public void SetCompostActuel(Compost compost)
+    {
+        _controller.SetCompostActuel(compost); // on délègue proprement à GestionPlateau
+    }
+
+
 
     public void ArreterSimulation()
         => _simulationEnCours = false;

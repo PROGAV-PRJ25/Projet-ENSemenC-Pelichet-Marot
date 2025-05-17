@@ -170,8 +170,8 @@ public class VuePotager
                 // _ Affichage de l'action Equiper _
                 if (terrain.Plante.Accessoire == Plante.Equipement.Aucun && _graines.PeutDepenser(10))
                 {
-                    Console.WriteLine("Z : Ajouter une serre     📈🌡️ + 📈☀️  (10 graines)");
-                    Console.WriteLine("O : Ajouter une ombrelle  📉🌡️ + 📉☀️  (10 graines)");
+                    Console.WriteLine("Z : Ajouter une serre     📈🌡️  + 📈☀️  (10 graines)");
+                    Console.WriteLine("O : Ajouter une ombrelle  📉🌡️  + 📉☀️  (10 graines)");
                 }
                 else if (terrain.Plante.Accessoire != Plante.Equipement.Aucun)
                 {
@@ -279,7 +279,7 @@ public class VuePotager
             Console.WriteLine($"\nÉquipement : {terrain.Plante.Accessoire switch
             {
                 Plante.Equipement.Serre => "🏠 Serre",
-                Plante.Equipement.Ombrelle => "☂️ Ombrelle",
+                Plante.Equipement.Ombrelle => "☂️  Ombrelle",
                 _ => "Aucun"
             }}");
 

@@ -393,5 +393,9 @@ public class GestionPlateau
         // On retourne au plus 5
         return toutes.GetRange(0, Math.Min(5, toutes.Count));
     }
+    public void SetCompostActuel(Compost compost)
+    {
+        _compostActuel = compost;
+    }
 
 }

@@ -147,17 +147,31 @@ static GestionPotager MenuChargerSauvegarde(int largeur, int hauteur)
                 p.RendementBase = cell.RendementBase;
                 p.PeutProduireFruits = cell.PeutProduireFruits;
                 p.SemainesDepuisDerniereRecolte = cell.DerniereRecolte;
+
+                // Restauration de l’équipement
+                if (Enum.TryParse<Plante.Equipement>(cell.Equipement, out var eq))
+                    p.Equiper(eq);
+
                 if (cell.EstMorte) p.Tuer();
 
                 // Placement
                 plateau[cell.Y, cell.X].Plante = p;
 
+                // Restauration compost
+                if (p is Compost compost)
+                {
+                    compost.SetRemplissage(cell.RemplissageCompost);
+                    sim.SetCompostActuel(compost);
+                }
+
+
                 // Obstacle
-                if (!string.IsNullOrEmpty(cell.ObstacleNom))
+                if (!string.IsNullOrEmpty(cell.ObstacleNom) && p is not Compost)
                 {
                     var obs = GenerateurObstacle.CreerParNom(cell.ObstacleNom);
                     if (obs != null) p.PlacerObstacle(obs);
                 }
+
             }
 
 

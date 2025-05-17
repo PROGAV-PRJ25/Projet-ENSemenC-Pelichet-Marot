@@ -39,6 +39,14 @@ public class PlantCell
 
     // Obstacle en cours
     public string ObstacleNom { get; set; }
+
+    // Equipement
+    public string Equipement { get; set; }
+
+    // Compost
+    public bool EstCompost { get; set; }  
+    public int RemplissageCompost { get; set; }  
+
 }
 
 

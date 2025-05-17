@@ -57,4 +57,9 @@ public class Compost : Plante
     {
         // Ne meurt jamais
     }
+    public void SetRemplissage(int valeur)
+    {
+        pourcentageRemplissage = Math.Clamp(valeur, 0, 100);
+    }
+
 }

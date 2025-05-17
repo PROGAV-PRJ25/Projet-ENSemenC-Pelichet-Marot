@@ -74,9 +74,16 @@ public static class SaveManager
                     TemperatureActuelle = p.TemperatureActuelle,
                     RendementBase = p.RendementBase,
                     ObstacleNom = p.ObstacleActuel?.Nom,
-                    EstVivace = p.EstVivace,                       
-                    PeutProduireFruits = p.PeutProduireFruits,     
-                    DerniereRecolte = p.SemainesDepuisDerniereRecolte 
+
+                    EstVivace = p.EstVivace,
+                    PeutProduireFruits = p.PeutProduireFruits,
+                    DerniereRecolte = p.SemainesDepuisDerniereRecolte,
+
+
+                    Equipement = p.Accessoire.ToString(), // Serre, Ombrelle ou Aucun
+                    EstCompost = p is Compost,
+                    RemplissageCompost = (p is Compost compost) ? compost.Remplissage : 0
+
                 });
             }
 
