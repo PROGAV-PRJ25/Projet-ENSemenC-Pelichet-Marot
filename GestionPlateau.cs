@@ -154,8 +154,14 @@ public class GestionPlateau
                 case ConsoleKey.A: //Arroser
                     if (terrain.Plante != null)
                     {
+                        var p = terrain.Plante;
                         const int coutArrosage = 5;
-                        if (_graines.PeutDepenser(coutArrosage))
+
+                        if (p.EstMorte)
+                        {
+                            Console.WriteLine("\n💀 La plante est morte. Il faut désherber !");
+                        }
+                        else if (_graines.PeutDepenser(coutArrosage))
                         {
                             terrain.Plante.Arroser();
                             _graines.Depenser(coutArrosage);
@@ -225,8 +231,14 @@ public class GestionPlateau
                 case ConsoleKey.S: // Soigner
                     if (terrain.Plante != null && terrain.Plante.ObstacleActuel is Maladie)
                     {
+                        var p = terrain.Plante;
                         const int coutSoin = 10;
-                        if (_graines.PeutDepenser(coutSoin))
+
+                        if (p.EstMorte)
+                        {
+                            Console.WriteLine("\n💀 La plante est morte. Il faut désherber !");
+                        }
+                        else if (_graines.PeutDepenser(coutSoin))
                         {
                             terrain.Plante.LancerTraitement();
                             _graines.Depenser(coutSoin);
@@ -244,7 +256,12 @@ public class GestionPlateau
                 case ConsoleKey.O: // Ajouter ombrelle
                     if (terrain.Plante != null && terrain.Plante.Accessoire == Plante.Equipement.Aucun)
                     {
-                        if (_graines.PeutDepenser(10))
+                        var p = terrain.Plante;
+                        if (p.EstMorte)
+                        {
+                            Console.WriteLine("\n💀 La plante est morte. Il faut désherber !");
+                        }
+                        else if (_graines.PeutDepenser(10))
                         {
                             terrain.Plante.Equiper(Plante.Equipement.Ombrelle);
                             _graines.Depenser(10);
@@ -259,18 +276,26 @@ public class GestionPlateau
                     choixFait = true;
                     break;
 
-                case ConsoleKey.Z when terrain.Plante != null && terrain.Plante.Accessoire == Plante.Equipement.Aucun:
-                    if (_graines.PeutDepenser(10))
+                case ConsoleKey.Z:
+                    if (terrain.Plante != null && terrain.Plante.Accessoire == Plante.Equipement.Aucun)
                     {
-                        terrain.Plante.Equiper(Plante.Equipement.Serre);
-                        _graines.Depenser(10);
-                        Console.WriteLine("\n🏠 Serre installée !");
+                        var p = terrain.Plante;
+                        if (p.EstMorte)
+                        {
+                            Console.WriteLine("\n💀 La plante est morte. Il faut désherber !");
+                        }
+                        else if (_graines.PeutDepenser(10))
+                        {
+                            terrain.Plante.Equiper(Plante.Equipement.Serre);
+                            _graines.Depenser(10);
+                            Console.WriteLine("\n🏠 Serre installée !");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\n❌ Pas assez de graines !");
+                        }
+                        Thread.Sleep(1500);
                     }
-                    else
-                    {
-                        Console.WriteLine("\n❌ Pas assez de graines !");
-                    }
-                    Thread.Sleep(1500);
                     choixFait = true;
                     break;
 

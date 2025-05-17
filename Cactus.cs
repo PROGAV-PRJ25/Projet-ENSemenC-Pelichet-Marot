@@ -9,7 +9,7 @@ public class Cactus : Plante
             terrainIdeal: new TerrainSableux(),
             saisonCompatible: new List<Saison> { new SaisonSeche() },
             vitesseDeshydratation: 1f,
-            temperatureMinimale: 10f,
+            temperatureMinimale: 18f,
             temperatureMaximale: 40f,
             vitesseCroissance: 0.02f,
             hauteurMaximale: 0.5f,
