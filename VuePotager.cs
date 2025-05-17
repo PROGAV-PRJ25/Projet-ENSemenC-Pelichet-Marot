@@ -114,9 +114,9 @@ public class VuePotager
     {
         var légendes = new (string Nom, ConsoleColor Couleur)[]
         {
-            ("Argileux", ConsoleColor.DarkGray),
-            ("Sableux",  ConsoleColor.Yellow),
-            ("Terreux",ConsoleColor.Green),
+            ("Argile", ConsoleColor.DarkGray),
+            ("Sable",  ConsoleColor.Yellow),
+            ("Terre",ConsoleColor.Green),
             ("Point d'eau",ConsoleColor.Cyan)
         };
 
@@ -138,18 +138,52 @@ public class VuePotager
 
         if (terrain.Plante != null)
         {
-            Console.WriteLine($"\nPlante : {terrain.Plante.NomPlante}\n");
-            if (_graines.PeutDepenser(5))
+            if (terrain.Plante is Compost)
             {
-                Console.WriteLine("A : Arroser 🚿 (5 graines)");
+                Console.WriteLine($"\nObjet : {terrain.Plante.NomPlante}\n");
+                Console.WriteLine("\n♻️ Compost installé");
+                Console.WriteLine("\nE : Enlever le compost");
             }
             else
             {
-                Console.WriteLine("Vous n'avez pas assez de graines pour arroser (5 graines)");
-            }
-            Console.WriteLine("R : Récolter 🫴 ");
-            Console.WriteLine("D : Désherber 🪓");
+                Console.WriteLine($"\nPlante : {terrain.Plante.NomPlante}\n");
+                // _ Affichage de l'action Arroser _
+                if (_graines.PeutDepenser(5))
+                {
+                    Console.WriteLine("A : Arroser 🚿 (5 graines)");
+                }
+                else
+                {
+                    Console.WriteLine("Vous n'avez pas assez de graines pour arroser (5 graines)");
+                }
 
+                // _ Affichage de l'action Soigner _
+                if (terrain.Plante.ObstacleActuel is Maladie && _graines.PeutDepenser(10))
+                {
+                    Console.WriteLine("S : Soigner 🧪 (10 graines)");
+                }
+                else if (terrain.Plante.ObstacleActuel is Maladie)
+                {
+                    Console.WriteLine("La plante est malade mais vous n'avez pas assez de graines pour la soigner (10 graines)");
+                }
+
+                // _ Affichage de l'action Equiper _
+                if (terrain.Plante.Accessoire == Plante.Equipement.Aucun && _graines.PeutDepenser(10))
+                {
+                    Console.WriteLine("Z : Ajouter une serre     📈🌡️ + 📈☀️  (10 graines)");
+                    Console.WriteLine("O : Ajouter une ombrelle  📉🌡️ + 📉☀️  (10 graines)");
+                }
+                else if (terrain.Plante.Accessoire != Plante.Equipement.Aucun)
+                {
+                    Console.WriteLine("X : Retirer l'équipement ❌");
+                }
+
+                Console.WriteLine("");
+
+                // _ Affichage des actions Récolter et Désherber_
+                Console.WriteLine("R : Récolter 🫴 ");
+                Console.WriteLine("D : Désherber 🪓");
+            }
         }
         else
         {
@@ -157,12 +191,25 @@ public class VuePotager
             Console.WriteLine("P : Planter 🌱");
         }
 
+        Console.WriteLine("");
         Console.WriteLine("Espace : annuler");
     }
     public void AfficherPlanteOuTerrain(Terrain terrain, int xPlante, int yPlante)
     {
         Console.Clear();
-
+        if (terrain.Plante is Compost compost)
+        {
+            Console.WriteLine("=== Compost installé ===");
+            Console.WriteLine("");
+            Console.WriteLine("Le compost transforme les déchets organiques en ressources !");
+            Console.WriteLine("Obtenez 15 graines lorsqu'il est rempli (4 plantes désherbées) !");
+            Console.WriteLine("");
+            int segments = 10;
+            int remplis = compost.Remplissage / 10;
+            string barre = "[" + new string('#', remplis) + new string(' ', segments - remplis) + $"] {compost.Remplissage}%";
+            Console.WriteLine($"♻️  Remplissage : {barre}");
+            return;
+        }
         if (terrain.Plante == null)
         {
             // Affichage quand il n'y a pas de plante
@@ -216,7 +263,7 @@ public class VuePotager
 
             bool condTerrain = terrain.GetType() == p.TerrainIdeal.GetType();
 
-    
+
 
             // Affichage des 7 conditions
             Console.WriteLine($"{(condHyd ? "✅" : "❌")} {"Hydratation".PadRight(labelWidth)}: {p.HydratationActuelle:F1}%");
@@ -226,6 +273,15 @@ public class VuePotager
             Console.WriteLine($"{(condObs ? "✅" : "❌")} {"Obstacle".PadRight(labelWidth)}: {nomObs} {detailsObs}");
             Console.WriteLine($"{(condSaison ? "✅" : "❌")} {"Saison".PadRight(labelWidth)}: {_meteo.SaisonActuelle.NomSaison}");
             Console.WriteLine($"{(condTerrain ? "✅" : "❌")} {"Terrain".PadRight(labelWidth)}: {terrain.NomTerrain}");
+            Console.WriteLine("");
+
+            // _ Affichage de la présence d'une Serre ou d'une Ombrelle sur la plante _ 
+            Console.WriteLine($"\nÉquipement : {terrain.Plante.Accessoire switch
+            {
+                Plante.Equipement.Serre => "🏠 Serre",
+                Plante.Equipement.Ombrelle => "☂️ Ombrelle",
+                _ => "Aucun"
+            }}");
 
             // Affichage de la barre de croissance
             double ratio = p.HauteurActuelle / p.HauteurMaximale;
@@ -236,7 +292,7 @@ public class VuePotager
                          + new string(' ', totalSegments - remplis)
                          + $"] {ratio * 100:F0}%";
 
-            if (p.EstMorte)
+            if (!(p is Compost) && p.EstMorte)
             {
                 Console.WriteLine($"\n{p.NomPlante} est mort(e) 💀");
             }
@@ -264,6 +320,7 @@ public class VuePotager
         {
             Console.Clear();
             Console.WriteLine($"Graines disponibles : {_graines}\n");
+            Console.WriteLine("");
             Console.WriteLine("Plantes :");
             Console.WriteLine("1 - 🫛  Soja          (10 graines)");
             Console.WriteLine("2 - 🌽 Maïs          (12 graines)");
@@ -271,7 +328,12 @@ public class VuePotager
             Console.WriteLine("4 - ☕ Café          (16 graines)");
             Console.WriteLine("5 - 🌵 Cactus        (20 graines)");
             Console.WriteLine("6 - ☁️  Coton         (15 graines)");
+            Console.WriteLine("");
+            Console.WriteLine("Objets :");
+            Console.WriteLine("7 - 💩  Composte       (30 graines)");
+            Console.WriteLine("");
             Console.WriteLine("0 - Annuler");
+            Console.WriteLine("");
             Console.Write("\nVotre choix : ");
 
             var key = Console.ReadKey(true).Key;
@@ -283,6 +345,7 @@ public class VuePotager
                 ConsoleKey.D4 or ConsoleKey.NumPad4 => new Cafe(_graines),
                 ConsoleKey.D5 or ConsoleKey.NumPad5 => new Cactus(_graines),
                 ConsoleKey.D6 or ConsoleKey.NumPad6 => new Coton(_graines),
+                ConsoleKey.D7 or ConsoleKey.NumPad7 => new Compost(_graines),
                 ConsoleKey.D0 or ConsoleKey.NumPad0 => null,
                 _ => null
             };
@@ -300,16 +363,26 @@ public class VuePotager
                 return null;
             }
 
+            if (plante is Compost && _controller.CompostExiste())
+            {
+                Console.WriteLine("\n❌ Un compost est déjà présent sur le plateau !");
+                Thread.Sleep(2000);
+                continue;
+            }
+
             if (_graines.PeutDepenser(plante.PrixGraines))
             {
                 _graines.Depenser(plante.PrixGraines);
+                if(plante.GetType().Name == "Compost")
+                Console.WriteLine($"\nVous avez installé un {plante.GetType().Name} !");
+                else
                 Console.WriteLine($"\nVous avez planté un(e) {plante.GetType().Name} !");
                 Thread.Sleep(1000);
                 return plante;
             }
             else
             {
-                Console.WriteLine("\nPas assez de graines pour cette plante.");
+                Console.WriteLine("\nPas assez de graines pour cet achat.");
                 Thread.Sleep(1000);
                 continue;
             }

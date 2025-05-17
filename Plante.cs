@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
-
-
+public enum Equipement
+{
+    Aucun,
+    Serre,
+    Ombrelle
+}
 
 public abstract class Plante
 {
     // Générateur partagé pour la maladie
     private static readonly Random _rng = new Random();
 
-    private Graines _graines;
+    protected Graines _graines;
 
     // — Propriétés / Attributs — 
     public int PrixGraines { get; protected set; } = 0;
@@ -98,7 +102,7 @@ public abstract class Plante
         HydratationActuelle = Math.Max(0f, HydratationActuelle - montant);
     }
 
-    public void Tuer()
+    public virtual void Tuer()
     {
         EstMorte = true;
     }
@@ -113,13 +117,33 @@ public abstract class Plante
         }
     }
 
+    // _ Soigner _
+    public bool EnCoursDeTraitement { get; private set; } = false; //mettre au dessus ?
+
+    public void LancerTraitement()
+    {
+        EnCoursDeTraitement = true;
+    }
+
+    public void Soigner()
+    {
+        ObstacleActuel = null;
+        EnCoursDeTraitement = false;
+    }
+
     public void SetLuminosite(int indice)
     {
+        if (ASerre) indice++;
+        else if (AOmbrelle) indice--;
+
         LuminositeActuelle = Math.Clamp(indice, 1, 5);
     }
 
     public virtual void SetTemperature(float temperature)
     {
+        if (ASerre) temperature += 3f;
+        else if (AOmbrelle) temperature -= 2f;
+
         TemperatureActuelle = temperature;
     }
 
@@ -178,6 +202,14 @@ public abstract class Plante
 
         // 1) Appliquer la température de la semaines
         SetTemperature(temperatureSemaine);
+
+        // 1 bis) Vérifier si le joueur a soigné la plante 
+        if (EnCoursDeTraitement && ObstacleActuel is Maladie)
+        {
+            Soigner();
+            Console.WriteLine($"🧪 {NomPlante} a été soignée !");
+            Thread.Sleep(1500);
+        }
 
         // 2) Effets de l’obstacle (maladie, insecte, animal…)
         if (ObstacleActuel != null)
@@ -280,5 +312,24 @@ public abstract class Plante
     public virtual void DiminuerRendement(int quantite)
     {
         RendementBase = Math.Max(1, RendementBase - quantite);
+    }
+
+    // _ Mise en place d'une Ombrelle ou d'une Serre sur la plante pour la booster _
+    public enum Equipement { Aucun, Serre, Ombrelle }
+
+    public Equipement Accessoire { get; private set; } = Equipement.Aucun; //Au dessus ?
+
+    public bool ASerre => Accessoire == Equipement.Serre;
+    public bool AOmbrelle => Accessoire == Equipement.Ombrelle;
+
+    public void Equiper(Equipement eq)
+    {
+        if (Accessoire == Equipement.Aucun)
+            Accessoire = eq;
+    }
+
+    public void Desequiper()
+    {
+        Accessoire = Equipement.Aucun;
     }
 }

@@ -4,6 +4,8 @@ public class GestionPlateau
     private readonly Graines _graines;
     private VuePotager _vue;
     private Meteo _meteo;
+    private Compost? _compostActuel = null;
+    public bool CompostExiste() => _compostActuel != null;
     public int CurseurX { get; private set; }
     public int CurseurY { get; private set; }
 
@@ -136,34 +138,59 @@ public class GestionPlateau
         while (!choixFait)
         {
             var key = Console.ReadKey(true).Key;
+            if (terrain.Plante is Compost)
+            {
+                if (key == ConsoleKey.E)
+                {
+                    terrain.Plante = null;
+                    _compostActuel = null;
+                    Console.WriteLine("\nLe compost a été retiré.");
+                    Thread.Sleep(1000);
+                }
+                return; // on sort sans afficher les autres choix
+            }
             switch (key)
             {
-                case ConsoleKey.A: // Arroser (coût fixe 5 graines)
+                case ConsoleKey.A: //Arroser
                     if (terrain.Plante != null)
                     {
                         const int coutArrosage = 5;
                         if (_graines.PeutDepenser(coutArrosage))
                         {
                             terrain.Plante.Arroser();
+                            _graines.Depenser(coutArrosage);
                             Console.WriteLine($"\nArrosage ! (-{coutArrosage} graines)");
-                            Thread.Sleep(1000);
                         }
                         else
                         {
                             Console.WriteLine("\nPas assez de graines pour arroser !");
-                            Thread.Sleep(1000);
                         }
+                        Thread.Sleep(1000);
                     }
                     choixFait = true;
                     break;
 
                 case ConsoleKey.D: // Désherber
-                    Thread.Sleep(1000);
-                    terrain.Plante = null;
+                    if (terrain.Plante != null)
+                    {
+                        // Si c’était le compost, on le supprime proprement
+                        if (terrain.Plante is Compost)
+                        {
+                            _compostActuel = null;
+                        }
+                        else if (_compostActuel != null)
+                        {
+                            _compostActuel.AjouterRemplissage();
+                        }
+
+                        terrain.Plante = null;
+                        Console.WriteLine("\n🪓 Plante désherbée.");
+                        Thread.Sleep(1000);
+                    }
                     choixFait = true;
                     break;
 
-                case ConsoleKey.R: // Récolter
+                case ConsoleKey.R: //Récolter
                     if (terrain.Plante != null)
                     {
                         var p = terrain.Plante;
@@ -187,7 +214,7 @@ public class GestionPlateau
                             Console.WriteLine($"\n✅ Récolté ! +{gain} graines obtenues.");
 
                             if (!p.EstVivace)
-                                terrain.Plante = null; // ne retirer que les annuelles
+                                terrain.Plante = null;
                         }
 
                         Thread.Sleep(2000);
@@ -195,6 +222,67 @@ public class GestionPlateau
                     choixFait = true;
                     break;
 
+                case ConsoleKey.S: // Soigner
+                    if (terrain.Plante != null && terrain.Plante.ObstacleActuel is Maladie)
+                    {
+                        const int coutSoin = 10;
+                        if (_graines.PeutDepenser(coutSoin))
+                        {
+                            terrain.Plante.LancerTraitement();
+                            _graines.Depenser(coutSoin);
+                            Console.WriteLine("\n🧪 Traitement lancé. La plante sera soignée au prochain tour.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\n❌ Pas assez de graines pour soigner !");
+                        }
+                        Thread.Sleep(1500);
+                    }
+                    choixFait = true;
+                    break;
+
+                case ConsoleKey.O: // Ajouter ombrelle
+                    if (terrain.Plante != null && terrain.Plante.Accessoire == Plante.Equipement.Aucun)
+                    {
+                        if (_graines.PeutDepenser(10))
+                        {
+                            terrain.Plante.Equiper(Plante.Equipement.Ombrelle);
+                            _graines.Depenser(10);
+                            Console.WriteLine("\n☂️ Ombrelle installée !");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\n❌ Pas assez de graines !");
+                        }
+                        Thread.Sleep(1500);
+                    }
+                    choixFait = true;
+                    break;
+
+                case ConsoleKey.Z when terrain.Plante != null && terrain.Plante.Accessoire == Plante.Equipement.Aucun:
+                    if (_graines.PeutDepenser(10))
+                    {
+                        terrain.Plante.Equiper(Plante.Equipement.Serre);
+                        _graines.Depenser(10);
+                        Console.WriteLine("\n🏠 Serre installée !");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\n❌ Pas assez de graines !");
+                    }
+                    Thread.Sleep(1500);
+                    choixFait = true;
+                    break;
+
+                case ConsoleKey.X: // Retirer équipement
+                    if (terrain.Plante != null && terrain.Plante.Accessoire != Plante.Equipement.Aucun)
+                    {
+                        terrain.Plante.Desequiper();
+                        Console.WriteLine("\n✅ L'équipement a été retiré.");
+                        Thread.Sleep(1500);
+                    }
+                    choixFait = true;
+                    break;
 
                 case ConsoleKey.P: // Planter
                     if (terrain.Plante == null)
@@ -210,16 +298,18 @@ public class GestionPlateau
                             if (nouvelle != null)
                             {
                                 terrain.Plante = nouvelle;
-
-                                // ← NOUVEAU : appliquer la météo courante tout de suite
                                 nouvelle.SetTemperature(_meteo.Temperature);
                                 nouvelle.SetLuminosite(_meteo.Luminosite);
+
+                                if (nouvelle is Compost compost)
+                                    _compostActuel = compost;
                             }
                         }
                     }
                     choixFait = true;
                     break;
-                case ConsoleKey.Spacebar: // Annuler
+
+                case ConsoleKey.Spacebar:
                     choixFait = true;
                     break;
             }
