@@ -26,7 +26,7 @@ public class GestionPotager
         _plateau = GenerateurBiome.GenererPlateau(largeur, hauteur);
 
         // Monnaie
-        _graines = new Graines(initial: 200);
+        _graines = new Graines(initial: 100);
 
         // Vue & controller
         _vue = new VuePotager(_plateau, _graines);
