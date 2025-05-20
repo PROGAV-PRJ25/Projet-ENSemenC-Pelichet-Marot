@@ -58,6 +58,11 @@ public class GestionPlateau
                     if (obs != null)
                         plante.PlacerObstacle(obs);
                 }
+                //On propage la maladie sur les plantes alentour aux plantes malades.
+                if (plante.ObstacleActuel is Maladie)
+                {
+                    PropagerMaladieAutour(x, y);
+                }
 
                 bool espaceOk = IsEspacementOk(x, y);
                 plante.Update(
@@ -346,6 +351,38 @@ public class GestionPlateau
                     if (dist < minDist) minDist = dist;
                 }
         return minDist == int.MaxValue ? -1 : minDist;
+    }
+
+    public void PropagerMaladieAutour(int x, int y)
+    {
+        var planteMalade = _plateau[y, x].Plante;
+        if (planteMalade?.ObstacleActuel is not Maladie maladie) return;
+
+        // Parcours des 8 cases autour
+        for (int dy = -1; dy <= 1; dy++)
+        {
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                if (dx == 0 && dy == 0) continue; // On saute la plante centrale
+                int nx = x + dx;
+                int ny = y + dy;
+
+                // Vérifie que la case est dans les limites
+                if (ny >= 0 && ny < _plateau.GetLength(0) && nx >= 0 && nx < _plateau.GetLength(1))
+                {
+                    var voisine = _plateau[ny, nx].Plante;
+                    if (voisine != null && voisine.ObstacleActuel == null)
+                    {
+                        // Augmente les chances de maladie autour (ici 15%)
+                        if (new Random().NextDouble() < 0.15)
+                        {
+                            var nouvelleMaladie = Maladie.GenererMaladieAleatoire();
+                            voisine.PlacerObstacle(nouvelleMaladie);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public List<(int x, int y)> Choisir5PlantesAleatoires()
