@@ -8,6 +8,8 @@ public class GestionPlateau
     public bool CompostExiste() => _compostActuel != null;
     public int CurseurX { get; private set; }
     public int CurseurY { get; private set; }
+    public int Hauteur => _plateau.GetLength(0);
+    public int Largeur => _plateau.GetLength(1);
 
     // Injecte les graines et la vue dès la construction
     public GestionPlateau(Terrain[,] plateau, VuePotager vue, Graines graines)
@@ -397,5 +399,10 @@ public class GestionPlateau
     {
         _compostActuel = compost;
     }
+    public Terrain GetTerrain(int x, int y)
+    {
+        return _plateau[y, x];
+    }
+
 
 }

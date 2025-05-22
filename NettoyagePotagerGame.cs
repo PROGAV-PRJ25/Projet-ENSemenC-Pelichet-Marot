@@ -1,9 +1,5 @@
-using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-
-public class NettoyagePotagerGame : IMiniJeu
+public class NettoyagePotagerGame : MiniJeu
 {
     private readonly Graines _graines;
     private readonly Random  _rng = new();
@@ -32,7 +28,7 @@ public class NettoyagePotagerGame : IMiniJeu
         Console.Clear();
         Console.WriteLine("!!! MODE URGENCE : NETTOYAGE DES MAUVAISES HERBES !!!\n");
         Console.WriteLine("Répétez la séquence de flèches en moins de 10 s.");
-        Thread.Sleep(1000);
+        Thread.Sleep(3000);
 
         for (int i = 0; i < longueur; i++)
         {

@@ -35,8 +35,9 @@ public class GestionPotager
 
         // Mode urgence
         _urgence = new ModeUrgenceManager(
-            new NettoyagePotagerGame(_graines),
-            new OrageGame(_controller, _vue, _graines)
+            new IntrusNocturnesGame(_controller),
+            new OrageGame(_controller, _vue, _graines),
+            new NettoyagePotagerGame(_graines)
         );
 
         // État initial
@@ -73,8 +74,9 @@ public class GestionPotager
 
         // Mode urgence (inchangé)
         _urgence = new ModeUrgenceManager(
-            new NettoyagePotagerGame(_graines),
-            new OrageGame(_controller, _vue, _graines)
+            new IntrusNocturnesGame(_controller),
+             new OrageGame(_controller, _vue, _graines),
+            new NettoyagePotagerGame(_graines)
         );
 
         // État restauré

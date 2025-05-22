@@ -1,9 +1,9 @@
 public class ModeUrgenceManager
 {
-    private readonly IMiniJeu[] _jeux;
+    private readonly MiniJeu[] _jeux;
     private readonly Random     _rng = new();
 
-    public ModeUrgenceManager(params IMiniJeu[] jeux)
+    public ModeUrgenceManager(params MiniJeu[] jeux)
     {
         _jeux = jeux;
     }
