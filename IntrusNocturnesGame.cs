@@ -58,6 +58,7 @@ public class IntrusNocturnesGame : MiniJeu
         if (choix == intrus.rep)
         {
             Console.WriteLine("\nExcellent choix ! L’intrus senfuit sans faire de dégâts.");
+            Thread.Sleep(1000);
             Pause();
             return true;
         }
@@ -66,14 +67,14 @@ public class IntrusNocturnesGame : MiniJeu
             Console.WriteLine("\nTrop tard ! Vous n’avez pas réagi à temps…");
         else
             Console.WriteLine("\nAïe. Mauvais Répulsif. L'intrus saccage une plante...");
-
         TuerPlanteAleatoire();
+        Thread.Sleep(1000);
         Pause();
         return false;
     }
 
     // ------------------------------------------------------------------
-    private void TuerPlanteAleatoire()
+    public void TuerPlanteAleatoire()
     {
         // Récupère toutes les coordonnées de plantes vivantes
         var vivantes = new List<(int x, int y)>();

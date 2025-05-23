@@ -21,13 +21,13 @@ public class NettoyagePotagerGame : MiniJeu
             .ToArray();
 
         // Durée max du mini-jeu
-        TimeSpan dureeMax = TimeSpan.FromSeconds(10);
+        TimeSpan dureeMax = TimeSpan.FromSeconds(15);
         var sw = Stopwatch.StartNew();
 
         // Écran d’intro
         Console.Clear();
         Console.WriteLine("!!! MODE URGENCE : NETTOYAGE DES MAUVAISES HERBES !!!\n");
-        Console.WriteLine("Répétez la séquence de flèches en moins de 10 s.");
+        Console.WriteLine("Répétez la séquence de flèches en moins de 15 s.");
         Thread.Sleep(3000);
 
         for (int i = 0; i < longueur; i++)

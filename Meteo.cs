@@ -72,9 +72,9 @@ public class Meteo
 
         string desc = $"📆 Semaine           : {semaine}\n" +
                       $"🍂 Saison            : {SaisonActuelle.NomSaison}\n" +
-                      $"🌡️ Température       : {Temperature:F1}°C\n" +
-                      $"🌧️ Pluie             : {QuantitePluie:P0}\n" +
-                      $"☀️ Ensoleillement    : indice {Luminosite} ({niveaux[Luminosite - 1]})";
+                      $"🌡️  Température       : {Temperature:F1}°C\n" +
+                      $"🌧️  Pluie             : {QuantitePluie:P0}\n" +
+                      $"☀️  Ensoleillement    : indice {Luminosite} ({niveaux[Luminosite - 1]})";
 
         if (semaine > 15 && Intemperie)
         {

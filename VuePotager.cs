@@ -322,12 +322,12 @@ public class VuePotager
             Console.WriteLine($"Graines disponibles : {_graines}");
             Console.WriteLine("");
             Console.WriteLine("Plantes :");
-            Console.WriteLine("1 - 🫛 Soja          (10 graines)");
+            Console.WriteLine("1 - 🫛  Soja          (10 graines)");
             Console.WriteLine("2 - 🌽 Maïs          (12 graines)");
             Console.WriteLine("3 - 🎍 Canne à sucre (14 graines)");
             Console.WriteLine("4 - ☕ Café          (16 graines)");
             Console.WriteLine("5 - 🌵 Cactus        (20 graines)");
-            Console.WriteLine("6 - ☁️ Coton         (15 graines)");
+            Console.WriteLine("6 - ☁️  Coton         (15 graines)");
             Console.WriteLine("");
             Console.WriteLine("Objets :");
             Console.WriteLine("7 - 💩  Composte     (30 graines)");
