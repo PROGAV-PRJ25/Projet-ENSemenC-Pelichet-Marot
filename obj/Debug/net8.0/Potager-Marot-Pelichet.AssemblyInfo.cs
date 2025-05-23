@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Potager-Marot-Pelichet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e19ffad98331d2fc75d416dfc232e686b1d60c7b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d3fdf0ebfd086eb6bdb08b7e3b63949bf7f83fac")]
 [assembly: System.Reflection.AssemblyProductAttribute("Potager-Marot-Pelichet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Potager-Marot-Pelichet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
