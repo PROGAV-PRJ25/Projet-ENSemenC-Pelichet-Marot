@@ -1,7 +1,8 @@
 public class Mais : Plante
 {
-    public Mais()
+    public Mais(Graines graines)
         : base(
+            prixGraines :        12,
             nomPlante:            "Maïs",
             acronyme:             "Ma",
             espacePris:           2,
@@ -11,10 +12,13 @@ public class Mais : Plante
             temperatureMinimale:  18f,
             temperatureMaximale:  32f,
             vitesseCroissance:    0.15f,
-            hauteurMaximale:      1.5f
+            hauteurMaximale:      1.5f,
+            graines : graines,
+            esperanceDeVieSemaines: 32
         )
     {
         HydratationCritique = 40f;
-        LuminositeIdeale    = 80f;
+        LuminositeIdeale    = 4;
+        RendementBase = 10;
     }
 }

@@ -70,4 +70,16 @@ public static class GenerateurBiome
 
         return plateau;
     }
+    public static Terrain CreerTerrainParNom(string nom)
+{
+    return nom switch
+    {
+        "Classique" => new TerrainClassiqueTerreux(),
+        "Argileux"  => new TerrainArgileux(),
+        "Sableux"   => new TerrainSableux(),
+        "Aquatique" => new TerrainAquatique(),
+        _           => new TerrainClassiqueTerreux()
+    };
+}
+
 }

@@ -1,11 +1,16 @@
 public class Puceron : Insecte
 {
-    public float Degats { get; } = 2f;
-    public Puceron() : base("Puceron", "Petit insecte suceur", 0.12f) { }
+    public float Degats { get; } = 5f;
+    public Puceron() : base(
+        nom: "Puceron",
+        desc: "Petit insecte suceur, déshydrate",
+        proba: 0.0012f
+        )
+    { }
     public override void AppliquerEffets(Plante p)
     {
-        // Ex : réduit un peu d’eau et ralentit la croissance
+        // Ex : réduit un peu d’eau 
         p.ReduireHydratation(Degats);
-        // Etc.
+        
     }
 }

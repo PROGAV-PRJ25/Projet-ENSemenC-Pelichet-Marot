@@ -1,90 +1,86 @@
-// Meteo.cs
-using System;
-
 public class Meteo
 {
     private static readonly Random _rng = new Random();
 
-    public float QuantitePluie   { get; }
-    public float Luminosite      { get; }
-    public float Temperature     { get; }
-    public bool  Intemperie      { get; }
+    public float QuantitePluie { get; }
+    public int Luminosite { get; }    // 1 (nul) à 5 (très fort)
+    public float Temperature { get; }
+    public bool Intemperie { get; }
     public Saison SaisonActuelle { get; }
-    public string Description    { get; }
+    public string Description { get; }
 
-    private Meteo(
+    public Meteo(
         float pluie,
-        float luminosite,
+        int luminosite,
         float temperature,
         bool intemperie,
         Saison saison,
-        int jourActuel
+        int semaineActuelle
     )
     {
-        QuantitePluie   = Math.Clamp(pluie,  0f, 1f);
-        Luminosite      = Math.Clamp(luminosite,  0.1f, 1f);
-        Temperature     = temperature;
-        Intemperie      = intemperie;
-        SaisonActuelle  = saison;
-        Description     = GénérerDescription(jourActuel);
+        QuantitePluie = Math.Clamp(pluie, 0f, 1f);
+        Luminosite = luminosite;           // déjà dans [1..5]
+        Temperature = temperature;
+        Intemperie = intemperie;
+        SaisonActuelle = saison;
+        Description = GenererDescription(semaineActuelle);
     }
 
-    public static Meteo GenererPourSaison(Saison saison, int jourActuel)
+    public static Meteo GenererPourSaison(Saison saison, int semaineActuelle)
     {
-        float pluie       = CalculerPluie(saison);
-        float luminosite  = CalculerLuminosite(saison);
+        // Pluie et température comme avant
+        float pluie = CalculerPluie(saison);
         float temperature = CalculerTemperature(saison);
-        bool  intemperie  = DeterminerIntemperie(saison);
+        bool intemperie = DeterminerIntemperie(saison);
 
+        // Nouvelle échelle 1–5 selon la saison
+        int lum;
+        if (saison is SaisonPluvieuse)
+            lum = _rng.Next(1, 4); // 1, 2 ou 3
+        else
+            lum = _rng.Next(3, 6); // 3, 4 ou 5
+
+        // Impact de la pluie sur la température seulement
         if (pluie > 0f)
-        {
-            luminosite = Math.Max(0.1f, luminosite - 0.2f);
             temperature -= 5f;
-        }
 
-        return new Meteo(pluie, luminosite, temperature, intemperie, saison, jourActuel);
+        return new Meteo(pluie, lum, temperature, intemperie, saison, semaineActuelle);
     }
 
     private static float CalculerPluie(Saison saison)
     {
         if (_rng.NextSingle() < saison.ProbabilitePluie)
         {
-            // Pluie randomisée entre 80% et 120% de la probabilité de la saison
-            var factor = 0.8f + _rng.NextSingle() * 0.4f;
+            float factor = 0.8f + _rng.NextSingle() * 0.4f;
             return Math.Clamp(saison.ProbabilitePluie * factor, 0f, 1f);
         }
         return 0f;
     }
 
-    private static float CalculerLuminosite(Saison saison)
-    {
-        var factor = 0.9f + _rng.NextSingle() * 0.2f;
-        return Math.Clamp(saison.LuminositeMoyenne * factor, 0.1f, 1f);
-    }
-
     private static float CalculerTemperature(Saison saison)
-    {
-        return saison.TemperatureMoyenne
-             + ( _rng.NextSingle() * 2f - 1f )
-             * saison.VariationTemperature;
-    }
+        => saison.TemperatureMoyenne
+         + (_rng.NextSingle() * 2f - 1f)
+         * saison.VariationTemperature;
 
     private static bool DeterminerIntemperie(Saison saison)
         => _rng.NextSingle() < saison.ProbabiliteIntemperie;
 
-    private string GénérerDescription(int jour)
+    private string GenererDescription(int semaine)
     {
-        var desc = $"Jour : {jour}\n" +
-                   $"Saison       : {SaisonActuelle.NomSaison}\n" +
-                   $"Température  : {Temperature:F1}°C\n" +
-                   $"Pluie        : {QuantitePluie:P0}\n" +
-                   $"Luminosité   : {Luminosite:P0}";
+        // Cartographie verbale pour les indices 1–5
+        string[] niveaux = { "nul", "faible", "modéré", "fort", "très fort" };
 
-        if (jour > 14 && Intemperie)
+        string desc = $"📆 Semaine           : {semaine}\n" +
+                      $"🍂 Saison            : {SaisonActuelle.NomSaison}\n" +
+                      $"🌡️  Température       : {Temperature:F1}°C\n" +
+                      $"🌧️  Pluie             : {QuantitePluie:P0}\n" +
+                      $"☀️  Ensoleillement    : indice {Luminosite} ({niveaux[Luminosite - 1]})";
+
+        if (semaine > 15 && Intemperie)
         {
             desc += _rng.Next(2) == 0
-                ? "\n⚡ Orage"
-                : "\n🧊 Grêle";
+                ? "\n⛈️ Orage"
+                : "\n❄️ Grêle";
         }
 
         return desc;

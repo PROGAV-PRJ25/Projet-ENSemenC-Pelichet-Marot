@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
-
-
+public enum Equipement
+{
+    Aucun,
+    Serre,
+    Ombrelle
+}
 
 public abstract class Plante
 {
     // Générateur partagé pour la maladie
     private static readonly Random _rng = new Random();
-    private int joursSansMaladie = 0;
-    private const int probMaladieInverse = 10;
+
+    protected Graines _graines;
 
     // — Propriétés / Attributs — 
+    public int PrixGraines { get; protected set; } = 0;
     public string NomPlante { get; protected set; }
     public string Acronyme { get; protected set; }
     public int EspacePris { get; protected set; }
@@ -18,24 +23,49 @@ public abstract class Plante
     public List<Saison> SaisonCompatible { get; protected set; }
 
     public float HydratationCritique { get; protected set; } = 30f;
-    public float LuminositeIdeale { get; protected set; } = 70f;
+    public int LuminositeIdeale { get; protected set; } = 3; // échelle 1–5
     public float TemperatureMinimale { get; protected set; }
     public float TemperatureMaximale { get; protected set; }
     public float VitesseDeshydratation { get; protected set; }
 
     public float HydratationActuelle { get; set; } = 100f;
-    public float LuminositeActuelle { get; protected set; } = 50f;
+    public int LuminositeActuelle { get; set; } = 3;
     public float TemperatureActuelle { get; set; } = 15f;
 
-    public Maladie? MaladieActuelle { get; protected set; } = null;
+    public Obstacle? ObstacleActuel { get; private set; } = null;
     public bool EstMorte { get; protected set; } = false;
 
     public float VitesseCroissance { get; protected set; }
-    public float HauteurActuelle { get; protected set; } = 0f;
+    public float HauteurActuelle { get; set; } = 0f;
     public float HauteurMaximale { get; protected set; } = 1f;
+
+
+    // Pour le suivi de maturation
+    public int SemainesDepuisPlantation { get; set; } = 0;
+    public float SommeSatisfaction { get; set; } = 0f;
+    public bool EstMature => HauteurActuelle >= HauteurMaximale;
+    public int EsperanceDeVieSemaines { get; protected set; }
+
+    public bool EstVivace { get; protected set; } = false;
+    public bool PeutProduireFruits { get; set; } = true; // ← pour gérer l’attente après récolte
+    public int SemainesDepuisDerniereRecolte { get; set; } = 0;
+
+
+    // Nombre de graines produites à maturation parfaite.
+    public int RendementBase { get; set; } = 1;
+
+    // Equipements
+    public enum Equipement { Aucun, Serre, Ombrelle }
+    public Equipement Accessoire { get; private set; } = Equipement.Aucun; //Au dessus ?
+
+    public bool ASerre => Accessoire == Equipement.Serre;
+    public bool AOmbrelle => Accessoire == Equipement.Ombrelle;
+
 
     // — Constructeur — 
     protected Plante(
+        Graines graines,
+        int prixGraines,
         string nomPlante,
         string acronyme,
         int espacePris,
@@ -45,9 +75,12 @@ public abstract class Plante
         float temperatureMinimale,
         float temperatureMaximale,
         float vitesseCroissance,
-        float hauteurMaximale
+        float hauteurMaximale,
+        int esperanceDeVieSemaines
     )
     {
+        _graines = graines;
+        PrixGraines = prixGraines;
         NomPlante = nomPlante;
         Acronyme = acronyme;
         EspacePris = espacePris;
@@ -61,6 +94,8 @@ public abstract class Plante
         VitesseCroissance = vitesseCroissance;
         HauteurMaximale = hauteurMaximale;
         HauteurActuelle = 0f;
+        EsperanceDeVieSemaines = esperanceDeVieSemaines;
+
 
         // États initiaux
         HydratationActuelle = 100f;
@@ -74,7 +109,7 @@ public abstract class Plante
         HydratationActuelle = Math.Max(0f, HydratationActuelle - montant);
     }
 
-    public void Tuer()
+    public virtual void Tuer()
     {
         EstMorte = true;
     }
@@ -82,84 +117,188 @@ public abstract class Plante
     // — Actions de base — 
     public virtual void Arroser()
     {
-        HydratationActuelle = 100f;
+        if (_graines.PeutDepenser(5))
+        {
+            _graines.Depenser(5);
+            HydratationActuelle = 100f;
+        }
     }
 
-    public virtual void RecevoirLumiere(float intensite)
+    // _ Soigner _
+    public bool EnCoursDeTraitement { get; private set; } = false; 
+
+    public void LancerTraitement()
     {
-        LuminositeActuelle = Math.Min(100f, LuminositeActuelle + intensite);
+        EnCoursDeTraitement = true;
+    }
+
+    public void Soigner()
+    {
+        ObstacleActuel = null;
+        EnCoursDeTraitement = false;
+    }
+
+    public void SetLuminosite(int indice)
+    {
+        if (ASerre) indice++;
+        else if (AOmbrelle) indice--;
+
+        LuminositeActuelle = Math.Clamp(indice, 1, 5);
     }
 
     public virtual void SetTemperature(float temperature)
     {
+        if (ASerre) temperature += 3f;
+        else if (AOmbrelle) temperature -= 2f;
+
         TemperatureActuelle = temperature;
     }
 
     // — Évaluation des 5 conditions — 
-    public virtual float EvaluerConditions(bool espaceRespecte)
+    public virtual float EvaluerConditions(bool espaceRespecte, Saison saisonActuelle, Terrain terrainActuel)
     {
         int defauts = 0;
+        // Hydratation
         if (HydratationActuelle < HydratationCritique) defauts++;
-        if (Math.Abs(LuminositeActuelle - LuminositeIdeale) >= 20f) defauts++;
+        // 2) Luminosité : valide si == idéale ou == idéale−1
+        if (LuminositeActuelle != LuminositeIdeale && LuminositeActuelle != (LuminositeIdeale - 1))
+        {
+            defauts++;
+        }
+        // Température
         if (TemperatureActuelle < TemperatureMinimale
          || TemperatureActuelle > TemperatureMaximale) defauts++;
-        if (MaladieActuelle != null) defauts++;
+        // Maladie
+        if (ObstacleActuel != null) defauts++;
+        // Espacement
         if (!espaceRespecte) defauts++;
-        return (float)defauts / 5f;
+        // Saison de semis
+        bool condSaison = SaisonCompatible.Any(s => s.NomSaison == saisonActuelle.NomSaison);
+        if (!condSaison) defauts++;
+        // Terrain préféré
+        bool condTerrain = terrainActuel.GetType() == TerrainIdeal.GetType();
+        if (!condTerrain) defauts++;
+
+        return (float)defauts / 7f;
     }
 
     // — Mise à jour journalière — 
     public virtual void Update(
-        float tempsEcouleEnJours,
-        float temperatureDuJour,
-        bool espaceRespecte,
-        float coeffAbsorptionEau,
-        float luminositeDuJour
-    )
+    float tempsEcouleEnSemaines,
+    float temperatureSemaine,
+    bool espaceRespecte,
+    float coeffAbsorptionEau,
+    int luminositeSemaine,
+    Saison saisonActuelle,
+    Terrain terrainActuel
+)
     {
-        if (EstMorte) return;
+        if (EstMorte)
+            return;
 
-        // 1) Température
-        SetTemperature(temperatureDuJour);
 
-        // 2) Maladie
-        if (MaladieActuelle == null)
+        // 0) Age + espérance de vie plante
+        SemainesDepuisPlantation += (int)Math.Floor(tempsEcouleEnSemaines);
+        if (SemainesDepuisPlantation >= EsperanceDeVieSemaines)
         {
-            joursSansMaladie++;
-            if (joursSansMaladie >= probMaladieInverse)
-            {
-                var cand = Maladie.GenererMaladieAleatoire();
-                if (cand.SeDeclare())
-                {
-                    MaladieActuelle = cand;
-                    joursSansMaladie = 0;
-                }
-            }
-        }
-        else
-        {
-            MaladieActuelle.AppliquerEffets(this);
+            EstMorte = true;
+            Console.WriteLine($"[MORT] {NomPlante} a dépassé son espérance de vie ({EsperanceDeVieSemaines} semaines).");
+            Thread.Sleep(2000);
+            return;
         }
 
-        // 3) Conditions
-        float tauxNonOpt = EvaluerConditions(espaceRespecte);
-        if (tauxNonOpt >= 0.6f)
+        // 1) Appliquer la température de la semaines
+        SetTemperature(temperatureSemaine);
+
+        // 1 bis) Vérifier si le joueur a soigné la plante 
+        if (EnCoursDeTraitement && ObstacleActuel is Maladie)
+        {
+            Soigner();
+            Console.WriteLine($"🧪 {NomPlante} a été soignée !");
+            Thread.Sleep(1500);
+        }
+
+        // 2) Effets de l’obstacle (maladie, insecte, animal…)
+        if (ObstacleActuel != null)
+            ObstacleActuel.AppliquerEffets(this);
+
+        // 3) Calcul du taux de non-satisfaction (7 critères)
+        float tauxNonOpt = EvaluerConditions(
+            espaceRespecte,
+            saisonActuelle,
+            terrainActuel
+        );
+        if (tauxNonOpt >= 0.5f)
         {
             Tuer();
+            Console.WriteLine($"[MORT] {NomPlante} ne peut plus vivre dans de telles conditions");
+            Thread.Sleep(2000);
             return;
         }
         float tauxOpt = 1f - tauxNonOpt;
 
-        // 4) Croissance
+        // 4)accumuler la satisfaction
+        SommeSatisfaction += tauxOpt;
+
+        // 5) Croissance proportionnelle à la satisfaction
         Pousser(tauxOpt);
 
-        // 5) Hydratation (modulée par le sol)
-        float perte = VitesseDeshydratation * tempsEcouleEnJours * (1f - coeffAbsorptionEau);
-        ReduireHydratation(perte);
+        // 6) Perte d’eau modulée par le sol
+        float perteEau = VitesseDeshydratation
+                       * tempsEcouleEnSemaines
+                       * (1f - coeffAbsorptionEau);
+        ReduireHydratation(perteEau);
 
-        // 6) Jauge de lumière persistante
-        LuminositeActuelle = Math.Max(0f, LuminositeActuelle - 1f * tempsEcouleEnJours);
+        // 7) Fixer l’indice de luminosité de la semaine (1 à 5)
+        SetLuminosite(luminositeSemaine);
+
+        // 8) Gestion de la refloraison pour les plantes vivaces
+        if (EstVivace && EstMature && !PeutProduireFruits)
+        {
+            SemainesDepuisDerniereRecolte++;
+
+            bool saisonOK = SaisonCompatible.Any(s => s.NomSaison == saisonActuelle.NomSaison);
+            bool attenteOK = SemainesDepuisDerniereRecolte >= 10;
+
+            if (saisonOK && attenteOK)
+            {
+                PeutProduireFruits = true;
+                SemainesDepuisDerniereRecolte = 0;
+                Console.WriteLine($"{NomPlante} refleurit 🌸");
+                Thread.Sleep(1000);
+            }
+        }
     }
+
+
+
+
+    public int Recolter()
+    {
+        if (EstMorte)
+            return 0;
+
+        if (!EstMature || !PeutProduireFruits)
+            return 0;
+
+        float moyenne = SommeSatisfaction / SemainesDepuisPlantation;
+        SommeSatisfaction = SemainesDepuisPlantation;
+        int grainesGain = (int)Math.Round(RendementBase * moyenne);
+
+        if (EstVivace)
+        {
+            PeutProduireFruits = false;
+            SemainesDepuisDerniereRecolte = 0;
+        }
+        else
+        {
+            Tuer();
+        }
+
+        return grainesGain;
+    }
+
+
 
     // — Croissance — 
     protected virtual void Pousser(float tauxSatisfaction)
@@ -167,5 +306,34 @@ public abstract class Plante
         float delta = VitesseCroissance * tauxSatisfaction;
         HauteurActuelle = Math.Min(HauteurMaximale, HauteurActuelle + delta);
     }
-}
 
+
+    public void PlacerObstacle(Obstacle obs)
+    {
+        ObstacleActuel = obs;
+    }
+    public void RalentirCroissance(float montant)
+    {
+        VitesseCroissance = Math.Max(0f, VitesseCroissance - montant);
+    }
+    public virtual void DiminuerRendement(int quantite)
+    {
+        RendementBase = Math.Max(1, RendementBase - quantite);
+    }
+
+    // _ Mise en place d'une Ombrelle ou d'une Serre sur la plante pour la booster _
+    
+
+    
+
+    public void Equiper(Equipement eq)
+    {
+        if (Accessoire == Equipement.Aucun)
+            Accessoire = eq;
+    }
+
+    public void Desequiper()
+    {
+        Accessoire = Equipement.Aucun;
+    }
+}
