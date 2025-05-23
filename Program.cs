@@ -40,11 +40,15 @@ static void AfficherRegles()
 {
     Console.Clear();
     Console.WriteLine("=== RÈGLES DU POTAGER BRESIL ===\n");
-    Console.WriteLine("1) Planter coûte des graines.");
-    Console.WriteLine("2) Chaque semaine, vos plantes ont 7 conditions.");
-    Console.WriteLine("3) ≥3 échecs → ORANGE ; ≥4 → ROUGE (mort).");
-    Console.WriteLine("4) Actions : arroser, récolter, désherber, …");
-    Console.WriteLine("5) Mode urgence aléatoire (mini-jeux).");
+    Console.WriteLine("1) Planter coûte des graines (prix variable) : case vide et espacement obligatoires.  ");
+    Console.WriteLine("2) A chaque tour semaine les plantes sont évaluées pour 7 conditions selon leur caractéristiques");
+    Console.WriteLine("   3 échecs = danger (ORANGE), 4+ échecs = mort (ROUGE).");
+    Console.WriteLine("4) Obstacles (animaux, insectes, maladies) : soin possible mais coûte des graines.");
+    Console.WriteLine("5) Actions : planter, arroser (5 graines), récolter, désherber (alimente compost),");
+    Console.WriteLine("   équiper/retirer serre ou ombrelle.");
+    Console.WriteLine("6) Plantes vivaces (cactus, café, canne à sucre) : pause de 10 semaines puis refloraison si saison.");
+    Console.WriteLine("7) Compost unique : +25 % par désherbage, 100 % ➔ +15 graines et jauge remise à zéro.");
+    Console.WriteLine("8) Mode urgence (10 % de chance par tour) : gérer un gros orage, nettoyer le potager, intrusion nocturne…");
     Console.WriteLine("\nAppuyez sur une touche pour revenir.");
     Console.ReadKey(true);
 }

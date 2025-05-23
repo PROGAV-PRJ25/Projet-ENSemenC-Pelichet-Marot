@@ -60,6 +60,11 @@ public class GestionPlateau
                     if (obs != null)
                         plante.PlacerObstacle(obs);
                 }
+                //On propage la maladie sur les plantes alentour aux plantes malades.
+                if (plante.ObstacleActuel is Maladie)
+                {
+                    PropagerMaladieAutour(x, y);
+                }
 
                 bool espaceOk = IsEspacementOk(x, y);
                 plante.Update(
@@ -374,6 +379,50 @@ public class GestionPlateau
                 }
         return minDist == int.MaxValue ? -1 : minDist;
     }
+
+    public void PropagerMaladieAutour(int x, int y)
+    {
+        // Récupère la plante malade et sa maladie
+        var planteMalade = _plateau[y, x].Plante;
+        if (planteMalade?.ObstacleActuel is not Maladie maladie)
+            return;
+
+        double tauxPropagation = 0.3;      // 30% de chance
+        var rnd = new Random();
+
+        int hauteur = _plateau.GetLength(0);
+        int largeur = _plateau.GetLength(1);
+
+        for (int dy = -2; dy <= 2; dy++)
+        {
+            for (int dx = -2; dx <= 2; dx++)
+            {
+                // On reste dans un carré 5x5 centré, mais on ignore la case centrale
+                if (dx == 0 && dy == 0)
+                    continue;
+
+                int nx = x + dx, ny = y + dy;
+                if (ny < 0 || ny >= hauteur || nx < 0 || nx >= largeur)
+                    continue;
+
+                var voisine = _plateau[ny, nx].Plante;
+                if (voisine != null && voisine.ObstacleActuel == null)
+                {
+                    if (rnd.NextDouble() < tauxPropagation)
+                    {
+                        // Clone la même maladie (même type)
+                        var obj = Activator.CreateInstance(maladie.GetType());
+                        if (obj is Maladie clone)
+                        {
+                            voisine.PlacerObstacle(clone);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
     public List<(int x, int y)> Choisir5PlantesAleatoires()
     {
