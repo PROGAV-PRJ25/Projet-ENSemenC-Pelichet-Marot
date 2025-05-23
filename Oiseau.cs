@@ -4,7 +4,7 @@ public class Oiseau : Animal
         : base(
             nom:  "Oiseau", 
             desc: "Cueille les fruits, réduit le rendement prochain", 
-            proba: 0.0007f)
+            proba: 0.007f)
     { }
 
     public override void AppliquerEffets(Plante p)
